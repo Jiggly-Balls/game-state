@@ -1,12 +1,18 @@
-from setuptools import setup, find_packages
+import re
+from setuptools import setup
 
-with open("requirements.txt") as file:
-    requirements = file.read().split("\n")
 
-setup(
-    name="game-state",
-    version="0.1",
-    packages=find_packages(),
-    install_requires=requirements,
+def derive_version() -> str:
+    version = ""
+    with open("game_state/__init__.py") as f:
+        version = re.search(
+            r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE
+        ).group(1)
 
-)
+    if not version:
+        raise RuntimeError("Version is not set.")
+
+    return version
+
+
+setup(version=derive_version())
