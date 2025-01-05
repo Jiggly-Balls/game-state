@@ -28,6 +28,9 @@ classifiers = [
     "Topic :: Utilities"
 ]
 
+[tool.setuptools.dynamic]
+dependencies = { file = "requirements.txt" }
+
 [project.urls]
 Homepage = "https://github.com/Jiggly-Ball/Game-State"
 Issues = "https://github.com/Jiggly-Ball/Game-State/issues"
@@ -35,3 +38,14 @@ Issues = "https://github.com/Jiggly-Ball/Game-State/issues"
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 100
+lint.extend-select = ["ANN"]
+lint.ignore = ["ANN401"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+docstring-code-line-length = 60
