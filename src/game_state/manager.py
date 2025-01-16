@@ -68,7 +68,9 @@ class StateManager:
 
         state.__dict__["hook"](**kwargs)
 
-    def load_states(self, *states: type[State], force: bool = False, **kwargs: Any) -> None:
+    def load_states(
+        self, *states: type[State], force: bool = False, **kwargs: Any
+    ) -> None:
         """Loads the States into the StateManager.
 
         Parameters
@@ -101,7 +103,9 @@ class StateManager:
             self.__states[state.__name__] = state(**kwargs)
             self.__states[state.__name__].setup()
 
-    def unload_state(self, state_name: str, force: bool = False, **kwargs: Any) -> type[State]:
+    def unload_state(
+        self, state_name: str, force: bool = False, **kwargs: Any
+    ) -> type[State]:
         """Unloads the `State` from the StateManager.
 
         Parameters
@@ -154,7 +158,9 @@ class StateManager:
         del self.__states[state_name]
         return cls_ref
 
-    def reload_state(self, state_name: str, force: bool = False, **kwargs: Any) -> State:
+    def reload_state(
+        self, state_name: str, force: bool = False, **kwargs: Any
+    ) -> State:
         """Reloads the specified State. A short hand to `StateManager.unload_state` &
         `StateManager.load_state`.
 
@@ -182,7 +188,9 @@ class StateManager:
             Raised when the state has already been loaded.
         """
 
-        deleted_cls = self.unload_state(state_name=state_name, force=force, **kwargs)
+        deleted_cls = self.unload_state(
+            state_name=state_name, force=force, **kwargs
+        )
         self.load_states(deleted_cls, force=force, **kwargs)
         return self.__states[state_name]
 
@@ -260,7 +268,9 @@ class StateManager:
 
         if self.__current_state is not None:
             raise ExitStateError(
-                "State has successfully exited.", last_state=self.__last_state, **kwargs
+                "State has successfully exited.",
+                last_state=self.__last_state,
+                **kwargs,
             )
         raise StateError(
             "No state has been set to exit from.",
@@ -287,7 +297,9 @@ class StateManager:
             self.__current_state.run()
         else:
             raise StateError(
-                "No state has been set to run.", last_state=self.__last_state, **kwargs
+                "No state has been set to run.",
+                last_state=self.__last_state,
+                **kwargs,
             )
 
     def exit_game(self, **kwargs: Any) -> NoReturn:
@@ -307,4 +319,8 @@ class StateManager:
             Raised when the current state is `None` i.e having no State to update to.
         """
 
-        raise ExitGameError("Game has successfully exited.", last_state=self.__last_state, **kwargs)
+        raise ExitGameError(
+            "Game has successfully exited.",
+            last_state=self.__last_state,
+            **kwargs,
+        )
