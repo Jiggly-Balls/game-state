@@ -1,6 +1,6 @@
 [project]
 name = "game-state"
-version = "0.1"
+version = "0.1.0"
 authors = [
   { name="Jiggly Balls", email="jigglyballs9000@gmail.com" },
 ]
@@ -32,8 +32,9 @@ classifiers = [
 dependencies = { file = "requirements.txt" }
 
 [project.urls]
-Homepage = "https://github.com/Jiggly-Ball/Game-State"
-Issues = "https://github.com/Jiggly-Ball/Game-State/issues"
+Homepage = "https://github.com/Jiggly-Balls/game-state"
+Issues = "https://github.com/Jiggly-Balls/game-state/issues"
+Stars = "https://github.com/Jiggly-Balls/game-state/stargazers"
 
 [build-system]
 requires = ["setuptools>=61.0"]
