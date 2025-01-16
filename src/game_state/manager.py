@@ -4,16 +4,17 @@ import pygame
 import importlib
 
 from typing import TYPE_CHECKING
+
+from src.game_state.errors import (
+    StateError,
+    StateLoadError,
+    ExitStateError,
+    ExitGameError,
+)
 from src.game_state.state import State
 
 if TYPE_CHECKING:
     from typing import NoReturn, Optional, Dict, Any
-    from src.game_state.errors import (
-        StateError,
-        StateLoadError,
-        ExitStateError,
-        ExitGameError,
-    )
 
 
 class StateManager:
