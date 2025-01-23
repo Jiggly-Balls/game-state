@@ -4,7 +4,7 @@ from setuptools import setup
 
 def derive_version() -> str:
     version = ""
-    with open("game_state/__init__.py") as f:
+    with open("src/game_state/__init__.py") as f:
         version = re.search(
             r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE
         ).group(1)
