@@ -5,13 +5,13 @@ import importlib
 
 from typing import TYPE_CHECKING
 
-from src.game_state.errors import (
+from game_state.errors import (
     StateError,
     StateLoadError,
     ExitStateError,
     ExitGameError,
 )
-from src.game_state.state import State
+from game_state.state import State
 
 if TYPE_CHECKING:
     from typing import NoReturn, Optional, Dict, Any

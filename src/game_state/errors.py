@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import Optional, Any
-    from src.game_state.state import State
+    from game_state.state import State
 
 
 class BaseError(Exception):

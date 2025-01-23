@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pygame import Surface
     from typing import Optional
-    from src.game_state.manager import StateManager
+    from game_state.manager import StateManager
 
 
 class State:
