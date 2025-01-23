@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import pygame
 import importlib
 
 from typing import TYPE_CHECKING
@@ -14,6 +13,7 @@ from game_state.errors import (
 from game_state.state import State
 
 if TYPE_CHECKING:
+    from pygame import Surface
     from typing import NoReturn, Optional, Dict, Any
 
 
@@ -24,7 +24,7 @@ class StateManager:
         "__last_state",
     )
 
-    def __init__(self, window: pygame.Surface) -> None:
+    def __init__(self, window: Surface) -> None:
         """
         Parameters
         ----------
@@ -166,8 +166,8 @@ class StateManager:
 
         Parameters
         ----------
-        *states: :type:`State`
-            The `State`s to be loaded into the manager.
+        state_name: :class:`str`
+            The `State` name to be reloaded.
 
         force: :class:`bool`, default `False`
             Reloads the State even if it's an actively running State without raising any
@@ -175,7 +175,7 @@ class StateManager:
             **WARNING: If set to `True` it may lead to unexpected behavior.**
 
         **kwargs:
-            The keyword arguments to be passed to the `State`'s subclass on instantiation.
+            The keyword arguments to be passed to the StateManager.unload_state` & `StateManager.load_state`.
 
         Returns
         --------
@@ -314,9 +314,6 @@ class StateManager:
         ------
         :exc:`ExitStateError`
             Raised when the state has successfully exited.
-
-        :exc:`StateError`
-            Raised when the current state is `None` i.e having no State to update to.
         """
 
         raise ExitGameError(
