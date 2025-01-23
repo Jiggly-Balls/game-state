@@ -15,8 +15,8 @@ __author__ = "Jiggly-Ball"
 __license__ = "MIT"
 __copyright__ = "Copyright 2024-present Disutils Team"
 
-from src.game_state.manager import StateManager
-from src.game_state.state import State
+from game_state.manager import StateManager
+from game_state.state import State
 from typing import NamedTuple, Literal
 
 __all__ = ("State", "StateManager")
