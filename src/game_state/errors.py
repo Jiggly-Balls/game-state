@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class BaseError(Exception):
-    """The base class to all custom errors."""
+    """The base class to all game-state errors."""
 
     def __init__(
         self, *args: Any, last_state: Optional[State] = None, **kwargs: Any
