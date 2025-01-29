@@ -9,11 +9,11 @@ A utility package for pygame to manage multiple screens.
 
 """
 
-__version__ = "0.1"
+__version__ = "0.1b"
 __title__ = "game-state"
-__author__ = "Jiggly-Ball"
+__author__ = "Jiggly-Balls"
 __license__ = "MIT"
-__copyright__ = "Copyright 2024-present Disutils Team"
+__copyright__ = "Copyright 2024-present Jiggly Balls"
 
 from game_state.manager import StateManager
 from game_state.state import State
