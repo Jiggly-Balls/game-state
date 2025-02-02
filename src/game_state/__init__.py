@@ -4,12 +4,12 @@ Game-State Manager
 
 A utility package for pygame to manage multiple screens.
 
-:copyright: (c) 2024-present Jiggly-Ball
+:copyright: (c) 2024-present Jiggly-Balls
 :license: MIT, see LICENSE for more details.
 
 """
 
-__version__ = "0.1b"
+__version__ = "1.0.0"
 __title__ = "game-state"
 __author__ = "Jiggly-Balls"
 __license__ = "MIT"
