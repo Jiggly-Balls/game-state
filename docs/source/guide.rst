@@ -1,23 +1,37 @@
 Guide
 =====
 
-.. _installation:
+To get started with this library, you need to first create a new project, create
+a virtual environment & activate it (optional but recommended). Once you've done
+that you may continue.
 
 Installation
 ------------
 
-To use Lumache, first install it using pip:
+Installing ``game_state`` through pip-
 
 .. code-block:: console
 
    (.venv) $ pip install game_state
 
-Creating recipes
-----------------
+Since ``game_state`` does not have any dependancies, we need to manually install
+the pygame library (or it's forks) too.
 
-To retrieve a list of random ingredients,
+.. code-block:: console
 
+   (.venv) $ pip install pygame
 
-The ``kind`` parameter should be either ``"meat"``, ``"fish"``,
-will raise an exception.
+Creating a Screen
+-----------------
 
+Let's create a simple pygame script to show blue colour on the screen.
+
+.. code-block:: python
+
+   import pygame
+   
+
+.. :toctree::
+
+   guide
+   api

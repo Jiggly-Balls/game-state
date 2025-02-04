@@ -1,5 +1,10 @@
-API
-===
+API Reference
+=============
 
-Hi hello
+hi
 
+
+.. :toctree::
+
+   guide
+   api
