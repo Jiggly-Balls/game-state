@@ -30,7 +30,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Jiggly-Balls/game-state"
+Source = "https://github.com/Jiggly-Balls/game-state"
+Documentation = "https://game-state.readthedocs.io/en/latest/index.html"
 Issues = "https://github.com/Jiggly-Balls/game-state/issues"
 Stars = "https://github.com/Jiggly-Balls/game-state/stargazers"
 
