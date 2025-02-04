@@ -1,22 +1,23 @@
-Welcome to Lumache's documentation!
-===================================
+Welcome to the Game-State Documentation!
+========================================
 
-**Lumache** (/lu'make/) is a Python library for cooks and food lovers
-that creates recipes mixing random ingredients.
-It pulls data from the `Open Food Facts database <https://world.openfoodfacts.org/>`_
-and offers a *simple* and *intuitive* API.
+This documentation will serve as an API reference as well as a guide to getting
+started with the Game-State library.
 
-Check out the :doc:`usage` section for further information, including
-how to :ref:`installation` the project.
+About the Project
+-----------------
+   This project was made to handle different screen in ``pygame`` / ``pygame-ce``
+   in an organized manner via python's OOP.
 
-.. note::
+   :Author: Jiggly Balls
+   :License: MIT License
 
-   This project is under active development.
 
-Contents
---------
+Getting Started
+---------------
+   Check out the guide on how to setup a pygame project with game state and the .
 
-.. toctree::
+      .. toctree::
 
-   usage
-   api
+         guide
+         api
