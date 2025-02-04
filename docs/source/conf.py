@@ -6,8 +6,9 @@ project = "Game-State"
 copyright = "2024-present, Jiggly Balls"
 author = "Jiggly Balls"
 
+
+version = "1.0"
 release = "1.0.0"
-version = "1.0.0"
 
 # -- General configuration
 
@@ -25,11 +26,13 @@ intersphinx_mapping = {
 }
 intersphinx_disabled_domains = ["std"]
 
+toc_object_entries = False
+
 templates_path = ["_templates"]
 
 # -- Options for HTML output
 
-html_theme = "alabaster"
+html_theme = "furo"
 
 # -- Options for EPUB output
 epub_show_urls = "footnote"
