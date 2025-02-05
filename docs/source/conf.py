@@ -33,6 +33,9 @@ templates_path = ["_templates"]
 # -- Options for HTML output
 
 html_theme = "furo"
+html_theme_options = {
+    "top_of_page_buttons": ["view", "edit"],
+}
 
 # -- Options for EPUB output
 epub_show_urls = "footnote"
