@@ -1,10 +1,11 @@
 API Reference
 =============
 
-hi
+The following section outlines the API of Game State.
 
+.. toctree::
+  :caption: Table of Contents
 
-.. :toctree::
-
-   guide
-   api
+  api/state
+  api/state_manager
+  api/exceptions

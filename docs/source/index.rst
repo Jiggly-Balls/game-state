@@ -12,7 +12,6 @@ in an organized manner via python's OOP.
 :Author: Jiggly Balls
 :License: MIT License
 
-
 Getting Started
 ---------------
 Check out the guide on how to setup a pygame project with game state along with

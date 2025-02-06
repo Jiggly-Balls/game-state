@@ -46,7 +46,7 @@ blue colour and the other will display green.
       GREEN = (0, 0, 255)
 
 
-Now that we have imported and set the display of our app, let's create it's screen.
+Now that we have imported and set the display of our app, let's create a screen.
 
 .. admonition:: Creating a simple screen
    :class: seealso
@@ -288,5 +288,4 @@ State! The final code will looks something like this-
 
 .. :toctree::
 
-   guide
    api
