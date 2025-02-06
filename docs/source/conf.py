@@ -30,9 +30,6 @@ always_document_param_types = True
 toc_object_entries_show_parents = "hide"
 autosectionlabel_prefix_document = True
 
-html_search_language = "en"
-language = "en"
-
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "friendly"
 
