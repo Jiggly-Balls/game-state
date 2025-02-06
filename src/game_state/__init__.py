@@ -23,8 +23,9 @@ __all__ = ("State", "StateManager")
 
 
 class VersionInfo(NamedTuple):
-    major: int
-    minor: int
+    major: str
+    minor: str
+    patch: str
     release_level: Literal["alpha", "beta", "final"]
 
 
@@ -32,7 +33,7 @@ def _expand() -> VersionInfo:
     v = __version__.split(".")
     level_types = {"a": "alpha", "b": "beta"}
     level = level_types.get(v[-1], "final")
-    return VersionInfo(major=v[0], minor=v[1], release_level=level)
+    return VersionInfo(major=v[0], minor=v[1], patch=v[2], release_level=level)
 
 
 version_info: VersionInfo = _expand()
