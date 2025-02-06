@@ -1,14 +1,22 @@
-from src.game_state import version_info
+from importlib.metadata import version as get_package_version
 
-# Configuration file for the Sphinx documentation builder.
+
+def _version_getter() -> tuple[str, str]:
+    v = get_package_version("game_state").split(".")
+    level_types = {"a": "alpha", "b": "beta"}
+    level = level_types.get(v[-1], "final")
+    return f"{v[0]}.{v[1]}", f"{v[0]}.{v[1]}.{v[2]} - {level}"
+
 
 # -- Project information
 project = "Game-State"
 copyright = "2024-present, Jiggly Balls"
 author = "Jiggly Balls"
 
-version = f"{version_info.major}.{version_info.minor}"
-release = f"{version_info.major}.{version_info.minor}.{version_info.patch} - {version_info.release_level}"
+# version = f"{version_info.major}.{version_info.minor}"
+# release = f"{version_info.major}.{version_info.minor}.{version_info.patch} - {version_info.release_level}"
+
+version, release = _version_getter()
 
 # -- General configuration
 extensions = [
