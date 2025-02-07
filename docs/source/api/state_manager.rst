@@ -1,7 +1,7 @@
-.. currentmodule:: game_state
+.. currentmodule:: game_state.manager
 
 State Manager
-=============
+-------------
 
 .. attributetable:: StateManager
 
