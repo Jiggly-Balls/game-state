@@ -46,7 +46,6 @@ class StateManager:
         ----------
         path: :class:`str`
             The path to the State file containing the hook function to be called.
-
         **kwargs:
             The keyword arguments to be passed to the hook function.
 

@@ -18,6 +18,6 @@ Check out the guide on how to setup a pygame project with game state along with
 the API reference.
 
    .. toctree::
-
+      
       guide
       api
