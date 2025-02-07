@@ -3,5 +3,7 @@
 State Manager
 =============
 
+.. attributetable:: StateManager
+
 .. autoclass:: StateManager
     :members:

@@ -3,5 +3,7 @@
 State
 -----
 
+.. attributetable:: State
+
 .. autoclass:: State
     :members:

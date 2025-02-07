@@ -18,6 +18,8 @@ if TYPE_CHECKING:
 
 
 class StateManager:
+    """The State Manager used for managing multiple State(s)."""
+
     __slots__ = (
         "__states",
         "__current_state",
@@ -46,7 +48,7 @@ class StateManager:
         ----------
         path: :class:`str`
             The path to the State file containing the hook function to be called.
-        **kwargs:
+        kwargs: `Any`
             The keyword arguments to be passed to the hook function.
 
         Raises
@@ -74,14 +76,12 @@ class StateManager:
 
         Parameters
         ----------
-        *states: :type:`State`
+        states: :type:`State`
             The `State`s to be loaded into the manager.
-
         force: :class:`bool`, default `False`
             Loads the State regardless of whether the State has already been loaded or not
             without raising any internal error.
-
-        **kwargs:
+        kwargs:
             The keyword arguments to be passed to the `State`'s subclass on instantiation.
 
         Raises
@@ -117,7 +117,7 @@ class StateManager:
             internal error.
             **WARNING: If set to `True` it may lead to unexpected behavior.**
 
-        **kwargs:
+        kwargs: :class:`Any`
             The keyword arguments to be passed on to the raised errors.
 
         Returns

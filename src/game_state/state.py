@@ -10,7 +10,8 @@ if TYPE_CHECKING:
 
 
 class State:
-    """
+    """The State class which works as an individual screen.
+
     Attributes
     ----------
     window: :class:`pygame.Surface`
