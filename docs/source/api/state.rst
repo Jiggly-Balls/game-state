@@ -1,5 +1,7 @@
+.. currentmodule:: game_state
+
 State
 -----
 
-.. automodule:: src.game_state.state.State
-   :members:
+.. autoclass:: State
+    :members:
