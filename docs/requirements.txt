@@ -1,3 +1,4 @@
 sphinx==7.1.2
 furo==2024.8.6
 game_state
+pygame
