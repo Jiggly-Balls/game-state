@@ -1,22 +1,17 @@
-from importlib.metadata import version as get_package_version
+import os
+import sys
 
+sys.path.insert(0, os.path.abspath("../../src/"))
 
-def _version_getter() -> tuple[str, str]:
-    v = get_package_version("game_state").split(".")
-    level_types = {"a": "alpha", "b": "beta"}
-    level = level_types.get(v[-1], "final")
-    return f"{v[0]}.{v[1]}", f"{v[0]}.{v[1]}.{v[2]} - {level}"
-
+from src.game_state import version_info
 
 # -- Project information
 project = "Game-State"
 copyright = "2024-present, Jiggly Balls"
 author = "Jiggly Balls"
 
-# version = f"{version_info.major}.{version_info.minor}"
-# release = f"{version_info.major}.{version_info.minor}.{version_info.patch} - {version_info.release_level}"
-
-version, release = _version_getter()
+version = f"{version_info.major}.{version_info.minor}"
+release = f"{version_info.major}.{version_info.minor}.{version_info.patch} - {version_info.releaselevel}"
 
 # -- General configuration
 extensions = [
@@ -25,6 +20,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
+    "sphinx_autodoc_typehints",
 ]
 
 intersphinx_mapping = {
@@ -37,11 +33,17 @@ toc_object_entries = False
 always_document_param_types = True
 toc_object_entries_show_parents = "hide"
 autosectionlabel_prefix_document = True
+autosummary_generate = True
+autosummary_generate_overwrite = False
+autodoc_typehints = "description"
+autodoc_typehints_description_target = "documented_params"
+autoclass_content = "both"
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "friendly"
 
 templates_path = ["_templates"]
+modindex_common_prefix = ["src."]
 
 # -- Options for HTML output
 html_title = f"{project} v{version} Documentation"
