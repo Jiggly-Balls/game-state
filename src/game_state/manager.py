@@ -11,6 +11,7 @@ from game_state.errors import (
     ExitGameError,
 )
 from game_state.state import State
+from typing import NoReturn, Optional, Dict, Any
 
 if TYPE_CHECKING:
     from pygame import Surface
@@ -27,10 +28,9 @@ class StateManager:
     )
 
     def __init__(self, window: Surface) -> None:
-        """
-        Parameters
-        ----------
-        window: :class:`pygame.Surface`
+        """The State Manager's init.
+
+        :param window:
             The main game window.
         """
 
@@ -42,13 +42,11 @@ class StateManager:
         self.__last_state: Optional[State] = None
 
     def connect_state_hook(self, path: str, **kwargs: Any) -> None:
-        """Calls the hook function of the state file.
+        r"""Calls the hook function of the state file.
 
-        Parameters
-        ----------
-        path: :class:`str`
+        :param path:
             The path to the State file containing the hook function to be called.
-        kwargs: `Any`
+        :param \**kwargs:
             The keyword arguments to be passed to the hook function.
 
         Raises
@@ -72,17 +70,17 @@ class StateManager:
     def load_states(
         self, *states: type[State], force: bool = False, **kwargs: Any
     ) -> None:
-        """Loads the States into the StateManager.
+        r"""Loads the States into the StateManager.
 
-        Parameters
-        ----------
-        states: :type:`State`
-            The `State`s to be loaded into the manager.
-        force: :class:`bool`, default `False`
+        :param states:
+            The States to be loaded into the manager.
+
+        :param force: default `False`
             Loads the State regardless of whether the State has already been loaded or not
             without raising any internal error.
-        kwargs:
-            The keyword arguments to be passed to the `State`'s subclass on instantiation.
+
+        :param \**kwargs:
+            The keyword arguments to be passed to the State's subclass on instantiation.
 
         Raises
         ------
@@ -105,19 +103,17 @@ class StateManager:
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> type[State]:
-        """Unloads the `State` from the StateManager.
+        r"""Unloads the `State` from the StateManager.
 
-        Parameters
-        ----------
-        *states: :type:`State`
-            The `State`s to be loaded into the manager.
+        :param \*states:
+            The States to be loaded into the manager.
 
-        force: :class:`bool`, default `False`
+        :param force: default `False`
             Unloads the State even if it's an actively running State without raising any
             internal error.
             **WARNING: If set to `True` it may lead to unexpected behavior.**
 
-        kwargs: :class:`Any`
+        :param \**kwargs:
             The keyword arguments to be passed on to the raised errors.
 
         Returns
@@ -160,20 +156,18 @@ class StateManager:
     def reload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> State:
-        """Reloads the specified State. A short hand to `StateManager.unload_state` &
+        r"""Reloads the specified State. A short hand to `StateManager.unload_state` &
         `StateManager.load_state`.
 
-        Parameters
-        ----------
-        state_name: :class:`str`
+        :param state_name:
             The `State` name to be reloaded.
 
-        force: :class:`bool`, default `False`
+        :param force: default `False`
             Reloads the State even if it's an actively running State without raising any
             internal error.
             **WARNING: If set to `True` it may lead to unexpected behavior.**
 
-        **kwargs:
+        :param \**kwargs:
             The keyword arguments to be passed to the StateManager.unload_state` & `StateManager.load_state`.
 
         Returns
@@ -229,9 +223,7 @@ class StateManager:
     def change_state(self, state_name: str) -> None:
         """Changes the current state and updates the last state.
 
-        Parameters
-        ----------
-        state_name: :class:`str`
+        :param state_name:
             The name of the State you want to switch to.
 
         Raises
@@ -249,11 +241,9 @@ class StateManager:
         self.__current_state = self.__states[state_name]
 
     def update_state(self, **kwargs: Any) -> NoReturn:
-        """Updates the changed State to take place.
+        r"""Updates the changed State to take place.
 
-        Parameters
-        ----------
-        **kwargs:
+        :param \**kwargs:
             The keyword arguments to be passed on to the raised errors.
 
         Raises
@@ -278,12 +268,10 @@ class StateManager:
         )
 
     def run_state(self, **kwargs: Any) -> None:
-        """The entry point to running the StateManager. To be only called once. For
+        r"""The entry point to running the StateManager. To be only called once. For
         changing `State`s use `StateManager.change_state` & `StateManager.update_state`
 
-        Parameters
-        ----------
-        **kwargs:
+        :param \**kwargs:
             The keyword arguments to be passed on to the raised errors.
 
         Raises
@@ -302,11 +290,9 @@ class StateManager:
             )
 
     def exit_game(self, **kwargs: Any) -> NoReturn:
-        """Exits the entire game.
+        r"""Exits the entire game.
 
-        Parameters
-        ----------
-        **kwargs:
+        :param \**kwargs:
             The keyword arguments to be passed on to the raised errors.
 
         Raises
