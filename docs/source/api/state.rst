@@ -1,9 +1,7 @@
-.. currentmodule:: game_state.state
+.. currentmodule:: game_state
 
 State
------
-
-.. attributetable:: State
+=====
 
 .. autoclass:: State
     :members:

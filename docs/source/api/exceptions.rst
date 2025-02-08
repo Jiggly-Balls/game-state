@@ -1,7 +1,7 @@
 .. currentmodule:: game_state.errors
 
 Exceptions
-----------
+==========
 
 .. autoclass:: BaseError
     :members:
