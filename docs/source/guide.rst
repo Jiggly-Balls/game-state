@@ -36,7 +36,7 @@ blue colour and the other will display green.
       import pygame
 
       from game_state import State, StateManager
-      from game_state.errors import ExitGameError, ExitStateError
+      from game_state.errors import ExitGame, ExitState
 
       pygame.init()
       pygame.display.init()
@@ -64,9 +64,9 @@ Now that we have imported and set the display of our app, let's create a screen.
 
                   for event in pygame.event.get():
                      if event.type == pygame.QUIT:
-                        # Upon quitting, we raise the ExitGameError which we handle outside.
+                        # Upon quitting, we raise the ExitGame which we handle outside.
                         
-                        raise ExitGameError()
+                        self.manager.exit_game()
 
                   pygame.display.update()  # Refreshes the screen
 
@@ -100,7 +100,7 @@ Now that we have created a screen, let's add it to our screen manager and run it
                   # This is the entry point of our screen manager.
                   # This should only be called once at start up.
 
-            except ExitStateError as error:
+            except ExitState as error:
                   # Stuff you can do right after a state (screen) has been changed
                   # i.e. Save player data, pause / resume / change music, etc...
 
@@ -111,13 +111,13 @@ Now that we have created a screen, let's add it to our screen manager and run it
       if __name__ == "__main__":
          try:
             main()
-         except ExitGameError:
+         except ExitGame:
             print("Game has exited successfully")
 
 .. admonition:: Note
    :class: note
 
-   Note that we can also handle the ``ExitGameError`` inside the ``main`` function
+   Note that we can also handle the ``ExitGame`` inside the ``main`` function
    instead. But we'd have to break out of the loop manually too.
 
 There you have it! We have set up a simple game using the Game State library.
@@ -142,9 +142,9 @@ between them? Worry not! It's as simple as creating another subclass of the
 
                   for event in pygame.event.get():
                      if event.type == pygame.QUIT:
-                        # Upon quitting, we raise the ExitGameError which we handle outside.
+                        # Upon quitting, we raise the ExitGame which we handle outside.
                         
-                        raise ExitGameError()
+                        self.manager.exit_game()
 
                      if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                         # Check if we're clicking the " c " button.
@@ -170,7 +170,7 @@ between them? Worry not! It's as simple as creating another subclass of the
 
                   for event in pygame.event.get():
                      if event.type == pygame.QUIT:
-                        raise ExitGameError()
+                        self.manager.exit_game()
 
                      if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                         self.manager.change_state("FirstScreen")  # Change our state to FirstScreen.
@@ -193,7 +193,7 @@ State! The final code will looks something like this-
    import pygame
 
    from game_state import State, StateManager
-   from game_state.errors import ExitGameError, ExitStateError
+   from game_state.errors import ExitGame, ExitState
 
    pygame.init()
    pygame.display.init()
@@ -215,9 +215,9 @@ State! The final code will looks something like this-
 
                for event in pygame.event.get():
                   if event.type == pygame.QUIT:
-                     # Upon quitting, we raise the ExitGameError which we handle outside.
+                     # Upon quitting, we raise the ExitGame which we handle outside.
 
-                     raise ExitGameError()
+                     self.manager.exit_game()
 
                   if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                      # Check if we're clicking the " c " button.
@@ -241,7 +241,7 @@ State! The final code will looks something like this-
 
                for event in pygame.event.get():
                   if event.type == pygame.QUIT:
-                     raise ExitGameError()
+                     self.manager.exit_game()
 
                   if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                      self.manager.change_state(
@@ -269,7 +269,7 @@ State! The final code will looks something like this-
                # This is the entry point of our screen manager.
                # This should only be called once at start up.
 
-         except ExitStateError as error:
+         except ExitState as error:
                # Stuff you can do right after a state (screen) has been changed
                # i.e. Save player data, pause / resume / change music, etc...
 
@@ -281,7 +281,7 @@ State! The final code will looks something like this-
    if __name__ == "__main__":
       try:
          main()
-      except ExitGameError:
+      except ExitGame:
          print("Game has exited successfully")
 
 
