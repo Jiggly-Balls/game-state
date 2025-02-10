@@ -12,8 +12,8 @@ Exceptions
 .. autoclass:: StateLoadError
     :members:
 
-.. autoclass:: ExitStateError
+.. autoclass:: ExitState
     :members:
 
-.. autoclass:: ExitGameError
+.. autoclass:: ExitGame
     :members:
