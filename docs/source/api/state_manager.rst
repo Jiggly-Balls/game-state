@@ -1,4 +1,4 @@
-.. currentmodule:: game_state.manager
+.. currentmodule:: game_state
 
 State Manager
 =============

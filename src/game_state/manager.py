@@ -7,11 +7,10 @@ from typing import TYPE_CHECKING
 from game_state.errors import (
     StateError,
     StateLoadError,
-    ExitStateError,
-    ExitGameError,
+    ExitState,
+    ExitGame,
 )
 from game_state.state import State
-from typing import NoReturn, Optional, Dict, Any
 
 if TYPE_CHECKING:
     from pygame import Surface
@@ -256,7 +255,7 @@ class StateManager:
         """
 
         if self.__current_state is not None:
-            raise ExitStateError(
+            raise ExitState(
                 "State has successfully exited.",
                 last_state=self.__last_state,
                 **kwargs,
@@ -301,7 +300,7 @@ class StateManager:
             Raised when the state has successfully exited.
         """
 
-        raise ExitGameError(
+        raise ExitGame(
             "Game has successfully exited.",
             last_state=self.__last_state,
             **kwargs,

@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+from game_state.state import State
 
 if TYPE_CHECKING:
     from typing import Optional, Any
-    from game_state.state import State
 
 
 class BaseError(Exception):
@@ -38,7 +38,7 @@ class StateLoadError(BaseError):
         super().__init__(*args, last_state=last_state, **kwargs)
 
 
-class ExitStateError(BaseError):
+class ExitState(BaseError):
     """An error class used to exit the current state."""
 
     def __init__(
@@ -47,7 +47,7 @@ class ExitStateError(BaseError):
         super().__init__(*args, last_state=last_state, **kwargs)
 
 
-class ExitGameError(BaseError):
+class ExitGame(BaseError):
     """An error class used to exit out of the game"""
 
     def __init__(
