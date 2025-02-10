@@ -25,7 +25,7 @@ class FirstScreen(State):
                 if event.type == pygame.QUIT:
                     # Upon quitting, we raise the ExitGameError which we handle outside.
 
-                    raise ExitGameError()
+                    self.manager.exit_game()
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                     # Check if we're clicking the " c " button.
@@ -49,7 +49,7 @@ class SecondScreen(State):
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    raise ExitGameError()
+                    raise self.manager.exit_game()
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                     self.manager.change_state(
