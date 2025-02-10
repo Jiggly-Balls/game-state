@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../../src/"))
 
-#from src.game_state import version_info
+# from src.game_state import version_info
 
 # -- Project information
 project = "Game-State"
@@ -14,8 +14,8 @@ author = "Jiggly Balls"
 # release = f"{version_info.major}.{version_info.minor}.{version_info.patch} - {version_info.releaselevel}"
 
 
-version = "1.0"
-release = "1.0.0 - final"
+version = "1.1"
+release = "1.1.0 - final"
 
 # -- General configuration
 extensions = [
