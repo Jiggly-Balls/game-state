@@ -5,7 +5,6 @@ authors = [
   { name="Jiggly Balls", email="jigglyballs9000@gmail.com" },
 ]
 description = "A pygame utility package that allows you to handle different screens in an organized manner."
-dynamic = ["version", "description"]
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
