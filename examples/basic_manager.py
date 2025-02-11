@@ -1,7 +1,7 @@
 import pygame
 
 from game_state import State, StateManager
-from game_state.errors import ExitGameError, ExitStateError
+from game_state.errors import ExitGame, ExitState
 
 pygame.init()
 pygame.display.init()
@@ -23,7 +23,7 @@ class FirstScreen(State):
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    # Upon quitting, we raise the ExitGameError which we handle outside.
+                    # Upon quitting, we raise the ExitGame which we handle outside.
 
                     self.manager.exit_game()
 
@@ -49,7 +49,7 @@ class SecondScreen(State):
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    raise self.manager.exit_game()
+                    self.manager.exit_game()
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                     self.manager.change_state(
@@ -77,7 +77,7 @@ def main() -> None:
             # This is the entry point of our screen manager.
             # This should only be called once at start up.
 
-        except ExitStateError as error:
+        except ExitState as error:
             # Stuff you can do right after a state (screen) has been changed
             # i.e. Save player data, pause / resume / change music, etc...
 
@@ -89,5 +89,5 @@ def main() -> None:
 if __name__ == "__main__":
     try:
         main()
-    except ExitGameError:
+    except ExitGame:
         print("Game has exited successfully")
