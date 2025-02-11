@@ -186,7 +186,7 @@ how we did for our ``FirstScreen``.
    state_manager.load_states(FirstScreen, SecondScreen)
 
 There you go! We have made a simple pygame to handle multiple screens via Game
-State! The final code will looks something like this-
+State! The final code will look something like this-
 
 .. code-block:: python
 
