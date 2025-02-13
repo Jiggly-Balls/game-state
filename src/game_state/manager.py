@@ -247,7 +247,7 @@ class StateManager:
 
         Raises
         ------
-        :exc:`ExitStateError`
+        :exc:`ExitState`
             Raised when the state has successfully exited.
 
         :exc:`StateError`
@@ -296,7 +296,7 @@ class StateManager:
 
         Raises
         ------
-        :exc:`ExitStateError`
+        :exc:`ExitGame`
             Raised when the state has successfully exited.
         """
 
