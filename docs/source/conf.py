@@ -21,23 +21,32 @@ release = "1.1.0 - final"
 extensions = [
     "sphinx.ext.duration",
     "sphinx.ext.doctest",
+    "numpydoc",
+    # "sphinx.ext.numpydoc",
+    # "sphinx.ext.napolean",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
     "sphinx_autodoc_typehints",
 ]
+# extensions = ["sphinx.ext.autodoc", "sphinx.ext.napolean"]
+source_encoding = "utf-8"
+exclude_patterns = ["_build", ".DS_Store"]
+html_theme = "furo"
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
 }
 intersphinx_disabled_domains = ["std"]
-
+napoleon_use_param = False
+numpydoc_show_class_members = True
+# numpydoc_attributes_as_param_list = False
 toc_object_entries = False
 always_document_param_types = True
 toc_object_entries_show_parents = "hide"
 autosectionlabel_prefix_document = True
-autosummary_generate = True
+autosummary_generate = False
 autosummary_generate_overwrite = False
 autodoc_typehints = "description"
 autodoc_typehints_description_target = "documented_params"

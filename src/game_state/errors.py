@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class BaseError(Exception):
-    """The base class to all game-state errors."""
+    r"""The base class to all game-state errors."""
 
     def __init__(
         self, *args: Any, last_state: Optional[State] = None, **kwargs: Any
@@ -21,36 +21,16 @@ class BaseError(Exception):
 
 
 class StateError(BaseError):
-    """Raised when an operation is done over an invalid state."""
-
-    def __init__(
-        self, *args: Any, last_state: Optional[State] = None, **kwargs: Any
-    ) -> None:
-        super().__init__(*args, last_state=last_state, **kwargs)
+    r"""Raised when an operation is done over an invalid state."""
 
 
 class StateLoadError(BaseError):
-    """Raised when an error occurs in loading / unloading a state."""
-
-    def __init__(
-        self, *args: Any, last_state: Optional[State] = None, **kwargs: Any
-    ) -> None:
-        super().__init__(*args, last_state=last_state, **kwargs)
+    r"""Raised when an error occurs in loading / unloading a state."""
 
 
 class ExitState(BaseError):
-    """An error class used to exit the current state."""
-
-    def __init__(
-        self, *args: Any, last_state: Optional[State] = None, **kwargs: Any
-    ) -> None:
-        super().__init__(*args, last_state=last_state, **kwargs)
+    r"""An error class used to exit the current state."""
 
 
 class ExitGame(BaseError):
-    """An error class used to exit out of the game"""
-
-    def __init__(
-        self, *args: Any, last_state: Optional[State] = None, **kwargs: Any
-    ) -> None:
-        super().__init__(*args, last_state=last_state, **kwargs)
+    r"""An error class used to exit out of the game"""

@@ -1,4 +1,5 @@
 sphinx==7.1.2
 furo==2024.8.6
+numpydoc==1.8.0
 sphinx-autodoc-typehints
 pygame
