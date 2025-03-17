@@ -25,18 +25,18 @@ class StateManager:
     """
 
     __slots__ = (
-        "__states",
-        "__current_state",
-        "__last_state",
+        "_states",
+        "_current_state",
+        "_last_state",
     )
 
     def __init__(self, window: Surface) -> None:
         State.window = window
         State.manager = self
 
-        self.__states: Dict[str, State] = {}
-        self.__current_state: Optional[State] = None
-        self.__last_state: Optional[State] = None
+        self._states: Dict[str, State] = {}
+        self._current_state: Optional[State] = None
+        self._last_state: Optional[State] = None
 
     def connect_state_hook(self, path: str, **kwargs: Any) -> None:
         r"""Calls the hook function of the state file.
@@ -57,7 +57,7 @@ class StateManager:
                 "\nAn error occurred in loading State Path-\n"
                 f"`{path}`\n"
                 "`hook` function was not found in state file to load.\n",
-                last_state=self.__last_state,
+                last_state=self._last_state,
                 **kwargs,
             )
 
@@ -89,15 +89,15 @@ class StateManager:
         """
 
         for state in states:
-            if not force and state.__name__ in self.__states:
+            if not force and state.__name__ in self._states:
                 raise StateLoadError(
                     f"State: {state.__name__} has already been loaded.",
-                    last_state=self.__last_state,
+                    last_state=self._last_state,
                     **kwargs,
                 )
 
-            self.__states[state.__name__] = state(**kwargs)
-            self.__states[state.__name__].setup()
+            self._states[state.__name__] = state(**kwargs)
+            self._states[state.__name__].setup()
 
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
@@ -130,26 +130,26 @@ class StateManager:
                 | Only raised when ``force`` is set to ``False``.
         """
 
-        if state_name not in self.__states:
+        if state_name not in self._states:
             raise StateLoadError(
                 f"State: {state_name} doesn't exist to be unloaded.",
-                last_state=self.__last_state,
+                last_state=self._last_state,
                 **kwargs,
             )
 
         elif (
             not force
-            and self.__current_state is not None
-            and state_name == self.__current_state.__name__
+            and self._current_state is not None
+            and state_name == self._current_state.__name__
         ):
             raise StateError(
                 "Cannot unload an actively running state.",
-                last_state=self.__last_state,
+                last_state=self._last_state,
                 **kwargs,
             )
 
-        cls_ref = self.__states[state_name].__class__
-        del self.__states[state_name]
+        cls_ref = self._states[state_name].__class__
+        del self._states[state_name]
         return cls_ref
 
     def reload_state(
@@ -163,7 +163,7 @@ class StateManager:
 
         :param force:
             | Default ``False``.
-            |  
+            |
             | Reloads the State even if it's an actively running State without
             | raising any internal error.
             |
@@ -185,7 +185,7 @@ class StateManager:
             state_name=state_name, force=force, **kwargs
         )
         self.load_states(deleted_cls, force=force, **kwargs)
-        return self.__states[state_name]
+        return self._states[state_name]
 
     def get_current_state(self) -> Optional[State]:
         """Gets the current State instance.
@@ -194,7 +194,7 @@ class StateManager:
             | Returns the current State instance.
         """
 
-        return self.__current_state
+        return self._current_state
 
     def get_last_state(self) -> Optional[State]:
         """Gets the previous State instance.
@@ -203,7 +203,7 @@ class StateManager:
             | Returns the previous State instance.
         """
 
-        return self.__last_state
+        return self._last_state
 
     def get_state_map(self) -> Dict[str, State]:
         """Gets the dictionary copy of all states.
@@ -212,7 +212,7 @@ class StateManager:
             | Returns the dictionary copy of all states.
         """
 
-        return self.__states.copy()
+        return self._states.copy()
 
     def change_state(self, state_name: str) -> None:
         """Changes the current state and updates the last state.
@@ -225,12 +225,12 @@ class StateManager:
         """
 
         assert (
-            state_name in self.__states
+            state_name in self._states
         ), f"State `{state_name}` isn't present from the available states: "
         f"`{', '.join(self.get_state_map().keys())}`."
 
-        self.__last_state = self.__current_state
-        self.__current_state = self.__states[state_name]
+        self._last_state = self._current_state
+        self._current_state = self._states[state_name]
 
     def update_state(self, **kwargs: Any) -> NoReturn:
         r"""Updates the changed State to take place.
@@ -246,15 +246,15 @@ class StateManager:
                 | Raised when the current state is ``None`` i.e having no State to update to.
         """
 
-        if self.__current_state is not None:
+        if self._current_state is not None:
             raise ExitState(
                 "State has successfully exited.",
-                last_state=self.__last_state,
+                last_state=self._last_state,
                 **kwargs,
             )
         raise StateError(
             "No state has been set to exit from.",
-            last_state=self.__last_state,
+            last_state=self._last_state,
             **kwargs,
         )
 
@@ -270,12 +270,12 @@ class StateManager:
                 | Raised when the current state is ``None`` i.e having no State to run.
         """
 
-        if self.__current_state is not None:
-            self.__current_state.run()
+        if self._current_state is not None:
+            self._current_state.run()
         else:
             raise StateError(
                 "No state has been set to run.",
-                last_state=self.__last_state,
+                last_state=self._last_state,
                 **kwargs,
             )
 
@@ -292,6 +292,6 @@ class StateManager:
 
         raise ExitGame(
             "Game has successfully exited.",
-            last_state=self.__last_state,
+            last_state=self._last_state,
             **kwargs,
         )
