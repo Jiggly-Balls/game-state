@@ -39,8 +39,8 @@ intersphinx_mapping = {
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
 }
 intersphinx_disabled_domains = ["std"]
-napoleon_use_param = False
-numpydoc_show_class_members = True
+napoleon_use_param = True
+numpydoc_show_class_members = False
 # numpydoc_attributes_as_param_list = False
 toc_object_entries = False
 always_document_param_types = True
