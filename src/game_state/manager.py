@@ -42,13 +42,13 @@ class StateManager:
         r"""Calls the hook function of the state file.
 
         :param path:
-            The path to the State file containing the hook function to be called.
+            | The path to the State file containing the hook function to be called.
         :param \**kwargs:
-            The keyword arguments to be passed to the hook function.
+            | The keyword arguments to be passed to the hook function.
 
         :raises:
             :exc:`StateError`
-                Raised when the hook function was not found in the state file to be loaded.
+                | Raised when the hook function was not found in the state file to be loaded.
         """
 
         state = importlib.import_module(path)
@@ -69,19 +69,23 @@ class StateManager:
         r"""Loads the States into the StateManager.
 
         :param states:
-            The States to be loaded into the manager.
+            | The States to be loaded into the manager.
 
-        :param force: default ``False``
-            Loads the State regardless of whether the State has already been loaded or not
-            without raising any internal error.
+        :param force:
+            | Default ``False``.
+            |
+            | Loads the State regardless of whether the State has already been loaded or not
+            | without raising any internal error.
+            |
+            | **WARNING: If set to** ``True`` **it may lead to unexpected behavior.**
 
         :param \**kwargs:
-            The keyword arguments to be passed to the State's subclass on instantiation.
+            | The keyword arguments to be passed to the State's subclass on instantiation.
 
         :raises:
             :exc:`StateLoadError`
-                Raised when the state has already been loaded.
-                Only raised when ``force`` is set to ``False``.
+                | Raised when the state has already been loaded.
+                | Only raised when ``force`` is set to ``False``.
         """
 
         for state in states:
@@ -98,29 +102,32 @@ class StateManager:
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> type[State]:
-        r"""Unloads the `State` from the StateManager.
+        r"""Unloads the ``State`` from the ``StateManager``.
 
         :param state_name:
-            The State to be loaded into the manager.
+            | The State to be loaded into the manager.
 
-        :param force: default ``False``
-            Unloads the State even if it's an actively running State without raising any
-            internal error.
-            **WARNING: If set to ``True`` it may lead to unexpected behavior.**
+        :param force:
+            | Default ``False``.
+            |
+            | Unloads the State even if it's an actively running State without raising any
+            | internal error.
+            |
+            | **WARNING: If set to** ``True`` **it may lead to unexpected behavior.**
 
         :param \**kwargs:
-            The keyword arguments to be passed on to the raised errors.
+            | The keyword arguments to be passed on to the raised errors.
 
         :returns:
-            The :class:`State` class of the deleted State name.
+            | The :class:`State` class of the deleted State name.
 
         :raises:
             :exc:`StateLoadError`
-                Raised when the state doesn't exist in the manager to be unloaded.
+                | Raised when the state doesn't exist in the manager to be unloaded.
 
             :exc:`StateError`
-                Raised when trying to unload an actively running State.
-                Only raised when ``force`` is set to ``False``.
+                | Raised when trying to unload an actively running State.
+                | Only raised when ``force`` is set to ``False``.
         """
 
         if state_name not in self.__states:
@@ -148,26 +155,28 @@ class StateManager:
     def reload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> State:
-        r"""Reloads the specified State. A short hand to `StateManager.unload_state` &
-        `StateManager.load_state`.
+        r"""Reloads the specified State. A short hand to ``StateManager.unload_state`` &
+        ``StateManager.load_state``.
 
         :param state_name:
-            The ``State`` name to be reloaded.
+            | The ``State`` name to be reloaded.
 
-        :param force: default ``False``
-            Reloads the State even if it's an actively running State without raising any
-            internal error.
-            **WARNING: If set to** ``True`` **it may lead to unexpected behavior.**
+        :param force: default ``False``.
+            | Reloads the State even if it's an actively running State without
+            | raising any internal error.
+            |
+            | **WARNING: If set to** ``True`` **it may lead to unexpected behavior.**
 
         :param \**kwargs:
-            The keyword arguments to be passed to the ``StateManager.unload_state`` & ``StateManager.load_state``.
+            | The keyword arguments to be passed to the
+            | ``StateManager.unload_state`` & ``StateManager.load_state``.
 
         :returns:
-            Returns the newly made :class:`State` instance.
+            | Returns the newly made :class:`State` instance.
 
         :raises:
             :exc:`StateLoadError`
-                Raised when the state has already been loaded.
+                | Raised when the state has already been loaded.
         """
 
         deleted_cls = self.unload_state(
@@ -180,7 +189,7 @@ class StateManager:
         """Gets the current State instance.
 
         :returns:
-            Returns the current State instance.
+            | Returns the current State instance.
         """
 
         return self.__current_state
@@ -189,7 +198,7 @@ class StateManager:
         """Gets the previous State instance.
 
         :returns:
-            Returns the previous State instance.
+            | Returns the previous State instance.
         """
 
         return self.__last_state
@@ -198,7 +207,7 @@ class StateManager:
         """Gets the dictionary copy of all states.
 
         :returns:
-            Returns the dictionary copy of all states.
+            | Returns the dictionary copy of all states.
         """
 
         return self.__states.copy()
@@ -207,10 +216,10 @@ class StateManager:
         """Changes the current state and updates the last state.
 
         :param state_name:
-            The name of the State you want to switch to.
+            | The name of the State you want to switch to.
 
         :returns:
-            Raised when the state name doesn't exist in the manager.
+            | Raised when the state name doesn't exist in the manager.
         """
 
         assert (
@@ -225,14 +234,14 @@ class StateManager:
         r"""Updates the changed State to take place.
 
         :param \**kwargs:
-            The keyword arguments to be passed on to the raised errors.
+            | The keyword arguments to be passed on to the raised errors.
 
         :raises:
             :exc:`ExitState`
-                Raised when the state has successfully exited.
+                | Raised when the state has successfully exited.
 
             :exc:`StateError`
-                Raised when the current state is ``None`` i.e having no State to update to.
+                | Raised when the current state is ``None`` i.e having no State to update to.
         """
 
         if self.__current_state is not None:
@@ -249,14 +258,14 @@ class StateManager:
 
     def run_state(self, **kwargs: Any) -> None:
         r"""The entry point to running the StateManager. To be only called once. For
-        changing ``State``s use ``StateManager.change_state`` & ``StateManager.update_state``
+        changing ``State``\s use ``StateManager.change_state`` & ``StateManager.update_state``
 
         :param \**kwargs:
-            The keyword arguments to be passed on to the raised errors.
+            | The keyword arguments to be passed on to the raised errors.
 
         :raises:
             :exc:`StateError`
-                Raised when the current state is ``None`` i.e having no State to run.
+                | Raised when the current state is ``None`` i.e having no State to run.
         """
 
         if self.__current_state is not None:
@@ -272,11 +281,11 @@ class StateManager:
         r"""Exits the entire game.
 
         :param \**kwargs:
-            The keyword arguments to be passed on to the raised errors.
+            | The keyword arguments to be passed on to the raised errors.
 
         :raises:
             :exc:`ExitGame`
-                Raised when the state has successfully exited.
+                | Raised when the state has successfully exited.
         """
 
         raise ExitGame(
