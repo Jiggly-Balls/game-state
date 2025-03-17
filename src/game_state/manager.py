@@ -161,7 +161,9 @@ class StateManager:
         :param state_name:
             | The ``State`` name to be reloaded.
 
-        :param force: default ``False``.
+        :param force:
+            | Default ``False``.
+            |  
             | Reloads the State even if it's an actively running State without
             | raising any internal error.
             |
