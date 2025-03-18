@@ -1,7 +1,7 @@
+from __future__ import annotations
+
 import pytest
-
 from typing import Tuple
-
 from src.game_state import State, StateManager
 
 
