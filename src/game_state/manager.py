@@ -14,7 +14,7 @@ from .state import State
 
 if TYPE_CHECKING:
     from pygame import Surface
-    from typing import NoReturn, Optional, Dict, Any
+    from typing import Any, Dict, NoReturn, Optional, Type
 
 
 class StateManager:
@@ -64,7 +64,7 @@ class StateManager:
         state.__dict__["hook"](**kwargs)
 
     def load_states(
-        self, *states: type[State], force: bool = False, **kwargs: Any
+        self, *states: Type[State], force: bool = False, **kwargs: Any
     ) -> None:
         r"""Loads the States into the StateManager.
 
@@ -101,7 +101,7 @@ class StateManager:
 
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
-    ) -> type[State]:
+    ) -> Type[State]:
         r"""Unloads the ``State`` from the ``StateManager``.
 
         :param state_name:
