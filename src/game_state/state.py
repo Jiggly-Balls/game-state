@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import pygame
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -19,8 +18,6 @@ class State:
             The main game window.
         manager: :class:`StateManager`
             The manager to which the state is binded to.
-        clock: :class:`pygame.time.Clock`
-            Pygame's clock.
 
     :param state_name:
         The name of the state. Has to be unique among other states.
@@ -29,7 +26,6 @@ class State:
     state_name: Optional[str] = None
     window: Optional[Surface] = None
     manager: Optional[StateManager] = None
-    clock = pygame.time.Clock()
 
     def __init_subclass__(cls, state_name: Optional[str] = None) -> None:
         cls.state_name = state_name or cls.__name__
