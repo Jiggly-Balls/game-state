@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import pytest
-from typing import Tuple
+from typing import Tuple, Type
+
 from src.game_state import State, StateManager
+from src.game_state.errors import ExitGame, ExitState
 
 
 @pytest.fixture
-def scenario() -> Tuple[StateManager, type[State], type[State]]:
+def scenario() -> Tuple[StateManager, Type[State], Type[State]]:
     class StateOne(State, state_name="Test 1"): ...
 
     class StateTwo(State): ...
@@ -36,7 +38,7 @@ def test_load_states(
 
 
 def test_change_states(
-    scenario: Tuple[StateManager, type[State], type[State]],
+    scenario: Tuple[StateManager, Type[State], Type[State]],
 ) -> None:
     manager = scenario[0]
     state_1 = scenario[1]
@@ -53,3 +55,9 @@ def test_change_states(
     assert (
         manager.get_current_state().state_name == state_1.state_name
     ), "Received wrong state instance upon changing."
+
+    with pytest.raises(ExitState):
+        manager.update_state()
+
+    with pytest.raises(ExitGame):
+        manager.exit_game()
