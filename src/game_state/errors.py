@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-from game_state.state import State
+from .state import State
 
 if TYPE_CHECKING:
     from typing import Optional, Any
