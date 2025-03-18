@@ -94,7 +94,7 @@ def main() -> None:
       except ExitState as error:
             last_state = error.last_state
             current_state = state_manager.get_current_state()
-            print(f"State has changed from: {last_state} to {current_state}")
+            print(f"State has changed from: {last_state.state_name} to {current_state.state_name}")
 
 
 if __name__ == "__main__":
