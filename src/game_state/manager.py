@@ -4,13 +4,13 @@ import importlib
 
 from typing import TYPE_CHECKING
 
-from game_state.errors import (
+from .errors import (
     StateError,
     StateLoadError,
     ExitState,
     ExitGame,
 )
-from game_state.state import State
+from .state import State
 
 if TYPE_CHECKING:
     from pygame import Surface
@@ -89,15 +89,15 @@ class StateManager:
         """
 
         for state in states:
-            if not force and state.__name__ in self._states:
+            if not force and state.state_name in self._states:
                 raise StateLoadError(
-                    f"State: {state.__name__} has already been loaded.",
+                    f"State: {state.state_name} has already been loaded.",
                     last_state=self._last_state,
                     **kwargs,
                 )
 
-            self._states[state.__name__] = state(**kwargs)
-            self._states[state.__name__].setup()
+            self._states[state.state_name] = state(**kwargs)
+            self._states[state.state_name].setup()
 
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
@@ -140,7 +140,7 @@ class StateManager:
         elif (
             not force
             and self._current_state is not None
-            and state_name == self._current_state.__name__
+            and state_name == self._current_state.state_name
         ):
             raise StateError(
                 "Cannot unload an actively running state.",
@@ -179,6 +179,7 @@ class StateManager:
         :raises:
             :exc:`StateLoadError`
                 | Raised when the state has already been loaded.
+                | Only raised when ``force`` is set to ``False``.
         """
 
         deleted_cls = self.unload_state(
