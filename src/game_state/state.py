@@ -12,15 +12,12 @@ class State:
     """The State class which works as an individual screen.
 
     :attributes:
-        state_name: :class:`Optional`\[:class:`str`]
+        state_name: ``Optional`` [:class:`str`]
             The name of the state. Has to be unique among other states.
         window: :class:`pygame.Surface`
             The main game window.
         manager: :class:`StateManager`
             The manager to which the state is binded to.
-
-    :param state_name:
-        The name of the state. Has to be unique among other states.
     """
 
     state_name: Optional[str] = None
