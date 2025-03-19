@@ -17,7 +17,7 @@ def scenario() -> Tuple[StateManager, Type[State], Type[State]]:
 
 
 def test_load_states(
-    scenario: Tuple[StateManager, State, State],
+    scenario: Tuple[StateManager, Type[State], Type[State]],
 ) -> None:
     manager = scenario[0]
     state_1 = scenario[1]
