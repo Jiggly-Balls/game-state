@@ -221,8 +221,9 @@ class StateManager:
         :param state_name:
             | The name of the State you want to switch to.
 
-        :returns:
-            | Raised when the state name doesn't exist in the manager.
+        :raises:
+            :exc:`AssertionError`
+                | Raised when the state name doesn't exist in the manager.
         """
 
         assert (
