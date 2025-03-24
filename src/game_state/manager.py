@@ -222,14 +222,16 @@ class StateManager:
             | The name of the State you want to switch to.
 
         :raises:
-            :exc:`AssertionError`
+            :exc:`StateError`
                 | Raised when the state name doesn't exist in the manager.
         """
 
-        assert (
-            state_name in self._states
-        ), f"State `{state_name}` isn't present from the available states: "
-        f"`{', '.join(self.get_state_map().keys())}`."
+        if state_name not in self._states:
+            raise StateError(
+                f"State `{state_name}` isn't present from the available states: "
+                f"`{', '.join(self.get_state_map().keys())}`.",
+                last_state=self._last_state,
+            )
 
         self._last_state = self._current_state
         self._current_state = self._states[state_name]
