@@ -4,7 +4,7 @@ import pytest
 from typing import Tuple, Type
 
 from src.game_state import State, StateManager
-from src.game_state.errors import ExitGame, ExitState
+from src.game_state.errors import ExitGame, ExitState, StateError
 
 
 @pytest.fixture
@@ -55,6 +55,9 @@ def test_change_states(
     assert (
         manager.get_current_state().state_name == state_1.state_name
     ), "Received wrong state instance upon changing."
+
+    with pytest.raises(StateError):
+        manager.change_state("Invalid State Name")
 
     with pytest.raises(ExitState):
         manager.update_state()
