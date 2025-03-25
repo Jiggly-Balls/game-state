@@ -14,8 +14,8 @@ author = "Jiggly Balls"
 # release = f"{version_info.major}.{version_info.minor}.{version_info.patch} - {version_info.releaselevel}"
 
 
-version = "1.1"
-release = "1.1.3 - final"
+version = "2.0"
+release = "2.0.0 - beta"
 
 # -- General configuration
 extensions = [
