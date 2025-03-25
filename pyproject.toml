@@ -38,6 +38,10 @@ Stars = "https://github.com/Jiggly-Balls/game-state/stargazers"
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+
 [tool.ruff]
 line-length = 79
 lint.extend-select = ["ANN"]
