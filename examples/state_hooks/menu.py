@@ -1,6 +1,8 @@
-import pygame
-from game_state import State
+from typing import Any
 
+import pygame
+
+from game_state import State
 
 BLUE = (0, 0, 255)
 
@@ -27,7 +29,7 @@ class SecondScreen(State):
             pygame.display.update()
 
 
-def hook(**kwargs) -> None:
+def hook(**kwargs: Any) -> None:
     # This function should be present below the State you want to load and should call
     # the `StateManager.load_states` method while passing in the State you want to laod
     SecondScreen.manager.load_states(SecondScreen, **kwargs)

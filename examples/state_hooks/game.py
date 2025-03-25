@@ -1,6 +1,8 @@
-import pygame
-from game_state import State
+from typing import Any
 
+import pygame
+
+from game_state import State
 
 GREEN = (0, 255, 0)
 
@@ -31,7 +33,7 @@ class FirstScreen(State):
             pygame.display.update()  # Refreshes the screen
 
 
-def hook(**kwargs) -> None:
+def hook(**kwargs: Any) -> None:
     # This function should be present below the State you want to load and should call
     # the `StateManager.load_states` method while passing in the State you want to laod
     FirstScreen.manager.load_states(FirstScreen, **kwargs)

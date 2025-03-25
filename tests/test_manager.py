@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import pytest
 from typing import Tuple, Type
+
+import pytest
 
 from src.game_state import State, StateManager
 from src.game_state.errors import ExitGame, ExitState, StateError
@@ -26,15 +27,15 @@ def test_load_states(
     manager.load_states(state_1, state_2)
 
     all_states = manager.get_state_map()
-    assert (
-        len(all_states) == 2
-    ), "Loaded 2 states, did not receive 2 states back."
-    assert (
-        state_1.state_name in all_states
-    ), f"Expected {state_1.state_name} in state map."
-    assert (
-        state_2.state_name in all_states
-    ), f"Expected {state_2.state_name} in state map."
+    assert len(all_states) == 2, (
+        "Loaded 2 states, did not receive 2 states back."
+    )
+    assert state_1.state_name in all_states, (
+        f"Expected {state_1.state_name} in state map."
+    )
+    assert state_2.state_name in all_states, (
+        f"Expected {state_2.state_name} in state map."
+    )
 
 
 def test_change_states(
@@ -46,15 +47,15 @@ def test_change_states(
 
     manager.load_states(state_1, state_2)
 
-    assert (
-        manager.get_current_state() is None
-    ), "Got a non-None value while no state was updated to."
+    assert manager.get_current_state() is None, (
+        "Got a non-None value while no state was updated to."
+    )
 
     manager.change_state(state_1.state_name)
 
-    assert (
-        manager.get_current_state().state_name == state_1.state_name
-    ), "Received wrong state instance upon changing."
+    assert manager.get_current_state().state_name == state_1.state_name, (
+        "Received wrong state instance upon changing."
+    )
 
     with pytest.raises(StateError):
         manager.change_state("Invalid State Name")

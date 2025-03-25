@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from .state import State
 
 if TYPE_CHECKING:
-    from typing import Optional, Any
+    from typing import Any, Optional
 
 
 class BaseError(Exception):

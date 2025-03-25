@@ -15,9 +15,10 @@ __author__ = "Jiggly-Balls"
 __license__ = "MIT"
 __copyright__ = "Copyright 2024-present Jiggly Balls"
 
+from typing import Literal, NamedTuple
+
 from .manager import StateManager
 from .state import State
-from typing import NamedTuple, Literal
 
 __all__ = ("State", "StateManager")
 

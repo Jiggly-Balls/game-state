@@ -1,20 +1,15 @@
 from __future__ import annotations
 
 import importlib
-
 from typing import TYPE_CHECKING
 
-from .errors import (
-    StateError,
-    StateLoadError,
-    ExitState,
-    ExitGame,
-)
+from .errors import ExitGame, ExitState, StateError, StateLoadError
 from .state import State
 
 if TYPE_CHECKING:
-    from pygame import Surface
     from typing import Any, Dict, NoReturn, Optional, Type
+
+    from pygame import Surface
 
 
 class StateManager:

@@ -3,8 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from pygame import Surface
     from typing import Optional
+
+    from pygame import Surface
+
     from .manager import StateManager
 
 
