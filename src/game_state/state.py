@@ -36,7 +36,7 @@ class State(ABC):
         This is also called when reloading the State.
 
         .. warning::
-            This method should not be called manually.
+            This method need not be called manually.
         """
         pass
 
@@ -45,7 +45,7 @@ class State(ABC):
         entering the current state.
 
         .. warning::
-            This method should not be called manually.
+            This method need not be called manually.
 
         :param prevous_state:
             | The state that was running previously. If there are no previous states,
@@ -58,7 +58,7 @@ class State(ABC):
         the current one.
 
         .. warning::
-            This method should not be called manually.
+            This method need not be called manually.
 
         :param next_state:
             | The next state that is going to be applied.
