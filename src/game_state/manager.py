@@ -7,6 +7,7 @@ from .errors import StateError, StateLoadError
 from .state import State
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from typing import Any, Dict, NoReturn, Optional, Type
 
     from pygame import Surface
@@ -21,6 +22,9 @@ class StateManager:
 
     __slots__ = (
         "is_running",
+        "_global_on_setup",
+        "_global_on_enter",
+        "_global_on_leave",
         "_states",
         "_current_state",
         "_last_state",
@@ -31,6 +35,15 @@ class StateManager:
         State.manager = self
 
         self.is_running = True
+
+        self._global_on_setup: Optional[Callable[[State], None]] = None
+        self._global_on_enter: Optional[
+            Callable[[State, Optional[State]], None]
+        ] = None
+        self._global_on_leave: Optional[
+            Callable[[Optional[State], State], None]
+        ] = None
+
         self._states: Dict[str, State] = {}
         self._current_state: Optional[State] = None
         self._last_state: Optional[State] = None
@@ -45,6 +58,43 @@ class StateManager:
         raise ValueError(
             "Cannot overwrite the current state. Use `StateManager.change_state` instead."
         )
+
+    @property
+    def global_on_enter(
+        self,
+    ) -> Optional[Callable[[State, Optional[State]], None]]:
+        return self._global_on_enter
+
+    @global_on_enter.setter
+    def global_on_enter(
+        self, value: Callable[[State, Optional[State]], None]
+    ) -> None:
+        self._global_on_enter = value
+
+    @property
+    def global_on_leave(
+        self,
+    ) -> Optional[Callable[[Optional[State], State], None]]:
+        return self._global_on_leave
+
+    @global_on_leave.setter
+    def global_on_leave(
+        self, value: Callable[[Optional[State], State], None]
+    ) -> None:
+        self._global_on_leave = value
+
+    @property
+    def global_on_setup(self) -> Optional[Callable[[State], None]]:
+        """The global ``on_setup`` function for all states.
+
+        .. note::
+            This has to be assigned before loading the states into the manager.
+        """
+        return self._global_on_setup
+
+    @global_on_setup.setter
+    def global_on_setup(self, value: Callable[[State], None]) -> None:
+        self._global_on_setup = value
 
     @property
     def last_state(self) -> Optional[State]:
@@ -84,8 +134,14 @@ class StateManager:
 
         self._last_state = self._current_state
         self._current_state = self._states[state_name]
+        if self._global_on_leave:
+            self._global_on_leave(self._last_state, self._current_state)
+
         if self._last_state:
             self._last_state.on_leave(self._current_state)
+
+        if self._global_on_enter:
+            self._global_on_enter(self._current_state, self._last_state)
         self._current_state.on_enter(self._last_state)
 
     def connect_state_hook(self, path: str, **kwargs: Any) -> None:
@@ -148,6 +204,8 @@ class StateManager:
                 )
 
             self._states[state.state_name] = state(**kwargs)
+            if self._global_on_setup:
+                self._global_on_setup(self._states[state.state_name])
             self._states[state.state_name].on_setup()
 
     def reload_state(
