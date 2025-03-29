@@ -18,7 +18,7 @@ def main() -> None:
     state_manager.connect_state_hook("menu")
 
     # The StateManager.connect_state_hook takes in a file path in a similar fashion
-    #  to how regular python import statements work. If the state files were in a
+    # to how regular python import statements work. If the state files were in a
     # 'states/' folder, you would pass in the argument to the `.connect_state_hook`
     # as 'state_manager.connect_state_hook("states.menu")'.
 
