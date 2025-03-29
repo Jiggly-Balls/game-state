@@ -38,6 +38,8 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
 }
+
+autodoc_member_order = "bysource"  # This because idk how to make properties appear separately from methods...
 intersphinx_disabled_domains = ["std"]
 napoleon_use_param = True
 numpydoc_show_class_members = False
