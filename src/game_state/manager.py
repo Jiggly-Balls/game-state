@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib
+import inspect
 from typing import TYPE_CHECKING
 
 from .errors import StateError, StateLoadError
@@ -8,9 +9,16 @@ from .state import State
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-    from typing import Any, Dict, NoReturn, Optional, Type
+    from inspect import Signature
+    from typing import Any, Dict, NoReturn, Optional, Tuple, Type
 
     from pygame import Surface
+
+
+_GLOBAL_ON_SETUP_ARGS: int = 1
+_GLOBAL_ON_ENTER_ARGS: int = 2
+_GLOBAL_ON_LEAVE_ARGS: int = 2
+_KW_CONSIDER: Tuple[str, str] = ("VAR_KEYWORD", "KEYWORD_ONLY")
 
 
 class StateManager:
@@ -48,6 +56,20 @@ class StateManager:
         self._current_state: Optional[State] = None
         self._last_state: Optional[State] = None
 
+    def _get_kw_args(self, signature: Signature) -> int:
+        amount = 0
+        for param in signature.parameters.values():
+            if param.kind in _KW_CONSIDER:
+                amount += 1
+        return amount
+
+    def _get_pos_args(self, signature: Signature) -> int:
+        amount = 0
+        for param in signature.parameters.values():
+            if param.kind not in _KW_CONSIDER:
+                amount += 1
+        return amount
+
     @property
     def current_state(self) -> Optional[State]:
         """The current state if applied. Will be ``None`` otherwise."""
@@ -69,6 +91,25 @@ class StateManager:
     def global_on_enter(
         self, value: Callable[[State, Optional[State]], None]
     ) -> None:
+        on_enter_signature = inspect.signature(value)
+        pos_args = self._get_pos_args(on_enter_signature)
+        kw_args = self._get_kw_args(on_enter_signature)
+
+        if (
+            len(on_enter_signature.parameters) != _GLOBAL_ON_ENTER_ARGS
+            or kw_args != 0
+        ):
+            raise TypeError(
+                f"Expected {_GLOBAL_ON_ENTER_ARGS} positional argument(s) only "
+                f"for the function to be assigned to global_on_enter. "
+                f"Instead got {pos_args} positional argument(s)"
+                + (
+                    f" and {kw_args} keyword argument(s)."
+                    if kw_args > 0
+                    else "."
+                )
+            )
+
         self._global_on_enter = value
 
     @property
@@ -81,6 +122,25 @@ class StateManager:
     def global_on_leave(
         self, value: Callable[[Optional[State], State], None]
     ) -> None:
+        on_leave_signature = inspect.signature(value)
+        pos_args = self._get_pos_args(on_leave_signature)
+        kw_args = self._get_kw_args(on_leave_signature)
+
+        if (
+            len(on_leave_signature.parameters) != _GLOBAL_ON_LEAVE_ARGS
+            or kw_args != 0
+        ):
+            raise TypeError(
+                f"Expected {_GLOBAL_ON_LEAVE_ARGS} positional argument(s) only "
+                f"for the function to be assigned to global_on_leave. "
+                f"Instead got {pos_args} positional argument(s)"
+                + (
+                    f" and {kw_args} keyword argument(s)."
+                    if kw_args > 0
+                    else "."
+                )
+            )
+
         self._global_on_leave = value
 
     @property
@@ -94,6 +154,25 @@ class StateManager:
 
     @global_on_setup.setter
     def global_on_setup(self, value: Callable[[State], None]) -> None:
+        on_setup_signature = inspect.signature(value)
+        pos_args = self._get_pos_args(on_setup_signature)
+        kw_args = self._get_kw_args(on_setup_signature)
+
+        if (
+            len(on_setup_signature.parameters) != _GLOBAL_ON_SETUP_ARGS
+            or kw_args != 0
+        ):
+            raise TypeError(
+                f"Expected {_GLOBAL_ON_SETUP_ARGS} positional argument(s) only "
+                f"for the function to be assigned to global_on_setup. "
+                f"Instead got {pos_args} positional argument(s)"
+                + (
+                    f" and {kw_args} keyword argument(s)."
+                    if kw_args > 0
+                    else "."
+                )
+            )
+
         self._global_on_setup = value
 
     @property
