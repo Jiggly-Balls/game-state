@@ -34,24 +34,55 @@ class State(ABC):
     def on_setup(self) -> None:
         """This method is only called once while being loaded into the `StateManager`.
         This is also called when reloading the State.
-        This method should not be called manually.
+
+        .. warning::
+            This method should not be called manually.
         """
         pass
 
-    def on_event(self, event: Event) -> None:
-        """To be called when a pygame event needs to be processed."""
-        pass
-
-    def on_enter(self, prevous_state: State) -> None:
+    def on_enter(self, prevous_state: Optional[State]) -> None:
         """This method is called once when a state has been switched and is
-        entering the current state."""
-        pass
+        entering the current state.
 
-    def on_update(self, *args: Any) -> None:
-        """The main game loop method to be executed by the ``StateManager``."""
+        .. warning::
+            This method should not be called manually.
+
+        :param prevous_state:
+            | The state that was running previously. If there are no previous states,
+            | ``None`` is passed
+        """
         pass
 
     def on_leave(self, next_state: State) -> None:
         """This method is called once when the state has been switched and is exiting
-        the current one"""
+        the current one.
+
+        .. warning::
+            This method should not be called manually.
+
+        :param next_state:
+            | The next state that is going to be applied.
+        """
+        pass
+
+    def on_event(self, event: Event) -> None:
+        """To be called when a pygame event needs to be processed.
+
+        .. note::
+            This method needs to be called manually.
+
+        :param event:
+            | The pygame event object.
+        """
+        pass
+
+    def on_update(self, *args: Any) -> None:
+        """The main game loop method to be executed by the ``StateManager``.
+
+        .. note::
+            This method needs to be called manually.
+
+        :param \*args:
+            | The arguments to be passed on to the update counter.
+        """
         pass
