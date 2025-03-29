@@ -19,5 +19,6 @@ the API reference.
 
    .. toctree::
       
+      glossary
       guide
       api
