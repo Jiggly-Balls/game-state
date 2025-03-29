@@ -32,7 +32,7 @@ class State(ABC):
         cls.state_name = state_name or cls.__name__
 
     def on_setup(self) -> None:
-        """This method is only called once while being loaded into the `StateManager`.
+        """This listener is only called once while being loaded into the `StateManager`.
         This is also called when reloading the State.
 
         .. warning::
@@ -41,7 +41,7 @@ class State(ABC):
         pass
 
     def on_enter(self, prevous_state: Optional[State]) -> None:
-        """This method is called once when a state has been switched and is
+        """This listener is called once when a state has been switched and is
         entering the current state.
 
         .. warning::
@@ -54,7 +54,7 @@ class State(ABC):
         pass
 
     def on_leave(self, next_state: State) -> None:
-        """This method is called once when the state has been switched and is exiting
+        """This listener is called once when the state has been switched and is exiting
         the current one.
 
         .. warning::
@@ -65,7 +65,7 @@ class State(ABC):
         """
         pass
 
-    def on_event(self, event: Event) -> None:
+    def process_event(self, event: Event) -> None:
         """To be called when a pygame event needs to be processed.
 
         .. note::
@@ -76,7 +76,7 @@ class State(ABC):
         """
         pass
 
-    def on_update(self, *args: Any) -> None:
+    def process_update(self, *args: Any) -> None:
         """The main game loop method to be executed by the ``StateManager``.
 
         .. note::
