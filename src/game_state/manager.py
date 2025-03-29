@@ -37,6 +37,7 @@ class StateManager:
 
     @property
     def current_state(self) -> Optional[State]:
+        """The current state if applied. Will be ``None`` otherwise."""
         return self._current_state
 
     @current_state.setter
@@ -47,6 +48,7 @@ class StateManager:
 
     @property
     def last_state(self) -> Optional[State]:
+        """The last state object if any. Will be ``None`` otherwise"""
         return self._last_state
 
     @last_state.setter
@@ -55,11 +57,36 @@ class StateManager:
 
     @property
     def state_map(self) -> Dict[str, State]:
+        """A dictionary copy of all the state names mapped to their respective instance."""
         return self._states.copy()
 
     @state_map.setter
     def state_map(self, _: Any) -> NoReturn:
         raise ValueError("Cannot overwrite the state map.")
+
+    def change_state(self, state_name: str) -> None:
+        """Changes the current state and updates the last state.
+
+        :param state_name:
+            | The name of the State you want to switch to.
+
+        :raises:
+            :exc:`StateError`
+                | Raised when the state name doesn't exist in the manager.
+        """
+
+        if state_name not in self._states:
+            raise StateError(
+                f"State `{state_name}` isn't present from the available states: "
+                f"`{', '.join(self.get_state_map().keys())}`.",
+                last_state=self._last_state,
+            )
+
+        self._last_state = self._current_state
+        self._current_state = self._states[state_name]
+        if self._last_state:
+            self._last_state.on_leave(self._current_state)
+        self._current_state.on_enter(self._last_state)
 
     def connect_state_hook(self, path: str, **kwargs: Any) -> None:
         r"""Calls the hook function of the state file.
@@ -99,8 +126,9 @@ class StateManager:
             |
             | Loads the State regardless of whether the State has already been loaded or not
             | without raising any internal error.
-            |
-            | **WARNING: If set to** ``True`` **it may lead to unexpected behavior.**
+
+            .. warning::
+              If set to ``True`` it may lead to unexpected behavior.
 
         :param \**kwargs:
             | The keyword arguments to be passed to the State's subclass on instantiation.
@@ -122,6 +150,43 @@ class StateManager:
             self._states[state.state_name] = state(**kwargs)
             self._states[state.state_name].on_setup()
 
+    def reload_state(
+        self, state_name: str, force: bool = False, **kwargs: Any
+    ) -> State:
+        r"""Reloads the specified State. A short hand to ``StateManager.unload_state`` &
+        ``StateManager.load_state``.
+
+        :param state_name:
+            | The ``State`` name to be reloaded.
+
+        :param force:
+            | Default ``False``.
+            |
+            | Reloads the State even if it's an actively running State without
+            | raising any internal error.
+
+            .. warning::
+              If set to ``True`` it may lead to unexpected behavior.
+
+        :param \**kwargs:
+            | The keyword arguments to be passed to the
+            | ``StateManager.unload_state`` & ``StateManager.load_state``.
+
+        :returns:
+            | Returns the newly made :class:`State` instance.
+
+        :raises:
+            :exc:`StateLoadError`
+                | Raised when the state has already been loaded.
+                | Only raised when ``force`` is set to ``False``.
+        """
+
+        deleted_cls = self.unload_state(
+            state_name=state_name, force=force, **kwargs
+        )
+        self.load_states(deleted_cls, force=force, **kwargs)
+        return self._states[state_name]
+
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> Type[State]:
@@ -135,8 +200,9 @@ class StateManager:
             |
             | Unloads the State even if it's an actively running State without raising any
             | internal error.
-            |
-            | **WARNING: If set to** ``True`` **it may lead to unexpected behavior.**
+
+            .. warning::
+              If set to ``True`` it may lead to unexpected behavior.
 
         :param \**kwargs:
             | The keyword arguments to be passed on to the raised errors.
@@ -174,63 +240,3 @@ class StateManager:
         cls_ref = self._states[state_name].__class__
         del self._states[state_name]
         return cls_ref
-
-    def reload_state(
-        self, state_name: str, force: bool = False, **kwargs: Any
-    ) -> State:
-        r"""Reloads the specified State. A short hand to ``StateManager.unload_state`` &
-        ``StateManager.load_state``.
-
-        :param state_name:
-            | The ``State`` name to be reloaded.
-
-        :param force:
-            | Default ``False``.
-            |
-            | Reloads the State even if it's an actively running State without
-            | raising any internal error.
-            |
-            | **WARNING: If set to** ``True`` **it may lead to unexpected behavior.**
-
-        :param \**kwargs:
-            | The keyword arguments to be passed to the
-            | ``StateManager.unload_state`` & ``StateManager.load_state``.
-
-        :returns:
-            | Returns the newly made :class:`State` instance.
-
-        :raises:
-            :exc:`StateLoadError`
-                | Raised when the state has already been loaded.
-                | Only raised when ``force`` is set to ``False``.
-        """
-
-        deleted_cls = self.unload_state(
-            state_name=state_name, force=force, **kwargs
-        )
-        self.load_states(deleted_cls, force=force, **kwargs)
-        return self._states[state_name]
-
-    def change_state(self, state_name: str) -> None:
-        """Changes the current state and updates the last state.
-
-        :param state_name:
-            | The name of the State you want to switch to.
-
-        :raises:
-            :exc:`StateError`
-                | Raised when the state name doesn't exist in the manager.
-        """
-
-        if state_name not in self._states:
-            raise StateError(
-                f"State `{state_name}` isn't present from the available states: "
-                f"`{', '.join(self.get_state_map().keys())}`.",
-                last_state=self._last_state,
-            )
-
-        self._last_state = self._current_state
-        self._current_state = self._states[state_name]
-        if self._last_state:
-            self._last_state.on_leave(self._current_state)
-        self._current_state.on_enter(self._last_state)
