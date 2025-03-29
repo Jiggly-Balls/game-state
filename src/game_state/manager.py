@@ -32,16 +32,6 @@ class StateManager:
             A bool for controlling the game loop. ``True`` by default.
     """
 
-    __slots__ = (
-        "is_running",
-        "_global_on_setup",
-        "_global_on_enter",
-        "_global_on_leave",
-        "_states",
-        "_current_state",
-        "_last_state",
-    )
-
     def __init__(self, window: Surface) -> None:
         State.window = window
         State.manager = self
