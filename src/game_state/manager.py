@@ -79,8 +79,11 @@ class StateManager:
     def global_on_enter(
         self,
     ) -> Optional[Callable[[State, Optional[State]], None]]:
-        """The global on_enter function for all states. This is called right
-        before executing the running state's ``on_enter``."""
+        """The global on_enter listener called right before a state's on_enter listener.
+
+        .. note::
+            This has to be assigned before changing the states.
+        """
         return self._global_on_enter
 
     @global_on_enter.setter
@@ -112,6 +115,11 @@ class StateManager:
     def global_on_leave(
         self,
     ) -> Optional[Callable[[Optional[State], State], None]]:
+        """The global on_leave listener called right before a state's on_leave listener.
+
+        .. note::
+            This has to be assigned before changing the states.
+        """
         return self._global_on_leave
 
     @global_on_leave.setter
