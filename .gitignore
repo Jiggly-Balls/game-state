@@ -163,4 +163,5 @@ cython_debug/
 
 # Local folder(s) / file(s)
 local/
+lib_testing/
 .pypirc
