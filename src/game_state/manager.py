@@ -3,7 +3,7 @@ from __future__ import annotations
 import importlib
 from typing import TYPE_CHECKING
 
-from .errors import ExitGame, ExitState, StateError, StateLoadError
+from .errors import StateError, StateLoadError
 from .state import State
 
 if TYPE_CHECKING:
@@ -20,6 +20,7 @@ class StateManager:
     """
 
     __slots__ = (
+        "is_running",
         "_states",
         "_current_state",
         "_last_state",
@@ -29,9 +30,36 @@ class StateManager:
         State.window = window
         State.manager = self
 
+        self.is_running = True
         self._states: Dict[str, State] = {}
         self._current_state: Optional[State] = None
         self._last_state: Optional[State] = None
+
+    @property
+    def current_state(self) -> Optional[State]:
+        return self._current_state
+
+    @current_state.setter
+    def current_state(self, _: Any) -> NoReturn:
+        raise ValueError(
+            "Cannot overwrite the current state. Use `StateManager.change_state` instead."
+        )
+
+    @property
+    def last_state(self) -> Optional[State]:
+        return self._last_state
+
+    @last_state.setter
+    def last_state(self, _: Any) -> NoReturn:
+        raise ValueError("Cannot overwrite the last state.")
+
+    @property
+    def state_map(self) -> Dict[str, State]:
+        return self._states.copy()
+
+    @state_map.setter
+    def state_map(self, _: Any) -> NoReturn:
+        raise ValueError("Cannot overwrite the state map.")
 
     def connect_state_hook(self, path: str, **kwargs: Any) -> None:
         r"""Calls the hook function of the state file.
@@ -92,7 +120,7 @@ class StateManager:
                 )
 
             self._states[state.state_name] = state(**kwargs)
-            self._states[state.state_name].setup()
+            self._states[state.state_name].on_setup()
 
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
@@ -183,33 +211,6 @@ class StateManager:
         self.load_states(deleted_cls, force=force, **kwargs)
         return self._states[state_name]
 
-    def get_current_state(self) -> Optional[State]:
-        """Gets the current State instance.
-
-        :returns:
-            | Returns the current State instance.
-        """
-
-        return self._current_state
-
-    def get_last_state(self) -> Optional[State]:
-        """Gets the previous State instance.
-
-        :returns:
-            | Returns the previous State instance.
-        """
-
-        return self._last_state
-
-    def get_state_map(self) -> Dict[str, State]:
-        """Gets the dictionary copy of all states.
-
-        :returns:
-            | Returns the dictionary copy of all states.
-        """
-
-        return self._states.copy()
-
     def change_state(self, state_name: str) -> None:
         """Changes the current state and updates the last state.
 
@@ -230,67 +231,6 @@ class StateManager:
 
         self._last_state = self._current_state
         self._current_state = self._states[state_name]
-
-    def update_state(self, **kwargs: Any) -> NoReturn:
-        r"""Updates the changed State to take place.
-
-        :param \**kwargs:
-            | The keyword arguments to be passed on to the raised errors.
-
-        :raises:
-            :exc:`ExitState`
-                | Raised when the state has successfully exited.
-
-            :exc:`StateError`
-                | Raised when the current state is ``None`` i.e having no State to update to.
-        """
-
-        if self._current_state is not None:
-            raise ExitState(
-                "State has successfully exited.",
-                last_state=self._last_state,
-                **kwargs,
-            )
-        raise StateError(
-            "No state has been set to exit from.",
-            last_state=self._last_state,
-            **kwargs,
-        )
-
-    def run_state(self, **kwargs: Any) -> None:
-        r"""The entry point to running the StateManager. To be only called once. For
-        changing ``State``\s use ``StateManager.change_state`` & ``StateManager.update_state``
-
-        :param \**kwargs:
-            | The keyword arguments to be passed on to the raised errors.
-
-        :raises:
-            :exc:`StateError`
-                | Raised when the current state is ``None`` i.e having no State to run.
-        """
-
-        if self._current_state is not None:
-            self._current_state.run()
-        else:
-            raise StateError(
-                "No state has been set to run.",
-                last_state=self._last_state,
-                **kwargs,
-            )
-
-    def exit_game(self, **kwargs: Any) -> NoReturn:
-        r"""Exits the entire game.
-
-        :param \**kwargs:
-            | The keyword arguments to be passed on to the raised errors.
-
-        :raises:
-            :exc:`ExitGame`
-                | Raised when the state has successfully exited.
-        """
-
-        raise ExitGame(
-            "Game has successfully exited.",
-            last_state=self._last_state,
-            **kwargs,
-        )
+        if self._last_state:
+            self._last_state.on_leave(self._current_state)
+        self._current_state.on_enter(self._last_state)
