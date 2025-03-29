@@ -26,6 +26,10 @@ class StateManager:
 
     :param window:
         The main game window.
+
+    :attributes:
+        is_running: :class:`bool`
+            A bool for controlling the game loop. ``True`` by default.
     """
 
     __slots__ = (
@@ -85,6 +89,8 @@ class StateManager:
     def global_on_enter(
         self,
     ) -> Optional[Callable[[State, Optional[State]], None]]:
+        """The global on_enter function for all states. This is called right
+        before executing the running state's ``on_enter``."""
         return self._global_on_enter
 
     @global_on_enter.setter
