@@ -27,11 +27,3 @@ class StateError(BaseError):
 
 class StateLoadError(BaseError):
     r"""Raised when an error occurs in loading / unloading a state."""
-
-
-class ExitState(BaseError):
-    r"""An error class used to exit the current state."""
-
-
-class ExitGame(BaseError):
-    r"""An error class used to exit out of the game"""
