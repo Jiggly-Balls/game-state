@@ -251,7 +251,8 @@ class StateManager:
         raise ValueError("Cannot overwrite the state map.")
 
     def change_state(self, state_name: str) -> None:
-        """Changes the current state and updates the last state.
+        """Changes the current state and updates the last state. This method executes
+        the ``on_leave`` & ``on_enter`` state & global listeners.
 
         :param state_name:
             | The name of the State you want to switch to.
@@ -264,7 +265,7 @@ class StateManager:
         if state_name not in self._states:
             raise StateError(
                 f"State `{state_name}` isn't present from the available states: "
-                f"`{', '.join(self.get_state_map().keys())}`.",
+                f"`{', '.join(self.state_map.keys())}`.",
                 last_state=self._last_state,
             )
 
@@ -329,9 +330,19 @@ class StateManager:
             :exc:`StateLoadError`
                 | Raised when the state has already been loaded.
                 | Only raised when ``force`` is set to ``False``.
+
+            :exc:`StateError`
+                | Raised when the passed argument(s) is not subclassed from ``State``.
         """
 
         for state in states:
+            if not issubclass(state, State):
+                raise StateError(
+                    "The passed argument(s) is not a subclass of State.",
+                    last_state=self._last_state,
+                    **kwargs,
+                )
+
             if not force and state.state_name in self._states:
                 raise StateLoadError(
                     f"State: {state.state_name} has already been loaded.",
