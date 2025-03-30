@@ -32,11 +32,12 @@ class State(ABC):
         cls.state_name = state_name or cls.__name__
 
     def on_setup(self) -> None:
-        """This listener is only called once while being loaded into the `StateManager`.
+        """This listener is only called once while being loaded into the ``StateManager``.
         This is also called when reloading the State.
 
         .. warning::
             This method need not be called manually.
+
         """
         pass
 
