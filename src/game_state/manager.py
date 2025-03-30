@@ -66,7 +66,12 @@ class StateManager:
 
     @property
     def current_state(self) -> Optional[State]:
-        """The current state if applied. Will be ``None`` otherwise."""
+        """The current state if applied. Will be ``None`` otherwise.
+
+        .. note::
+            This is a read-only attribute. To change states use
+            ``StateManger.change_state`` instead.
+        """
         return self._current_state
 
     @current_state.setter
@@ -83,6 +88,21 @@ class StateManager:
 
         .. note::
             This has to be assigned before changing the states.
+
+        The first argument passed to the function is the current state and the second
+        is the previous state which may be ``None``.
+
+        Example for a ``global_on_enter`` function-
+
+        .. code-block:: python
+
+            def global_on_enter(
+                current_state: State, previous_state: None | State
+            ) -> None:
+                if previous_state:
+                    print(
+                        f"GLOBAL ENTER - Entering {current_state.state_name} from {previous_state.state_name}"
+                    )
         """
         return self._global_on_enter
 
@@ -119,6 +139,21 @@ class StateManager:
 
         .. note::
             This has to be assigned before changing the states.
+
+        The first argument passed to the function is the current state which may be
+        ``None`` and the second is the next state to take place.
+
+        Example for a ``global_on_leave`` function-
+
+        .. code-block:: python
+
+            def global_on_leave(
+                current_state: None | State, next_state: State
+            ) -> None:
+                if current_state:
+                    print(
+                        f"GLOBAL LEAVE - Leaving {current_state.state_name} to {next_state.state_name}"
+                    )
         """
         return self._global_on_leave
 
@@ -153,6 +188,16 @@ class StateManager:
 
         .. note::
             This has to be assigned before loading the states into the manager.
+
+        The first argument passed to the function is the current state which has been
+        setup.
+
+        Example for a ``global_on_setup`` function-
+
+        .. code-block:: python
+
+            def global_setup(state: State) -> None:
+                print(f"GLOBAL SETUP - Setting up state: {state.state_name}")
         """
         return self._global_on_setup
 
@@ -181,7 +226,11 @@ class StateManager:
 
     @property
     def last_state(self) -> Optional[State]:
-        """The last state object if any. Will be ``None`` otherwise"""
+        """The last state object if any. Will be ``None`` otherwise
+
+        .. note::
+            This is a read-only attribute.
+        """
         return self._last_state
 
     @last_state.setter
@@ -190,7 +239,11 @@ class StateManager:
 
     @property
     def state_map(self) -> Dict[str, State]:
-        """A dictionary copy of all the state names mapped to their respective instance."""
+        """A dictionary copy of all the state names mapped to their respective instance.
+
+        .. note::
+            This is a read-only attribute.
+        """
         return self._states.copy()
 
     @state_map.setter
