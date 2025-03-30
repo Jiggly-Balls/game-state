@@ -30,78 +30,88 @@ pip install game_state
 > **Note:** This package does not have any dependancy on `pygame`, hence you will need to install them separately on your own. This gives you the freedom to work with `pygame`, `pygame-ce` or any of it's forks.
 
 ### Getting Started
-Let's create two simple screens and switch back and forth between them.
+This is an example of creating two screens.
+One displaying green colour and the other blue with a player.
 
 ```py
 import pygame
 
 from game_state import State, StateManager
-from game_state.errors import ExitGame, ExitState
 
 
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+speed = 100
 pygame.init()
 pygame.display.init()
 pygame.display.set_caption("Game State Example")
 
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+
+class ScreenOne(State, state_name="FirstScreen"):
+   def process_event(self, event: pygame.event.Event) -> None:
+      if event.type == pygame.QUIT:
+            self.manager.is_running = False
+
+      if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+            self.manager.change_state("SecondScreen")
+
+   def process_update(self, dt: float) -> None:
+      self.window.fill(GREEN)
+      pygame.display.update()
 
 
-class FirstScreen(State):
-   def run(self) -> None:
-      while True:
-            self.window.fill(GREEN)
+class ScreenTwo(State, state_name="SecondScreen"):
+   def on_setup(self) -> None:
+      self.player_x = 250
 
-            for event in pygame.event.get():
-               if event.type == pygame.QUIT:
-                  self.manager.exit_game()
+   def process_event(self, event: pygame.event.Event) -> None:
+      if event.type == pygame.QUIT:
+            self.manager.is_running = False
 
-               if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-                  self.manager.change_state("SecondScreen")
-                  self.manager.update_state()
+      if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+            self.manager.change_state("FirstScreen")
 
-            pygame.display.update()
+   def process_update(self, dt: float) -> None:
+      self.window.fill(BLUE)
+      pressed = pygame.key.get_pressed()
+      if pressed[pygame.K_a]:
+            self.player_x -= speed * dt
 
+      if pressed[pygame.K_d]:
+            self.player_x += speed * dt
 
-class SecondScreen(State):
-   def run(self) -> None:
-      while True:
-            self.window.fill(BLUE)
+      pygame.draw.rect(
+            self.window,
+            "red",
+            (
+               self.player_x,
+               100,
+               50,
+               50,
+            ),
+      )
 
-            for event in pygame.event.get():
-               if event.type == pygame.QUIT:
-                  self.manager.exit_game()
-
-               if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-                  self.manager.change_state(
-                        "FirstScreen"
-                  )
-                  self.manager.update_state()
-
-            pygame.display.update()
-
+      pygame.display.update()
 
 def main() -> None:
    screen = pygame.display.set_mode((500, 700))
 
    state_manager = StateManager(screen)
-   state_manager.load_states(FirstScreen, SecondScreen)
+   state_manager.load_states(ScreenOne, ScreenTwo)
    state_manager.change_state("FirstScreen")
 
-   while True:
-      try:
-            state_manager.run_state()
-      except ExitState as error:
-            last_state = error.last_state
-            current_state = state_manager.get_current_state()
-            print(f"State has changed from: {last_state.state_name} to {current_state.state_name}")
+   clock = pygame.time.Clock()
 
+   while state_manager.is_running:
+      dt = clock.tick(60) / 1000
+
+      for event in pygame.event.get():
+            state_manager.current_state.process_event(event)
+
+      state_manager.current_state.process_update(dt)
 
 if __name__ == "__main__":
-   try:
-      main()
-   except ExitGame:
-      print("Game has exited successfully")
+   main()
 ```
 
 You can have a look at the [game state guide](https://game-state.readthedocs.io/en/latest/guide.html#using-the-library) for a more detailed explaination.
