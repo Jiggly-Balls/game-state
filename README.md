@@ -3,7 +3,7 @@
 [![Downloads](https://img.shields.io/pypi/dm/game-state?color=blueviolet&logo=pypi&logoColor=white&style=for-the-badge)](https://pypi.org/project/game-state/)
 [![License](https://img.shields.io/pypi/l/game-state?color=blueviolet&logo=c&logoColor=white&style=for-the-badge)](https://github.com/Jiggly-Balls/game-state/blob/main/LICENSE)
 [![Docs](https://img.shields.io/readthedocs/game-state?color=blueviolet&logo=readthedocs&logoColor=white&style=for-the-badge)](https://game-state.readthedocs.io/en/latest/)
-![Versions](https://img.shields.io/pypi/pyversions/game-state.svg?color=blueviolet&style=for-the-badge&logo=python&logoColor=white)
+![Versions](https://img.shields.io/badge/Python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?color=blueviolet&logo=python&logoColor=white&style=for-the-badge)
 
 # Game-State
 A pygame utility package that allows you to handle different screens in an organized manner.
