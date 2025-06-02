@@ -7,6 +7,7 @@ authors = [
 description = "A pygame utility package that allows you to handle different screens in an organized manner."
 readme = "README.md"
 requires-python = ">=3.8"
+dependencies = []
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Natural Language :: English",
@@ -52,3 +53,11 @@ quote-style = "double"
 indent-style = "space"
 docstring-code-format = true
 docstring-code-line-length = 72
+
+[dependency-groups]
+dev = [
+    "isort>=5.13.2",
+    "pre-commit>=3.5.0",
+    "pygame-ce>=2.5.2",
+    "ruff>=0.11.12",
+]
