@@ -56,6 +56,7 @@ docstring-code-line-length = 72
 
 [dependency-groups]
 dev = [
+    "basedpyright>=1.29.2",
     "isort>=5.13.2",
     "pre-commit>=3.5.0",
     "pygame-ce>=2.5.2",
