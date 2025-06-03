@@ -3,6 +3,8 @@ from __future__ import annotations
 from abc import ABC
 from typing import TYPE_CHECKING
 
+from .utils import MISSING
+
 if TYPE_CHECKING:
     from typing import Any, Optional
 
@@ -24,15 +26,15 @@ class State(ABC):
             The manager to which the state is binded to.
     """
 
-    state_name: str = None
-    window: Optional[Surface] = None
-    manager: Optional[StateManager] = None
+    state_name: str = MISSING
+    window: Surface = MISSING
+    manager: StateManager = MISSING
 
     def __init_subclass__(cls, *, state_name: Optional[str] = None) -> None:
         cls.state_name = state_name or cls.__name__
 
     def on_setup(self) -> None:
-        """This listener is only called once while being loaded into the ``StateManager``.
+        r"""This listener is only called once while being loaded into the ``StateManager``.
         This is also called when reloading the State.
 
         .. warning::
@@ -42,7 +44,7 @@ class State(ABC):
         pass
 
     def on_enter(self, prevous_state: Optional[State]) -> None:
-        """This listener is called once when a state has been switched and is
+        r"""This listener is called once when a state has been switched and is
         entering the current state.
 
         .. warning::
@@ -55,7 +57,7 @@ class State(ABC):
         pass
 
     def on_leave(self, next_state: State) -> None:
-        """This listener is called once when the state has been switched and is exiting
+        r"""This listener is called once when the state has been switched and is exiting
         the current one.
 
         .. warning::
@@ -67,7 +69,7 @@ class State(ABC):
         pass
 
     def process_event(self, event: Event) -> None:
-        """To be called when a pygame event needs to be processed.
+        r"""To be called when a pygame event needs to be processed.
 
         .. note::
             This method needs to be called manually.
@@ -78,7 +80,7 @@ class State(ABC):
         pass
 
     def process_update(self, *args: Any) -> None:
-        """The main game loop method to be executed by the ``StateManager``.
+        r"""The main game loop method to be executed by the ``StateManager``.
 
         .. note::
             This method needs to be called manually.
