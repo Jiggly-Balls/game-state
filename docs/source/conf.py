@@ -15,7 +15,7 @@ author = "Jiggly Balls"
 
 
 version = "2.0"
-release = "2.0.1 - beta"
+release = "2.0.1 - final"
 
 # -- General configuration
 extensions = [

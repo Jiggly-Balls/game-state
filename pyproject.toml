@@ -1,6 +1,6 @@
 [project]
 name = "game_state"
-version = "2.0.1b"
+version = "2.0.1"
 authors = [
   { name="Jiggly Balls", email="jigglyballs9000@gmail.com" },
 ]
