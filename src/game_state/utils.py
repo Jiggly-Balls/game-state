@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from typing import Any
+    from typing import Any, Tuple
 
 
 class _MissingSentinel:
-    __slots__ = ()
+    __slots__: Tuple[str, ...] = ()
 
     def __eq__(self, other: Any) -> bool:
         return False

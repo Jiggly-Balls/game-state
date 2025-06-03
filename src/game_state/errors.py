@@ -16,7 +16,7 @@ class BaseError(Exception):
     ) -> None:
         super().__init__(*args)
 
-        self.last_state = last_state
+        self.last_state: Optional[State] = last_state
         for key, value in kwargs.items():
             setattr(self, key, value)
 

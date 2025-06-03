@@ -36,7 +36,7 @@ class StateManager:
         State.window = window
         State.manager = self
 
-        self.is_running = True
+        self.is_running: bool = True
 
         self._global_on_setup: Optional[Callable[[State], None]] = None
         self._global_on_enter: Optional[

@@ -8,7 +8,9 @@ def derive_version() -> str:
     with open("src/game_state/__init__.py") as f:
         version = re.search(
             r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE
-        ).group(1)
+        )
+        if version:
+            version = version.group(1)
 
     if not version:
         raise RuntimeError("Version is not set.")
