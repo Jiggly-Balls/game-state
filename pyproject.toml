@@ -55,7 +55,20 @@ docstring-code-format = true
 docstring-code-line-length = 72
 
 [tool.basedpyright]
-exclude = ["**/node_modules", "**/__pycache__", "**/.*", "test*.py", "venv/", "build/", "dist/", "local/"]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.*",
+    "test*.py",
+    "venv/",
+    "build/",
+    "dist/",
+    "local/",
+    "examples/",
+    "docs/",
+    "lib_testing/",
+    "tests/",
+]
 reportImportCycles = false
 reportUnnecessaryIsInstance = false
 reportImplicitStringConcatenation = false
@@ -81,5 +94,7 @@ dev = [
     "isort>=5.13.2",
     "pre-commit>=3.5.0",
     "pygame-ce>=2.5.2",
+    "pytest>=8.4.0",
     "ruff>=0.11.12",
+    "setuptools>=80.9.0",
 ]
