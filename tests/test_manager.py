@@ -60,7 +60,7 @@ def test_change_states(
 
     manager.change_state(state_1.state_name)
 
-    assert manager.current_state.state_name == state_1.state_name, (
+    assert manager.current_state.state_name == state_1.state_name, (  # pyright:ignore[reportAttributeAccessIssue]
         "Received wrong state instance upon changing."
     )
 
