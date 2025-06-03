@@ -1,63 +1,76 @@
 import pygame
-
 from game_state import State, StateManager
-from game_state.errors import ExitGame, ExitState
 
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+speed = 100
 pygame.init()
 pygame.display.init()
 pygame.display.set_caption("Game State Example")
 
 
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+class ScreenOne(State, state_name="FirstScreen"):
+    def process_event(self, event: pygame.event.Event) -> None:
+        # This is executed in our our game loop for every event.
+
+        if event.type == pygame.QUIT:
+            # We set the state manager's is_running variable to false
+            # which stops the game loop from continuing.
+            self.manager.is_running = False
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+            # Check if we're clicking the " c " button.
+            # If the condition is met, we change our screen to
+            # "SecondScreen" in the manager.
+
+            self.manager.change_state("SecondScreen")
+
+    def process_update(self, dt: float) -> None:
+        # This is executed in our game loop.
+
+        self.window.fill(GREEN)
+        pygame.display.update()
 
 
-class FirstScreen(State):
-    def run(self) -> None:
-        # The run function executes as soon as the state has been changed to it.
+class ScreenTwo(State, state_name="SecondScreen"):
+    def on_setup(self) -> None:
+        # The on_setup is executed right after you call the StateManager.load_states
+        self.player_x = 250
 
-        while True:
-            # Our game-loop
+    def process_event(self, event: pygame.event.Event) -> None:
+        if event.type == pygame.QUIT:
+            self.manager.is_running = False
 
-            self.window.fill(GREEN)
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+            # Check if we're clicking the " c " button.
+            # If the condition is met, we change our screen to
+            # "FirstScreen" in the manager.
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    # Upon quitting, we raise the ExitGame which we handle outside.
+            self.manager.change_state("FirstScreen")
 
-                    self.manager.exit_game()
+    def process_update(self, dt: float) -> None:
+        self.window.fill(BLUE)
 
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-                    # Check if we're clicking the " c " button.
-                    # If the condition is met, we change our screen to "SecondScreen" and update
-                    # the state in the manager.
+        # Player movement-
+        pressed = pygame.key.get_pressed()
+        if pressed[pygame.K_a]:
+            self.player_x -= speed * dt
 
-                    self.manager.change_state("SecondScreen")
-                    self.manager.update_state()
+        if pressed[pygame.K_d]:
+            self.player_x += speed * dt
 
-            pygame.display.update()  # Refreshes the screen
+        pygame.draw.rect(
+            self.window,
+            "red",
+            (
+                self.player_x,
+                100,
+                50,
+                50,
+            ),
+        )
 
-
-class SecondScreen(State):
-    def run(self) -> None:
-        # The exact same thing happens in the SecondScreen except we use a different
-        # colour for the screen & we change our current state to FirstScreen if the
-        # user presses " c ".
-
-        while True:
-            self.window.fill(BLUE)
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.manager.exit_game()
-
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-                    self.manager.change_state(
-                        "FirstScreen"
-                    )  # Change our state to FirstScreen.
-                    self.manager.update_state()  # Updates / resets the state.
-
-            pygame.display.update()
+        pygame.display.update()
 
 
 def main() -> None:
@@ -65,31 +78,30 @@ def main() -> None:
     # Create a basic 500x700 pixel window
 
     state_manager = StateManager(screen)
-    state_manager.load_states(FirstScreen, SecondScreen)
+    state_manager.load_states(ScreenOne, ScreenTwo)
     # We pass in all the screens that we want to use in our game / app.
 
     state_manager.change_state("FirstScreen")
-    # Updates the current state to the desired state (screen) we want.
+    # We need to use the name we supplied in the __init_sublcass__'s `state_name`.
+    # If no state_name was passed, we use the class name itself.
 
-    while True:
-        try:
-            state_manager.run_state()
-            # This is the entry point of our screen manager.
-            # This should only be called once at start up.
+    clock = pygame.time.Clock()
 
-        except ExitState as error:
-            # Stuff you can do right after a state (screen) has been changed
-            # i.e. Save player data, pause / resume / change music, etc...
+    while state_manager.is_running:
+        # The state manager has a `is_running` attribute which is `True` by default
 
-            last_state = error.last_state
-            current_state = state_manager.get_current_state()
-            print(
-                f"State has changed from: {last_state.state_name} to {current_state.state_name}"
-            )
+        dt = (
+            clock.tick(60) / 1000
+        )  # The delta time from the clock for frame rate independance.
+
+        if state_manager.current_state:
+            for event in pygame.event.get():
+                state_manager.current_state.process_event(event)
+                # Calling the event function of the running state.
+
+            state_manager.current_state.process_update(dt)
+            # Calling the update function of the running state.
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except ExitGame:
-        print("Game has exited successfully")
+    main()
