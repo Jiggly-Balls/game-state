@@ -14,7 +14,7 @@ def scenario() -> Tuple[StateManager, Type[State], Type[State]]:
 
     class StateTwo(State): ...
 
-    return StateManager(...), StateOne, StateTwo
+    return StateManager(...), StateOne, StateTwo  # pyright:ignore[reportArgumentType]
 
 
 def test_load_states(
@@ -32,7 +32,7 @@ def test_load_states(
         manager.load_states(state_1)
 
     with pytest.raises(StateError):
-        manager.load_states(NotAState)
+        manager.load_states(NotAState)  # pyright:ignore[reportArgumentType]
 
     assert len(manager.state_map) == 2, (
         "Loaded 2 states, did not receive 2 states back."
