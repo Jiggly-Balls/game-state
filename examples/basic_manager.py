@@ -25,7 +25,7 @@ class ScreenOne(State, state_name="FirstScreen"):
 
             self.manager.change_state("SecondScreen")
 
-    def process_update(self, dt: float) -> None:
+    def process_update(self, dt: float) -> None:  # pyright:ignore[reportIncompatibleMethodOverride]
         # This is executed in our game loop.
 
         self.window.fill(GREEN)
@@ -35,7 +35,7 @@ class ScreenOne(State, state_name="FirstScreen"):
 class ScreenTwo(State, state_name="SecondScreen"):
     def on_setup(self) -> None:
         # The on_setup is executed right after you call the StateManager.load_states
-        self.player_x = 250
+        self.player_x: float = 250.0
 
     def process_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.QUIT:
@@ -48,7 +48,7 @@ class ScreenTwo(State, state_name="SecondScreen"):
 
             self.manager.change_state("FirstScreen")
 
-    def process_update(self, dt: float) -> None:
+    def process_update(self, dt: float) -> None:  # pyright:ignore[reportIncompatibleMethodOverride]
         self.window.fill(BLUE)
 
         # Player movement-
