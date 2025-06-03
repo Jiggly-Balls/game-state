@@ -1,6 +1,6 @@
 [project]
 name = "game_state"
-version = "2.0.0"
+version = "2.0.1b"
 authors = [
   { name="Jiggly Balls", email="jigglyballs9000@gmail.com" },
 ]
@@ -53,6 +53,27 @@ quote-style = "double"
 indent-style = "space"
 docstring-code-format = true
 docstring-code-line-length = 72
+
+[tool.basedpyright]
+exclude = ["**/node_modules", "**/__pycache__", "**/.*", "test*.py", "venv/", "build/", "dist/", "local/"]
+reportImportCycles = false
+reportUnnecessaryIsInstance = false
+reportImplicitStringConcatenation = false
+reportUnusedCallResult = false
+reportMissingTypeStubs = false
+reportAssignmentType = false
+reportRedeclaration = false
+reportAny = false
+reportExplicitAny = false
+reportUnknownVariableType = false
+reportDeprecated = false
+reportImplicitOverride = false
+reportUnusedParameter = false
+
+[tool.uv.workspace]
+members = [
+    "examples",
+]
 
 [dependency-groups]
 dev = [
