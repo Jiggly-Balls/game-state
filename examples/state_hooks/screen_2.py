@@ -7,8 +7,7 @@ BLUE = (0, 0, 255)
 
 
 class ScreenTwo(State, state_name="SecondScreen"):
-    def on_setup(self) -> None:
-        # The on_setup is executed right after you call the StateManager.load_states
+    def __init__(self) -> None:
         self.player_x: float = 250.0
         self.speed: float = 100.0
 

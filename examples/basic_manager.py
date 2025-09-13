@@ -33,8 +33,7 @@ class ScreenOne(State, state_name="FirstScreen"):
 
 
 class ScreenTwo(State, state_name="SecondScreen"):
-    def on_setup(self) -> None:
-        # The on_setup is executed right after you call the StateManager.load_states
+    def __init__(self) -> None:
         self.player_x: float = 250.0
 
     def process_event(self, event: pygame.event.Event) -> None:
