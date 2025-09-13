@@ -40,20 +40,18 @@ Stars = "https://github.com/Jiggly-Balls/game-state/stargazers"
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-
 [tool.ruff]
 line-length = 79
-lint.extend-select = ["ANN"]
-lint.ignore = ["ANN401"]
+lint.extend-select = ["ANN", "I"]
+lint.ignore = ["ANN401", "F"]
+lint.fixable = ["I", "F401"]
 
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
 docstring-code-format = true
 docstring-code-line-length = 72
+
 
 [tool.basedpyright]
 exclude = [
