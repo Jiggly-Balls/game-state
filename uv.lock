@@ -273,12 +273,9 @@ source = { editable = "." }
 
 [package.dev-dependencies]
 dev = [
-    { name = "basedpyright" },
-    { name = "isort" },
     { name = "pre-commit" },
     { name = "pygame-ce" },
     { name = "pytest" },
-    { name = "ruff" },
     { name = "setuptools" },
     { name = "sphinx-autobuild" },
     { name = "twine" },
@@ -288,12 +285,9 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "basedpyright", specifier = ">=1.29.2" },
-    { name = "isort", specifier = ">=5.13.2" },
     { name = "pre-commit", specifier = ">=3.5.0" },
     { name = "pygame-ce", specifier = ">=2.5.2" },
     { name = "pytest", specifier = ">=8.4.0" },
-    { name = "ruff", specifier = ">=0.11.12" },
     { name = "setuptools", specifier = ">=80.9.0" },
     { name = "sphinx-autobuild", specifier = ">=2024.10.3" },
     { name = "twine", specifier = ">=6.1.0" },
