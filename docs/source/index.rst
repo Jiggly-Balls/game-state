@@ -9,7 +9,7 @@ About the Project
 This project was made to handle different screen in ``pygame`` / ``pygame-ce``
 in an organized manner via python's OOP.
 
-:Author: Jiggly Balls
+:Author: Krish Mohan M.
 :License: MIT License
 
 Getting Started
