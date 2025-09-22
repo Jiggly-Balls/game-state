@@ -8,6 +8,9 @@ if TYPE_CHECKING:
     from typing import Any, Optional
 
 
+__all__ = ("BaseError", "StateError", "StateLoadError")
+
+
 class BaseError(Exception):
     r"""The base class to all game-state errors."""
 

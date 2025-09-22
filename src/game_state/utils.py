@@ -6,6 +6,9 @@ if TYPE_CHECKING:
     from typing import Any, Tuple
 
 
+__all__ = ("MISSING",)
+
+
 class _MissingSentinel:
     __slots__: Tuple[str, ...] = ()
 

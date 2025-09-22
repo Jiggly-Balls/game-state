@@ -15,6 +15,9 @@ if TYPE_CHECKING:
     from pygame import Surface
 
 
+__all__ = ("StateManager",)
+
+
 _GLOBAL_ON_SETUP_ARGS: int = 1
 _GLOBAL_ON_ENTER_ARGS: int = 2
 _GLOBAL_ON_LEAVE_ARGS: int = 2

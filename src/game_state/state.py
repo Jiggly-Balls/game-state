@@ -14,6 +14,9 @@ if TYPE_CHECKING:
     from .manager import StateManager
 
 
+__all__ = ("State",)
+
+
 class State(ABC):
     """The State class which works as an individual screen.
 
