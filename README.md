@@ -1,3 +1,5 @@
+<div align="center">
+
 [![PyPI](https://img.shields.io/pypi/v/game-state.svg?style=for-the-badge&logo=pypi&color=blueviolet&logoColor=white)](https://pypi.org/project/game-state/)
 [![Github Releases](https://img.shields.io/github/v/release/Jiggly-Balls/game-state?color=blueviolet&include_prereleases&label=Latest%20Release&logo=github&sort=semver&style=for-the-badge&logoColor=white)](https://github.com/Jiggly-Balls/game-state/releases)
 [![Downloads](https://img.shields.io/pypi/dm/game-state?label=Downloads%20/%20Month&color=blueviolet&logo=pypi&logoColor=white&style=for-the-badge)](https://pypi.org/project/game-state/)
@@ -5,6 +7,8 @@
 [![License](https://img.shields.io/pypi/l/game-state?color=blueviolet&logo=c&logoColor=white&style=for-the-badge)](https://github.com/Jiggly-Balls/game-state/blob/main/LICENSE)
 [![Docs](https://img.shields.io/readthedocs/game-state?color=blueviolet&logo=readthedocs&logoColor=white&style=for-the-badge)](https://game-state.readthedocs.io/en/latest/)
 ![Versions](https://img.shields.io/badge/Python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue?color=blueviolet&logo=python&logoColor=white&style=for-the-badge)
+
+</div>
 
 # Game-State
 
