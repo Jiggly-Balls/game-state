@@ -4,9 +4,10 @@
 [![PyPI Downloads](https://img.shields.io/pepy/dt/game-state?label=Total%20Downloads&color=blueviolet&logo=pypi&logoColor=white&style=for-the-badge)](https://pepy.tech/projects/game-state)
 [![License](https://img.shields.io/pypi/l/game-state?color=blueviolet&logo=c&logoColor=white&style=for-the-badge)](https://github.com/Jiggly-Balls/game-state/blob/main/LICENSE)
 [![Docs](https://img.shields.io/readthedocs/game-state?color=blueviolet&logo=readthedocs&logoColor=white&style=for-the-badge)](https://game-state.readthedocs.io/en/latest/)
-![Versions](https://img.shields.io/badge/Python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?color=blueviolet&logo=python&logoColor=white&style=for-the-badge)
+![Versions](https://img.shields.io/badge/Python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue?color=blueviolet&logo=python&logoColor=white&style=for-the-badge)
 
 # Game-State
+
 A pygame utility package that allows you to handle different screens in an organized manner.
 
 ## Table of Contents
@@ -18,19 +19,25 @@ A pygame utility package that allows you to handle different screens in an organ
 - [Links](#links)
 
 ### Analytics
+
 ![Alt](https://repobeats.axiom.co/api/embed/cbb24e2ae82fdceeceba8291982821ddbc065897.svg "Repobeats analytics image")
 
 ### Requirements
-This library supports python versions `3.8` - `3.13`.
+
+This library supports python versions `3.8` - `3.14`.
 
 ### Installation
+
 Create and activate a virtual environment in your workspace (optional) and run the following command-
+
 ```
 pip install game_state
-``` 
+```
+
 > **Note:** This package does not have any dependancy on `pygame`, hence you will need to install them separately on your own. This gives you the freedom to work with `pygame`, `pygame-ce` or any of it's forks.
 
 ### Getting Started
+
 This is an example of creating two screens.
 One displaying green colour and the other blue with a player.
 
@@ -118,5 +125,6 @@ if __name__ == "__main__":
 You can have a look at the [game state guide](https://game-state.readthedocs.io/en/latest/guide.html#using-the-library) for a more detailed explaination.
 
 ### Links
+
 - Guide & API Reference: https://game-state.readthedocs.io/en/stable/
 - PyPI Page: https://pypi.org/project/game-state/
