@@ -53,35 +53,35 @@ from game_state import State, StateManager
 
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
-speed = 100
+speed = 200
 pygame.init()
 pygame.display.init()
 pygame.display.set_caption("Game State Example")
 
 
-class ScreenOne(State, state_name="FirstScreen"):
+class MainMenuState(State, state_name="MainMenu"):
    def process_event(self, event: pygame.event.Event) -> None:
       if event.type == pygame.QUIT:
             self.manager.is_running = False
 
-      if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-            self.manager.change_state("SecondScreen")
+      if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+            self.manager.change_state("Game")
 
    def process_update(self, dt: float) -> None:
       self.window.fill(GREEN)
       pygame.display.update()
 
 
-class ScreenTwo(State, state_name="SecondScreen"):
-   def on_setup(self) -> None:
+class GameState(State, state_name="Game"):
+   def __init__(self) -> None:
       self.player_x = 250
 
    def process_event(self, event: pygame.event.Event) -> None:
       if event.type == pygame.QUIT:
             self.manager.is_running = False
 
-      if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-            self.manager.change_state("FirstScreen")
+      if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+            self.manager.change_state("MainMenu")
 
    def process_update(self, dt: float) -> None:
       self.window.fill(BLUE)
@@ -106,11 +106,11 @@ class ScreenTwo(State, state_name="SecondScreen"):
       pygame.display.update()
 
 def main() -> None:
-   screen = pygame.display.set_mode((500, 700))
+   screen = pygame.display.set_mode((500, 600))
 
    state_manager = StateManager(screen)
-   state_manager.load_states(ScreenOne, ScreenTwo)
-   state_manager.change_state("FirstScreen")
+   state_manager.load_states(MainMenuState, GameState)
+   state_manager.change_state("MainMenu")
 
    clock = pygame.time.Clock()
 
