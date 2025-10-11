@@ -14,7 +14,9 @@ def scenario() -> Tuple[StateManager, Type[State], Type[State]]:
 
     class StateTwo(State): ...
 
-    return StateManager(...), StateOne, StateTwo  # pyright:ignore[reportArgumentType]
+    manager = StateManager(...)  # pyright: ignore[reportArgumentType]
+
+    return manager, StateOne, StateTwo
 
 
 def test_load_states(
