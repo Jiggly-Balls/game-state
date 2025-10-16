@@ -7,7 +7,7 @@ pygame.display.set_caption("Game State Hooks Example")
 
 
 def main() -> None:
-    screen = pygame.display.set_mode((500, 700))
+    screen = pygame.display.set_mode((500, 600))
     # Create a basic 500x700 pixel window
 
     state_manager = StateManager(screen)
@@ -15,7 +15,7 @@ def main() -> None:
     state_manager.connect_state_hook("screen_2")
     # We pass in all the screens that we want to use in our game / app.
 
-    state_manager.change_state("FirstScreen")
+    state_manager.change_state("MainMenu")
     # We need to use the name we supplied in the __init_sublcass__'s `state_name`.
     # If no state_name was passed, we use the class name itself.
 

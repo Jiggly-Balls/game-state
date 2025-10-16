@@ -6,7 +6,7 @@ from game_state import State
 GREEN = (0, 255, 0)
 
 
-class ScreenOne(State, state_name="FirstScreen"):
+class MainMenuState(State, state_name="MainMenu"):
     def process_event(self, event: pygame.event.Event) -> None:
         # This is executed in our our game loop for every event.
 
@@ -15,14 +15,14 @@ class ScreenOne(State, state_name="FirstScreen"):
             # which stops the game loop from continuing.
             self.manager.is_running = False
 
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-            # Check if we're clicking the " c " button.
-            # If the condition is met, we change our screen to
-            # "SecondScreen" in the manager.
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+            # Check if we're clicking the " w " button.
+            # If the condition is met, we change our screen to the
+            # "Game" screen from the manager.
 
-            self.manager.change_state("SecondScreen")
+            self.manager.change_state("Game")
 
-    def process_update(self, dt: float) -> None:  # pyright:ignore[reportIncompatibleMethodOverride]
+    def process_update(self, *args: float) -> None:
         # This is executed in our game loop.
 
         self.window.fill(GREEN)
@@ -32,4 +32,4 @@ class ScreenOne(State, state_name="FirstScreen"):
 def hook(**kwargs: Any) -> None:
     # This function should be present below the State you want to load and should call
     # the `StateManager.load_states` method while passing in the State you want to laod
-    ScreenOne.manager.load_states(ScreenOne, **kwargs)
+    MainMenuState.manager.load_states(MainMenuState, **kwargs)

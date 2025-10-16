@@ -6,23 +6,25 @@ from game_state import State
 BLUE = (0, 0, 255)
 
 
-class ScreenTwo(State, state_name="SecondScreen"):
+class GameState(State, state_name="Game"):
     def __init__(self) -> None:
         self.player_x: float = 250.0
-        self.speed: float = 100.0
+        self.speed = 200
 
     def process_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.QUIT:
             self.manager.is_running = False
 
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-            # Check if we're clicking the " c " button.
-            # If the condition is met, we change our screen to
-            # "FirstScreen" in the manager.
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+            # Check if we're clicking the " w " button.
+            # If the condition is met, we change our screen to the
+            # "MainMenu" screen from the manager.
 
-            self.manager.change_state("FirstScreen")
+            self.manager.change_state("MainMenu")
 
-    def process_update(self, dt: float) -> None:  # pyright:ignore[reportIncompatibleMethodOverride]
+    def process_update(self, *args: float) -> None:
+        dt = args[0]
+
         self.window.fill(BLUE)
 
         # Player movement-
@@ -50,4 +52,4 @@ class ScreenTwo(State, state_name="SecondScreen"):
 def hook(**kwargs: Any) -> None:
     # This function should be present below the State you want to load and should call
     # the `StateManager.load_states` method while passing in the State you want to laod
-    ScreenTwo.manager.load_states(ScreenTwo, **kwargs)
+    GameState.manager.load_states(GameState, **kwargs)
