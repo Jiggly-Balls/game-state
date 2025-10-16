@@ -21,6 +21,8 @@ def main() -> None:
 
     clock = pygame.time.Clock()
 
+    assert state_manager.current_state is not None
+
     while state_manager.is_running:
         # The state manager has a `is_running` attribute which is `True` by default
 
@@ -28,13 +30,12 @@ def main() -> None:
             clock.tick(60) / 1000
         )  # The delta time from the clock for frame rate independance.
 
-        if state_manager.current_state:
-            for event in pygame.event.get():
-                state_manager.current_state.process_event(event)
-                # Calling the event function of the running state.
+        for event in pygame.event.get():
+            state_manager.current_state.process_event(event)
+            # Calling the event function of the running state.
 
-            state_manager.current_state.process_update(dt)
-            # Calling the update function of the running state.
+        state_manager.current_state.process_update(dt)
+        # Calling the update function of the running state.
 
 
 if __name__ == "__main__":

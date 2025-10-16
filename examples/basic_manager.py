@@ -88,9 +88,7 @@ def main() -> None:
 
     clock = pygame.time.Clock()
 
-    if state_manager.current_state is None:
-        # To please type checkers.
-        raise RuntimeError("No state was set to run")
+    assert state_manager.current_state is not None
 
     while state_manager.is_running:
         # The state manager has a `is_running` attribute which is `True` by default
