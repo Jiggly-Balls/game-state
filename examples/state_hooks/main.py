@@ -11,8 +11,8 @@ def main() -> None:
     # Create a basic 500x700 pixel window
 
     state_manager = StateManager(screen)
-    state_manager.connect_state_hook("screen_1")
-    state_manager.connect_state_hook("screen_2")
+    state_manager.connect_state_hook("main_menu")
+    state_manager.connect_state_hook("game")
     # We pass in all the screens that we want to use in our game / app.
 
     state_manager.change_state("MainMenu")
