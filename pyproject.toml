@@ -1,9 +1,7 @@
 [project]
 name = "game_state"
-version = "2.0.2"
-authors = [
-  { name="Jiggly Balls", email="jigglyballs9000@gmail.com" },
-]
+version = "2.0.3b"
+authors = [{ name = "Jiggly Balls", email = "jigglyballs9000@gmail.com" }]
 description = "A pygame utility package that allows you to handle different screens in an organized manner."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -28,7 +26,7 @@ classifiers = [
     "Topic :: Games/Entertainment",
     "Topic :: Software Development :: Libraries",
     "Topic :: Software Development :: Libraries :: pygame",
-    "Topic :: Utilities"
+    "Topic :: Utilities",
 ]
 
 [project.urls]
@@ -84,9 +82,7 @@ reportImplicitOverride = false
 reportUnusedParameter = false
 
 [tool.uv.workspace]
-members = [
-    "examples",
-]
+members = ["examples"]
 
 [dependency-groups]
 dev = [

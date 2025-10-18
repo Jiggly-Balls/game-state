@@ -7,15 +7,15 @@ sys.path.insert(0, os.path.abspath("../../src/"))
 
 # -- Project information
 project = "Game-State"
-copyright = "2024-present, Jiggly Balls"
-author = "Jiggly Balls"
+copyright = "2024-present, Krish Mohan M."
+author = "Krish Mohan M."
 
 # version = f"{version_info.major}.{version_info.minor}"
 # release = f"{version_info.major}.{version_info.minor}.{version_info.patch} - {version_info.releaselevel}"
 
 
 version = "2.0"
-release = "2.0.2 - final"
+release = "2.0.3 - final"
 
 # -- General configuration
 extensions = [
