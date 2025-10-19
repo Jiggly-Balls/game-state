@@ -94,8 +94,8 @@ Now that we have created a screen, let's add it to our screen manager and run it
    .. code-block:: python
 
       def main() -> None:
-         screen = pygame.display.set_mode((500, 700))
-         # Create a basic 500x700 pixel window
+         screen = pygame.display.set_mode((500, 600))
+         # Create a basic 500x600 pixel window
 
          state_manager = StateManager(screen)
          state_manager.load_states(MainMenuState)
@@ -327,6 +327,32 @@ Upon following this guide correctly, you will obtain an output similar to this-
     :target: https://www.youtube.com/watch?v=QTN-YW8dv_I
 
 (Click to open the video)
+
+State Hooks
+-----------
+
+State hooks allow you to dynamically load state files without needing to import
+them.
+
+Let's take our previous example and split the ``MainMenuState`` and
+``GameState`` into separate files and load the file paths instead of importing
+their classes.
+
+Let's structure our project like this-
+
+.. admonition:: Our project structure. With ``game_state_hooks`` being the root of the project.
+    :class: seealso
+
+    .. code-block::
+
+        game_state_hooks/
+            │ - main.py
+            │
+            └───states/
+                │ - game.py
+                │ - main_menu.py
+
+Inside our ``main.py`` file let's initialize 
 
 .. :toctree::
 
