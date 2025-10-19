@@ -281,7 +281,7 @@ dev = [
     { name = "furo", specifier = ">=2025.9.25" },
     { name = "numpydoc", specifier = ">=1.9.0" },
     { name = "pre-commit", specifier = ">=3.5.0" },
-    { name = "pygame-ce", specifier = ">=2.5.5" },
+    { name = "pygame-ce" },
     { name = "pytest", specifier = ">=8.4.0" },
     { name = "sphinx", specifier = ">=8.2.3" },
     { name = "sphinx-autobuild", specifier = ">=2024.10.3" },
