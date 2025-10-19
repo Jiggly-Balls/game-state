@@ -90,5 +90,4 @@ dev = [
     "pygame-ce>=2.5.2",
     "pytest>=8.4.0",
     "sphinx-autobuild>=2024.10.3",
-    "twine>=6.1.0",
 ]
