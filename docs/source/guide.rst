@@ -51,7 +51,7 @@ green colour and the other will display blue with a moveable red square.
       pygame.display.init()
       pygame.display.set_caption("Game State Example")
 
-      speed = 100  # Player speed
+      speed = 200  # Player speed
       BLUE = (0, 255, 0)
       GREEN = (0, 0, 255)
 
