@@ -14,12 +14,12 @@ Install ``game_state`` through pip in your terminal-
 
    (.venv) $ pip install game_state
 
-Since ``game_state`` does not have any dependancies, we need to manually install
-the pygame library (or ``pygame-ce`` if you're using that).
+Since ``game_state`` does not have any dependancies, we need to manually
+install the pygame library (or ``pygame-ce`` if you're using that).
 
 .. code-block:: console
 
-   (.venv) $ pip install pygame
+   (.venv) $ pip install pygame-ce
 
 
 Using the Library
@@ -56,14 +56,15 @@ green colour and the other will display blue with a moveable red square.
       GREEN = (0, 0, 255)
 
 
-Now that we have imported and set the display of our app, let's create a screen.
+Now that we have imported and set the display of our app, let's create a main
+menu screen.
 
 .. admonition:: Creating a simple screen
    :class: seealso
 
    .. code-block:: python
 
-      class ScreenOne(State, state_name="FirstScreen"):
+      class MainMenuState(State, state_name="MainMenu"):
          def process_event(self, event: pygame.event.Event) -> None:
             # This is executed in our our game loop for every event.
 
@@ -97,10 +98,10 @@ Now that we have created a screen, let's add it to our screen manager and run it
          # Create a basic 500x700 pixel window
 
          state_manager = StateManager(screen)
-         state_manager.load_states(ScreenOne)
+         state_manager.load_states(MainMenuState)
          # We pass in all the screens that we want to use in our game / app.
 
-         state_manager.change_state("FirstScreen") 
+         state_manager.change_state("MainMenu") 
          # We need to use the name we supplied in the __init_sublcass__'s `state_name`.
          # If no state_name was passed, we use the class name itself.
          
@@ -125,190 +126,207 @@ There you have it! We have set up a simple screen using the Game State library.
 Adding more screens is just as simple as the subclassing ``State`` & adding it
 to the ``StateManager``. 
 
-.. admonition:: Adding another screen to our state manager.
-   :class: seealso
+.. admonition:: Adding the main game screen to our state manager.
+    :class: seealso
 
-   .. code-block:: python
+    .. code-block:: python
 
-      class ScreenOne(State, state_name="FirstScreen"):
-         def process_event(self, event: pygame.event.Event) -> None:
-            # This is executed in our our game loop for every event.
+        class MainMenuState(State, state_name="MainMenu"):
+            def process_event(self, event: pygame.event.Event) -> None:
+                # This is executed in our our game loop for every event.
 
-            if event.type == pygame.QUIT:
-                  # We set the state manager's is_running variable to false
-                  # which stops the game loop from continuing.
-                  self.manager.is_running = False
+                if event.type == pygame.QUIT:
+                    # We set the state manager's is_running variable to false
+                    # which stops the game loop from continuing.
+                    self.manager.is_running = False
 
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-                  # Check if we're clicking the " c " button.
-                  # If the condition is met, we change our screen to
-                  # "SecondScreen" in the manager.
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+                    # Check if we're clicking the " w " button.
+                    # If the condition is met, we change our screen to the
+                    # "Game" screen from the manager.
 
-                  self.manager.change_state("SecondScreen")
+                    self.manager.change_state("Game")
 
-         def process_update(self, dt: float) -> None:
-            # This is executed in our game loop.
+            def process_update(self, *args: float) -> None:
+                # This is executed in our game loop.
 
-            self.window.fill(GREEN)
-            pygame.display.update()
+                self.window.fill(GREEN)
+                pygame.display.update()
 
 
-      class ScreenTwo(State, state_name="SecondScreen"):
-         def on_setup(self) -> None:
-            # The on_setup is executed right after you call the StateManager.load_states
-            self.player_x = 250
+        class GameState(State, state_name="Game"):
+            def __init__(self) -> None:
+                self.player_x: float = 250.0
 
-         def process_event(self, event: pygame.event.Event) -> None:
-            if event.type == pygame.QUIT:
-                  self.manager.is_running = False
+            def process_event(self, event: pygame.event.Event) -> None:
+                if event.type == pygame.QUIT:
+                    self.manager.is_running = False
 
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-                  # Check if we're clicking the " c " button.
-                  # If the condition is met, we change our screen to
-                  # "FirstScreen" in the manager.
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+                    # Check if we're clicking the " w " button.
+                    # If the condition is met, we change our screen to the
+                    # "MainMenu" screen from the manager.
 
-                  self.manager.change_state("FirstScreen")
+                    self.manager.change_state("MainMenu")
 
-         def process_update(self, dt: float) -> None:
-            self.window.fill(BLUE)
+            def process_update(self, *args: float) -> None:
+                dt = args[0]
 
-            # Player movement-
-            pressed = pygame.key.get_pressed()
-            if pressed[pygame.K_a]:
-                  self.player_x -= speed * dt
+                self.window.fill(BLUE)
 
-            if pressed[pygame.K_d]:
-                  self.player_x += speed * dt
+                # Player movement-
+                pressed = pygame.key.get_pressed()
+                if pressed[pygame.K_a]:
+                    self.player_x -= speed * dt
 
-            pygame.draw.rect(
-                  self.window,
-                  "red",
-                  (
-                     self.player_x,
-                     100,
-                     50,
-                     50,
-                  ),
-            )
+                if pressed[pygame.K_d]:
+                    self.player_x += speed * dt
 
-            pygame.display.update()
+                pygame.draw.rect(
+                    self.window,
+                    "red",
+                    (
+                        self.player_x,
+                        100,
+                        50,
+                        50,
+                    ),
+                )
 
-Finally, we need to add our ``SecondScreen`` to our ``StateManager`` just like
-how we did for our ``FirstScreen``.
+                pygame.display.update()
+
+Finally, we need to add our ``GameState`` to our ``StateManager`` just like
+how we did for our ``MainMenuState``.
 
 .. code-block:: python
 
-   state_manager.load_states(ScreenOne, ScreenTwo)
+    state_manager.load_states(MainMenuState, GameState)
 
 There you go! We have made a simple pygame to handle multiple screens via Game
 State! The final code will look something like this-
 
 .. code-block:: python
 
-   import pygame
+    import pygame
+    from game_state import State, StateManager
 
-   from game_state import State, StateManager
-
-
-   GREEN = (0, 255, 0)
-   BLUE = (0, 0, 255)
-   speed = 100
-   pygame.init()
-   pygame.display.init()
-   pygame.display.set_caption("Game State Example")
+    GREEN = (0, 255, 0)
+    BLUE = (0, 0, 255)
+    speed = 200
+    pygame.init()
+    pygame.display.init()
+    pygame.display.set_caption("Game State Example")
 
 
-   class ScreenOne(State, state_name="FirstScreen"):
-      def process_event(self, event: pygame.event.Event) -> None:
-         # This is executed in our our game loop for every event.
+    class MainMenuState(State, state_name="MainMenu"):
+        def process_event(self, event: pygame.event.Event) -> None:
+            # This is executed in our our game loop for every event.
 
-         if event.type == pygame.QUIT:
-               # We set the state manager's is_running variable to false
-               # which stops the game loop from continuing.
-               self.manager.is_running = False
+            if event.type == pygame.QUIT:
+                # We set the state manager's is_running variable to false
+                # which stops the game loop from continuing.
+                self.manager.is_running = False
 
-         if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-               # Check if we're clicking the " c " button.
-               # If the condition is met, we change our screen to
-               # "SecondScreen" in the manager.
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+                # Check if we're clicking the " w " button.
+                # If the condition is met, we change our screen to the
+                # "Game" screen from the manager.
 
-               self.manager.change_state("SecondScreen")
+                self.manager.change_state("Game")
 
-      def process_update(self, dt: float) -> None:
-         # This is executed in our game loop.
+        def process_update(self, *args: float) -> None:
+            # This is executed in our game loop.
 
-         self.window.fill(GREEN)
-         pygame.display.update()
+            self.window.fill(GREEN)
+            pygame.display.update()
 
 
-   class ScreenTwo(State, state_name="SecondScreen"):
-      def on_setup(self) -> None:
-         # The on_setup is executed right after you call the StateManager.load_states
-         self.player_x = 250
+    class GameState(State, state_name="Game"):
+        def __init__(self) -> None:
+            self.player_x: float = 250.0
 
-      def process_event(self, event: pygame.event.Event) -> None:
-         if event.type == pygame.QUIT:
-               self.manager.is_running = False
+        def process_event(self, event: pygame.event.Event) -> None:
+            if event.type == pygame.QUIT:
+                self.manager.is_running = False
 
-         if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-               # Check if we're clicking the " c " button.
-               # If the condition is met, we change our screen to
-               # "FirstScreen" in the manager.
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+                # Check if we're clicking the " w " button.
+                # If the condition is met, we change our screen to the
+                # "MainMenu" screen from the manager.
 
-               self.manager.change_state("FirstScreen")
+                self.manager.change_state("MainMenu")
 
-      def process_update(self, dt: float) -> None:
-         self.window.fill(BLUE)
+        def process_update(self, *args: float) -> None:
+            dt = args[0]
 
-         # Player movement-
-         pressed = pygame.key.get_pressed()
-         if pressed[pygame.K_a]:
-               self.player_x -= speed * dt
+            self.window.fill(BLUE)
 
-         if pressed[pygame.K_d]:
-               self.player_x += speed * dt
+            # Player movement-
+            pressed = pygame.key.get_pressed()
+            if pressed[pygame.K_a]:
+                self.player_x -= speed * dt
 
-         pygame.draw.rect(
-               self.window,
-               "red",
-               (
-                  self.player_x,
-                  100,
-                  50,
-                  50,
-               ),
-         )
+            if pressed[pygame.K_d]:
+                self.player_x += speed * dt
 
-         pygame.display.update()
+            pygame.draw.rect(
+                self.window,
+                "red",
+                (
+                    self.player_x,
+                    100,
+                    50,
+                    50,
+                ),
+            )
 
-   def main() -> None:
-      screen = pygame.display.set_mode((500, 700))
-      # Create a basic 500x700 pixel window
+            pygame.display.update()
 
-      state_manager = StateManager(screen)
-      state_manager.load_states(ScreenOne, ScreenTwo)
-      # We pass in all the screens that we want to use in our game / app.
 
-      state_manager.change_state("FirstScreen") 
-      # We need to use the name we supplied in the __init_sublcass__'s `state_name`.
-      # If no state_name was passed, we use the class name itself.
-      
-      clock = pygame.time.Clock()
+    def main() -> None:
+        screen = pygame.display.set_mode((500, 600))
+        # Create a basic 500x600 pixel window
 
-      while state_manager.is_running:
-         # The state manager has a `is_running` attribute which is `True` by default
+        state_manager = StateManager(screen)
+        state_manager.load_states(MainMenuState, GameState)
+        # We pass in all the screens that we want to use in our game / app.
 
-         dt = clock.tick(60) / 1000  # The delta time from the clock for frame rate independance.
+        state_manager.change_state("MainMenu")
+        # We need to use the name we supplied in the __init_sublcass__'s `state_name`.
+        # If no state_name was passed, we use the class name itself.
 
-         for event in pygame.event.get():
-               state_manager.current_state.process_event(event)
-               # Calling the event function of the running state.
+        clock = pygame.time.Clock()
 
-         state_manager.current_state.process_update(dt)
-         # Calling the update function of the running state.
-      
-   if __name__ == "__main__":
-      main()
+        assert state_manager.current_state is not None
+
+        while state_manager.is_running:
+            # The state manager has a `is_running` attribute which is `True` by default
+
+            dt = clock.tick(60) / 1000
+            # The delta time from the clock for frame rate independance.
+
+            for event in pygame.event.get():
+                state_manager.current_state.process_event(event)
+                # Calling the event function of the running state.
+
+            state_manager.current_state.process_update(dt)
+            # Calling the update function of the running state.
+
+
+    if __name__ == "__main__":
+        main()
+
+
+Demo Output
+-----------
+
+Upon following this guide correctly, you will obtain an output similar to this-
+
+.. image:: https://img.youtube.com/vi/QTN-YW8dv_I/maxresdefault.jpg
+    :alt: Demo output video
+    :target: https://www.youtube.com/watch?v=QTN-YW8dv_I
+
+(Click to open the video)
 
 .. :toctree::
 
