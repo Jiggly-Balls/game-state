@@ -8,7 +8,7 @@ pygame.display.set_caption("Game State Hooks Example")
 
 def main() -> None:
     screen = pygame.display.set_mode((500, 600))
-    # Create a basic 500x700 pixel window
+    # Create a basic 500x600 pixel window
 
     state_manager = StateManager(screen)
     state_manager.connect_state_hook("main_menu")
