@@ -6,3 +6,6 @@ ruff:
 
 check:
 	uv tool run basedpyright .
+
+test-docs:
+	uv run sphinx-autobuild docs/source docs/_build/html
