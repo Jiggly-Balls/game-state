@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added support to python version 3.14.
+- Added Code of Conduct.
+- Added CONTRIBUTING guidelines.
 
 ### Changed
 
