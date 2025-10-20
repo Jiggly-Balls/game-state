@@ -639,6 +639,9 @@ That's all you need to do to use state hooks!
 
 Running your ``main.py`` file will give you the same output as `Demo Output`_
 
+All the code in this guide is available in the `examples <https://github.com/Jiggly-Balls/game-state/tree/main/examples>`_
+directory of it's repository.
+
 .. :toctree::
 
    api
