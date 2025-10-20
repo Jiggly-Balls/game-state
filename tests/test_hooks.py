@@ -1,14 +1,7 @@
-import sys
-
-import pytest
-
 from src.game_state import StateManager
 
 
 def test_hooks() -> None:
-    # sys.path.append(sys.path[0] + "\\tests\\test_hooks_states")
-    # print("\n".join(sys.path))
-
     state_manager = StateManager(...)  # pyright: ignore[reportArgumentType]
 
     state_manager.connect_state_hook("tests.test_hook_states.hook_1")
