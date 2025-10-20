@@ -7,12 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added support to python version 3.14.
+
 ### Changed
 
 - Updated author name throughout the project.
 - Documentation guide now covers how to use state hooks.
 - Examples & guide use better naming standards.
-- Global listeners can now accept `NoneType`
+- Global listeners can now accept `NoneType`.
 
 ## [2.0.2] - 2025-09-23
 
@@ -35,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Changed all examples to reflect v2
+- Changed all examples to reflect v2.
 
 ### Fixed
 
@@ -54,9 +58,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - No longer backward compatible with v1.x.x
 - Changed the following methods to properties in the `StateManager`-
-  - `get_current_state` method to `current_state` property
-  - `get_last_state` method to `last_state` property
-  - `get_state_map` method to `state_map` property
+  - `get_current_state` method to `current_state` property.
+  - `get_last_state` method to `last_state` property.
+  - `get_state_map` method to `state_map` property.
 
 ### Removed
 
@@ -75,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added examples on state hooks in `examples/state_hooks`
+- Added examples on state hooks in `examples/state_hooks`.
 
 ### Changed
 
@@ -105,4 +109,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixed docstrings of classes & methods
+- Fixed docstrings of classes & methods.
