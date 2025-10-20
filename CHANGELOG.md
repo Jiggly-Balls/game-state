@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated author name throughout the project.
 - Documentation guide now covers how to use state hooks.
-- Examples use better naming standards.
+- Examples & guide use better naming standards.
 - Global listeners can now accept `NoneType`
 
 ## [2.0.2] - 2025-09-23
