@@ -16,15 +16,10 @@ A pygame utility package that allows you to handle different screens in an organ
 
 ## Table of Contents
 
-- [Analytics](#analytics)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Links](#links)
-
-### Analytics
-
-![Alt](https://repobeats.axiom.co/api/embed/cbb24e2ae82fdceeceba8291982821ddbc065897.svg "Repobeats analytics image")
 
 ### Requirements
 
