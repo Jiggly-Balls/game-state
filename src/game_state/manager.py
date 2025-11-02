@@ -355,14 +355,13 @@ class StateManager:
                 args_cache[argument.state_name] = argument.get_data()
 
         for state in states:
-            final_state_args = args_cache.get(state.state_name, {})
-
             if not issubclass(state, State):
                 raise StateError(
                     "The passed argument(s) is not a subclass of State.",
                     last_state=self._last_state,
-                    **final_state_args,
                 )
+
+            final_state_args = args_cache.get(state.state_name, {})
 
             if not force and state.state_name in self._states:
                 raise StateLoadError(
