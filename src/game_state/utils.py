@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from typing import Any, Tuple
 
 
-__all__ = ("MISSING",)
+__all__ = ("StateArgs", "MISSING")
 
 
 class StateArgs:
