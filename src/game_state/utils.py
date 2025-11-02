@@ -38,11 +38,6 @@ class StateArgs:
         return attributes
 
 
-a = StateArgs(state_name="hi", g="gdsad", test=32)
-print(a)
-print(a.get_data())
-
-
 class _MissingSentinel:
     __slots__: Tuple[str, ...] = ()
 
