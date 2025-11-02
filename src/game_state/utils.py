@@ -11,7 +11,7 @@ __all__ = ("MISSING",)
 
 class StateArgs:
     def __init__(self, *, state_name: str, **kwargs: Any) -> None:
-        self.state_name = state_name
+        self.state_name: str = state_name
         self.__dict__.update(kwargs)
 
     def __repr__(self) -> str:
