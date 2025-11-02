@@ -42,7 +42,7 @@ build-backend = "setuptools.build_meta"
 [tool.ruff]
 line-length = 79
 lint.extend-select = ["ANN", "I"]
-lint.ignore = ["ANN401", "F"]
+lint.ignore = ["ANN401"]
 lint.fixable = ["I", "F401"]
 
 [tool.ruff.format]
@@ -70,11 +70,8 @@ reportUnnecessaryIsInstance = false
 reportImplicitStringConcatenation = false
 reportUnusedCallResult = false
 reportMissingTypeStubs = false
-reportAssignmentType = false
-reportRedeclaration = false
 reportAny = false
 reportExplicitAny = false
-reportUnknownVariableType = false
 reportDeprecated = false
 reportImplicitOverride = false
 reportUnusedParameter = false
