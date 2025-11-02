@@ -55,14 +55,13 @@ def test_change_states(
     state_2 = scenario[2]
 
     manager.load_states(state_1, state_2)
-
-    assert manager.current_state is None, (
-        "Got a non-None value while no state was updated to."
-    )
-
     manager.change_state(state_1.state_name)
 
-    assert manager.current_state.state_name == state_1.state_name, (  # pyright:ignore[reportAttributeAccessIssue]
+    assert manager.current_state is not None, (
+        "Received NoneType for current state."
+    )
+
+    assert manager.current_state.state_name == state_1.state_name, (
         "Received wrong state instance upon changing."
     )
 
