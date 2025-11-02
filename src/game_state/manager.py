@@ -336,8 +336,8 @@ class StateManager:
             .. warning::
               If set to ``True`` it may lead to unexpected behavior.
 
-        :param \**kwargs:
-            | The keyword arguments to be passed to the State's subclass on instantiation.
+        :param state_args:
+            | The data to be passed to the subclassed states upon their initialization in the manager.
 
         :raises:
             :exc:`StateLoadError`
