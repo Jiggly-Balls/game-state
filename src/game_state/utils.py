@@ -1,17 +1,21 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from typing import Any, Tuple
+    from typing import Any, Dict, Tuple
 
 
 __all__ = ("StateArgs", "MISSING")
 
 
+@dataclass()
 class StateArgs:
+    state_name: str
+
     def __init__(self, *, state_name: str, **kwargs: Any) -> None:
-        self.state_name: str = state_name
+        self.state_name = state_name
         self.__dict__.update(kwargs)
 
     def __repr__(self) -> str:
@@ -28,12 +32,15 @@ class StateArgs:
             + ")"
         )
 
-    def __eq__(self, value: object) -> bool:
-        return isinstance(value, StateArgs) and value.__dict__ == self.__dict__
+    def get_data(self) -> Dict[str, Any]:
+        attributes = self.__dict__.copy()
+        del attributes["state_name"]
+        return attributes
 
-    def __bool__(self) -> bool:
-        # The StateArg having data other than `state_name` will be considered truthy.
-        return len(self.__dict__) > 1
+
+a = StateArgs(state_name="hi", g="gdsad", test=32)
+print(a)
+print(a.get_data())
 
 
 class _MissingSentinel:
