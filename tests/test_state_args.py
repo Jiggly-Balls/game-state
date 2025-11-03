@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from game_state import State, StateManager
-from game_state.utils import StateArgs
+from src.game_state import State, StateManager
+from src.game_state.utils import StateArgs
 
 
 def test_state_args() -> None:
