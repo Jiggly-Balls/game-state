@@ -14,8 +14,8 @@ author = "Krish Mohan M."
 # release = f"{version_info.major}.{version_info.minor}.{version_info.patch} - {version_info.releaselevel}"
 
 
-version = "2.0"
-release = "2.0.3 - final"
+version = "2.1"
+release = "2.1.0 - final"
 
 # -- General configuration
 extensions = [

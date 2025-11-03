@@ -8,11 +8,13 @@ from .errors import StateError, StateLoadError
 from .state import State
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Iterable
     from inspect import Signature
     from typing import Any, Dict, NoReturn, Optional, Tuple, Type
 
     from pygame import Surface
+
+    from .utils import StateArgs
 
 
 __all__ = ("StateManager",)
@@ -315,7 +317,10 @@ class StateManager:
         state.__dict__["hook"](**kwargs)
 
     def load_states(
-        self, *states: Type[State], force: bool = False, **kwargs: Any
+        self,
+        *states: Type[State],
+        force: bool = False,
+        state_args: Optional[Iterable[StateArgs]] = None,
     ) -> None:
         r"""Loads the States into the StateManager.
 
@@ -331,8 +336,8 @@ class StateManager:
             .. warning::
               If set to ``True`` it may lead to unexpected behavior.
 
-        :param \**kwargs:
-            | The keyword arguments to be passed to the State's subclass on instantiation.
+        :param state_args:
+            | The data to be passed to the subclassed states upon their initialization in the manager.
 
         :raises:
             :exc:`StateLoadError`
@@ -343,22 +348,29 @@ class StateManager:
                 | Raised when the passed argument(s) is not subclassed from ``State``.
         """
 
+        args_cache: Dict[str, Dict[str, Any]] = {}
+
+        if state_args:
+            for argument in state_args:
+                args_cache[argument.state_name] = argument.get_data()
+
         for state in states:
             if not issubclass(state, State):
                 raise StateError(
                     "The passed argument(s) is not a subclass of State.",
                     last_state=self._last_state,
-                    **kwargs,
                 )
+
+            final_state_args = args_cache.get(state.state_name, {})
 
             if not force and state.state_name in self._states:
                 raise StateLoadError(
                     f"State: {state.state_name} has already been loaded.",
                     last_state=self._last_state,
-                    **kwargs,
+                    **final_state_args,
                 )
 
-            self._states[state.state_name] = state(**kwargs)
+            self._states[state.state_name] = state(**final_state_args)
             if self._global_on_setup:
                 self._global_on_setup(self._states[state.state_name])
             self._states[state.state_name].on_setup()

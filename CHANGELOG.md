@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) when possible.
 
+## [Unreleased]
+
+### Added
+
+- Added `game_state.utils.StateArgs`
+- Added documentation for `game_state.utils` module.
+- Added examples on `game_state.utils.StateArgs` and it's usage.
+
+### Fixed
+
+- Fixed loading arguments to specific states in `game_state.StateManager.load_states`.
+
 ## [2.0.3] - 2025-10-20
 
 ### Added
