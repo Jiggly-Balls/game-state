@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `game_state.utils.StateArgs`
 - Added documentation for `game_state.utils` module.
+- Added examples on `game_state.utils.StateArgs` and it's usage.
 
 ### Fixed
 
