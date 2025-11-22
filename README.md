@@ -127,3 +127,4 @@ You can have a look at the [game state guide](https://game-state.readthedocs.io/
 
 - Guide & API Reference: https://game-state.readthedocs.io/en/stable/
 - PyPI Page: https://pypi.org/project/game-state/
+- Github Page: https://github.com/Jiggly-Balls/game-state/
