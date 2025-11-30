@@ -12,7 +12,7 @@
 
 # Game-State
 
-A pygame utility package that allows you to handle different screens in an organized manner.
+A state machine for organizing different in-game screens for pygame.
 
 ## Table of Contents
 
