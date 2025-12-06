@@ -51,6 +51,9 @@ class StateManager:
             Callable[[Optional[State], State], None]
         ] = None
 
+        self._lazy_states: Dict[
+            str, Tuple[Type[State], Optional[StateArgs]]
+        ] = {}
         self._states: Dict[str, State] = {}
         self._current_state: Optional[State] = None
         self._last_state: Optional[State] = None
@@ -315,6 +318,13 @@ class StateManager:
             )
 
         state.__dict__["hook"](**kwargs)
+
+    def lazy_load_states(
+        self,
+        *lazy_states: Type[State],
+        force: bool = False,
+        state_args: Optional[Iterable[StateArgs]] = None,
+    ) -> None: ...
 
     def load_states(
         self,
