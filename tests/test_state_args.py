@@ -25,7 +25,7 @@ def test_state_args() -> None:
     state_one_args = StateArgs(state_name="StateOne", data_1=DATA_1)
     state_two_args = StateArgs(state_name="StateTwo", data_2=DATA_2)
 
-    manager = StateManager(...)  # type: ignore
+    manager = StateManager(...)  # pyright: ignore[reportArgumentType]
     manager.load_states(
         StateOne,
         StateTwo,
