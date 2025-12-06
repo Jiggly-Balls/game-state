@@ -78,11 +78,13 @@ members = ["examples"]
 
 [dependency-groups]
 dev = [
+    "basedpyright>=1.31.7",
     "furo>=2025.9.25",
     "numpydoc>=1.9.0",
     "pre-commit>=3.5.0",
     "pygame-ce",
     "pytest>=8.4.0",
+    "ruff>=0.14.1",
     "sphinx>=8.2.3",
     "sphinx-autobuild>=2024.10.3",
     "sphinx-autodoc-typehints>=3.5.2",

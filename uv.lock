@@ -264,11 +264,13 @@ source = { editable = "." }
 
 [package.dev-dependencies]
 dev = [
+    { name = "basedpyright" },
     { name = "furo" },
     { name = "numpydoc" },
     { name = "pre-commit" },
     { name = "pygame-ce" },
     { name = "pytest" },
+    { name = "ruff" },
     { name = "sphinx" },
     { name = "sphinx-autobuild" },
     { name = "sphinx-autodoc-typehints" },
@@ -278,11 +280,13 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "basedpyright", specifier = ">=1.31.7" },
     { name = "furo", specifier = ">=2025.9.25" },
     { name = "numpydoc", specifier = ">=1.9.0" },
     { name = "pre-commit", specifier = ">=3.5.0" },
     { name = "pygame-ce" },
     { name = "pytest", specifier = ">=8.4.0" },
+    { name = "ruff", specifier = ">=0.14.1" },
     { name = "sphinx", specifier = ">=8.2.3" },
     { name = "sphinx-autobuild", specifier = ">=2024.10.3" },
     { name = "sphinx-autodoc-typehints", specifier = ">=3.5.2" },
