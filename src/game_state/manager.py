@@ -10,7 +10,7 @@ from .state import State
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
     from inspect import Signature
-    from typing import Any, Dict, NoReturn, Optional, Tuple, Type
+    from typing import Any, Dict, List, NoReturn, Optional, Tuple, Type
 
     from pygame import Surface
 
@@ -52,7 +52,7 @@ class StateManager:
         ] = None
 
         self._lazy_states: Dict[
-            str, Tuple[Type[State], Optional[StateArgs]]
+            str, Tuple[Type[State], Optional[List[StateArgs]]]
         ] = {}
         self._states: Dict[str, State] = {}
         self._current_state: Optional[State] = None
@@ -251,6 +251,21 @@ class StateManager:
         raise ValueError("Cannot overwrite the last state.")
 
     @property
+    def lazy_state_map(
+        self,
+    ) -> Dict[str, Tuple[Type[State], Optional[List[StateArgs]]]]:
+        """A dictionary copy of all the state names mapped to their respective instance.
+
+        .. note::
+            This is a read-only attribute.
+        """
+        return self._lazy_states.copy()
+
+    @lazy_state_map.setter
+    def lazy_state_map(self, _: Any) -> NoReturn:
+        raise ValueError("Cannot overwrite the lazy state map.")
+
+    @property
     def state_map(self) -> Dict[str, State]:
         """A dictionary copy of all the state names mapped to their respective instance.
 
@@ -276,11 +291,37 @@ class StateManager:
         """
 
         if state_name not in self._states:
-            raise StateError(
-                f"State `{state_name}` isn't present from the available states: "
-                f"`{', '.join(self.state_map.keys())}`.",
-                last_state=self._last_state,
-            )
+            if state_name in self._lazy_states:
+                fetched_lazy_state, lazy_state_args = self._lazy_states[
+                    state_name
+                ]
+                self.load_states(
+                    fetched_lazy_state, state_args=lazy_state_args
+                )
+                del self._lazy_states[state_name]
+
+            else:
+                state_keys = self.state_map.keys()
+                lazy_state_keys = self.lazy_state_map.keys()
+                message = (
+                    f"State `{state_name}` isn't present from the available"
+                )
+
+                if len(state_keys) == 0 and len(lazy_state_keys) == 0:
+                    message = "No states have been loaded to change to."
+
+                if len(state_keys) > 0:
+                    message += f" states: `{', '.join(self.state_map.keys())}`"
+
+                if len(lazy_state_keys) > 0:
+                    if len(state_keys) > 0:
+                        message += " and "
+                    message += f"from the available lazy states: `{', '.join(self.lazy_state_map.keys())}`"
+
+                raise StateError(
+                    message,
+                    last_state=self._last_state,
+                )
 
         self._last_state = self._current_state
         self._current_state = self._states[state_name]
@@ -319,12 +360,71 @@ class StateManager:
 
         state.__dict__["hook"](**kwargs)
 
-    def lazy_load_states(
+    def add_lazy_states(
         self,
         *lazy_states: Type[State],
         force: bool = False,
         state_args: Optional[Iterable[StateArgs]] = None,
-    ) -> None: ...
+    ) -> None:
+        r"""Lazily adds the States into the StateManager.
+        Unlike :meth:`load_states`, it only initializes the state when required.
+
+        :param states:
+            | The States to be loaded into the manager.
+
+        :param force:
+            | Default ``False``.
+            |
+            | Loads the State regardless of whether the State has already been loaded or not
+            | without raising any internal error.
+
+            .. warning::
+              If set to ``True`` it may lead to unexpected behavior.
+
+        :param state_args:
+            | The data to be passed to the subclassed states upon their initialization in the manager.
+
+        :raises:
+            :exc:`StateLoadError`
+                | Raised when the state has already been loaded.
+                | Only raised when ``force`` is set to ``False``.
+
+            :exc:`StateError`
+                | Raised when the passed argument(s) is not subclassed from ``State``.
+        """
+
+        args_cache: Dict[str, Optional[StateArgs]] = {}
+
+        if state_args:
+            for argument in state_args:
+                args_cache[argument.state_name] = argument
+
+        for lazy_state in lazy_states:
+            if not issubclass(lazy_state, State):
+                raise StateError(
+                    "The passed argument(s) is not a subclass of State.",
+                    last_state=self._last_state,
+                )
+
+            if (
+                not force
+                and lazy_state.state_name in self._states
+                or lazy_state.state_name in self._lazy_states
+            ):
+                raise StateLoadError(
+                    f"State: {lazy_state.state_name} has already been loaded.",
+                    last_state=self._last_state,
+                )
+
+            lazy_state_arg: Optional[List[StateArgs]] = (  # pyright: ignore[reportAssignmentType]
+                None
+                if args_cache[lazy_state.state_name] is None
+                else [args_cache[lazy_state.state_name]]
+            )
+            self._lazy_states[lazy_state.state_name] = (
+                lazy_state,
+                lazy_state_arg,
+            )
 
     def load_states(
         self,
@@ -421,6 +521,29 @@ class StateManager:
         )
         self.load_states(deleted_cls, force=force, **kwargs)
         return self._states[state_name]
+
+    def remove_lazy_state(
+        self, state_name: str
+    ) -> Optional[Tuple[Type[State], Optional[List[StateArgs]]]]:
+        r"""Removes the lazy ``State`` from the ``StateManager``.
+
+        :param state_name:
+            | The State to be loaded into the manager.
+
+        :param \**kwargs:
+            | The keyword arguments to be passed on to the raised errors.
+
+        :returns:
+            | A :class:`bool` indicating whether the lazy state has been successfully
+            | removed or not.
+        """
+
+        try:
+            cls_ref = self._lazy_states[state_name]
+            del self._lazy_states[state_name]
+            return cls_ref
+        except KeyError:
+            return None
 
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
