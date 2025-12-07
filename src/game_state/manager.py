@@ -254,10 +254,15 @@ class StateManager:
     def lazy_state_map(
         self,
     ) -> Dict[str, Tuple[Type[State], Optional[List[StateArgs]]]]:
-        """A dictionary copy of all the state names mapped to their respective instance.
+        """A dictionary copy of all the added lazy state names mapped to their respective
+        type and state args.
 
         .. note::
             This is a read-only attribute.
+
+        .. note::
+            Once the lazy state has been fully initialized it will be removed from the lazy
+            state map.
         """
         return self._lazy_states.copy()
 
