@@ -534,8 +534,9 @@ class StateManager:
             | The keyword arguments to be passed on to the raised errors.
 
         :returns:
-            | A :class:`bool` indicating whether the lazy state has been successfully
-            | removed or not.
+            | Either returns :class:`None` if the lazy state was not found or it returns a
+            | tuple with the first element being the lazy state and the second being
+            | the :class:`StateArgs` if any were passed.
         """
 
         try:
