@@ -418,7 +418,7 @@ class StateManager:
 
             lazy_state_arg: Optional[List[StateArgs]] = (  # pyright: ignore[reportAssignmentType]
                 None
-                if args_cache[lazy_state.state_name] is None
+                if args_cache.get(lazy_state.state_name) is None
                 else [args_cache[lazy_state.state_name]]
             )
             self._lazy_states[lazy_state.state_name] = (
