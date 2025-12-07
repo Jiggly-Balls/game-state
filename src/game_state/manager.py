@@ -579,8 +579,27 @@ class StateManager:
         """
 
         if state_name not in self._states:
+            state_keys = self.state_map.keys()
+            lazy_state_keys = self.lazy_state_map.keys()
+
+            message = f"State: `{state_name}` doesn't exist to be unloaded"
+
+            if len(state_keys) == 0 and len(lazy_state_keys) == 0:
+                message = f"No state has been loaded to unload `{state_name}`."
+
+            if len(state_keys) > 0:
+                message += (
+                    f" from the following states: `{', '.join(state_keys)}`"
+                )
+
+            if state_name in lazy_state_keys:
+                message += (
+                    "; but exists as a lazy state. "
+                    "Did you mean to use `StateManager.remove_lazy_state` instead?"
+                )
+
             raise StateLoadError(
-                f"State: {state_name} doesn't exist to be unloaded.",
+                message,
                 last_state=self._last_state,
                 **kwargs,
             )
