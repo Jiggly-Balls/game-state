@@ -261,8 +261,8 @@ class StateManager:
             This is a read-only attribute.
 
         .. note::
-            Once the lazy state has been fully initialized it will be removed from the lazy
-            state map.
+            Once the lazy state has been fully initialized, it will be removed from the
+            lazy state map.
         """
         return self._lazy_states.copy()
 
@@ -291,7 +291,7 @@ class StateManager:
             | The name of the State you want to switch to.
 
         :raises:
-            :exc:`StateError`
+            :exc:`game_state.errors.StateError`
                 | Raised when the state name doesn't exist in the manager.
         """
 
@@ -349,7 +349,7 @@ class StateManager:
             | The keyword arguments to be passed to the hook function.
 
         :raises:
-            :exc:`StateError`
+            :exc:`game_state.errors.StateError`
                 | Raised when the hook function was not found in the state file to be loaded.
         """
 
@@ -372,7 +372,8 @@ class StateManager:
         state_args: Optional[Iterable[StateArgs]] = None,
     ) -> None:
         r"""Lazily adds the States into the StateManager.
-        Unlike :meth:`load_states`, it only initializes the state when required.
+        Unlike :meth:`load_states`, it only initializes the state when required
+        i.e. when :meth:`change_state` switches to the lazy state.
 
         :param states:
             | The States to be loaded into the manager.
@@ -390,11 +391,11 @@ class StateManager:
             | The data to be passed to the subclassed states upon their initialization in the manager.
 
         :raises:
-            :exc:`StateLoadError`
+            :exc:`game_state.errors.StateLoadError`
                 | Raised when the state has already been loaded.
                 | Only raised when ``force`` is set to ``False``.
 
-            :exc:`StateError`
+            :exc:`game_state.errors.StateLoadError`
                 | Raised when the passed argument(s) is not subclassed from ``State``.
         """
 
@@ -417,7 +418,7 @@ class StateManager:
                 or lazy_state.state_name in self._lazy_states
             ):
                 raise StateLoadError(
-                    f"State: {lazy_state.state_name} has already been loaded.",
+                    f"State: {lazy_state.state_name} has already been added.",
                     last_state=self._last_state,
                 )
 
@@ -455,11 +456,11 @@ class StateManager:
             | The data to be passed to the subclassed states upon their initialization in the manager.
 
         :raises:
-            :exc:`StateLoadError`
+            :exc:`game_state.errors.StateLoadError`
                 | Raised when the state has already been loaded.
                 | Only raised when ``force`` is set to ``False``.
 
-            :exc:`StateError`
+            :exc:`game_state.errors.StateError`
                 | Raised when the passed argument(s) is not subclassed from ``State``.
         """
 
@@ -516,7 +517,7 @@ class StateManager:
             | Returns the newly made :class:`State` instance.
 
         :raises:
-            :exc:`StateLoadError`
+            :exc:`game_state.errors.StateLoadError`
                 | Raised when the state has already been loaded.
                 | Only raised when ``force`` is set to ``False``.
         """
@@ -575,10 +576,10 @@ class StateManager:
             | The :class:`State` class of the deleted State name.
 
         :raises:
-            :exc:`StateLoadError`
+            :exc:`game_state.errors.StateLoadError`
                 | Raised when the state doesn't exist in the manager to be unloaded.
 
-            :exc:`StateError`
+            :exc:`game_state.errors.StateError`
                 | Raised when trying to unload an actively running State.
                 | Only raised when ``force`` is set to ``False``.
         """
