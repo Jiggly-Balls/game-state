@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) when possible.
 
+## [Unreleased]
+
+### Added
+
+- `StateManager.lazy_state_map` property.
+- `StateManager.add_lazy_states` method.
+- `StateManager.remove_lazy_state` method.
+
+### Fixed
+
+- Fixed documentation error where exception types weren't linked properly.
+
 ## [2.1.0] - 2025-11-04
 
 ### Added
