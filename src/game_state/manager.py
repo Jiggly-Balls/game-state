@@ -285,7 +285,8 @@ class StateManager:
 
     def change_state(self, state_name: str) -> None:
         """Changes the current state and updates the last state. This method executes
-        the ``on_leave`` & ``on_enter`` state & global listeners.
+        the :meth:`State.on_leave` & :meth:`State.on_enter` state & global listeners
+        (:meth:`global_on_leave` & :meth:`global_on_enter`)
 
         :param state_name:
             | The name of the State you want to switch to.
@@ -494,8 +495,8 @@ class StateManager:
     def reload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> State:
-        r"""Reloads the specified State. A short hand to ``StateManager.unload_state`` &
-        ``StateManager.load_state``.
+        r"""Reloads the specified State. A short hand to :meth:`unload_state` &
+        :meth:`load_states`.
 
         :param state_name:
             | The ``State`` name to be reloaded.
