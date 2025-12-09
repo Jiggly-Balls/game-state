@@ -43,6 +43,34 @@ class State(ABC):
         eager_load: bool = False,
         lazy_load: bool = False,
     ) -> None:
+        """Arguments you can pass while subclassing the State.
+
+        :param state_name:
+            | The name of the state. If no `state_name` is passed, it uses the identifier's name.
+
+            .. code-block:: python
+
+                class Game(State, state_name="GameState"): ...
+
+        :param eager_load:
+            | Automatically marks this class to be loaded eagerly.
+
+            .. code-block:: python
+
+                class MainMenu(State, eager_load=True): ...
+
+        :param lazy_load:
+            | Automatically marks this class to be loaded lazily.
+
+            .. code-block:: python
+
+                class MainMenu(State, lazy_load=True): ...
+
+        .. warning::
+            You cannot set ``eager_load`` and ``lazy_load`` both to ``True``. You can only
+            enable one (or none) of them.
+        """
+
         cls.state_name = state_name or cls.__name__
 
         if lazy_load and eager_load:
