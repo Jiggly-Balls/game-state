@@ -15,7 +15,7 @@ author = "Krish Mohan M."
 
 
 version = "2.1"
-release = "2.1.0 - final"
+release = "2.2.0 - final"
 
 # -- General configuration
 extensions = [
