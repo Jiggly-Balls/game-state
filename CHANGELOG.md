@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added auto state loading.
+- Added `eager_load` & `lazy_lazy` load parameters to `State.__init_subclass__`.
+- Added documentation for `State.__init_subclass__`.
 - `StateManager.lazy_state_map` property.
 - `StateManager.add_lazy_states` method.
 - `StateManager.remove_lazy_state` method.
