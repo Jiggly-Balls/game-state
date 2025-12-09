@@ -401,12 +401,15 @@ class StateManager:
         """
 
         args_cache: Dict[str, Optional[StateArgs]] = {}
+        all_states: List[Type[State]] = State._lazy_states.copy()  # pyright: ignore[reportPrivateUsage]
+        all_states.extend(lazy_states)
+        State._lazy_states.clear()  # pyright: ignore[reportPrivateUsage]
 
         if state_args:
             for argument in state_args:
                 args_cache[argument.state_name] = argument
 
-        for lazy_state in lazy_states:
+        for lazy_state in all_states:
             if not issubclass(lazy_state, State):
                 raise StateError(
                     "The passed argument(s) is not a subclass of State.",
@@ -466,12 +469,15 @@ class StateManager:
         """
 
         args_cache: Dict[str, Dict[str, Any]] = {}
+        all_states: List[Type[State]] = State._eager_states.copy()  # pyright: ignore[reportPrivateUsage]
+        all_states.extend(states)
+        State._eager_states.clear()  # pyright: ignore[reportPrivateUsage]
 
         if state_args:
             for argument in state_args:
                 args_cache[argument.state_name] = argument.get_data()
 
-        for state in states:
+        for state in all_states:
             if not issubclass(state, State):
                 raise StateError(
                     "The passed argument(s) is not a subclass of State.",
