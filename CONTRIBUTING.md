@@ -43,7 +43,7 @@ Thank you for your interest in contributing to **Game-State**! Contributions—w
 
 - Follow [PEP8](https://peps.python.org/pep-0008/).
 - Type annotations are required.
-- Use docstrings in [Numpydoc](https://numpydoc.readthedocs.io/en/latest/format.html) style.
+- Use docstrings in [Sphinx Style](https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html) style.
 - Use `basedpyright` for type checking.
 - Use `ruff` for linting and formatting.
 - If you have `Make` on your system you can run `make` to autoformat and `make check` to type check (both through `uv`).
