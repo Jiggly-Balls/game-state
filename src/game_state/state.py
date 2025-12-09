@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from .utils import MISSING
 
 if TYPE_CHECKING:
-    from typing import Any, Optional
+    from typing import Any, List, Optional, Type
 
     from pygame import Surface
     from pygame.event import Event
@@ -33,8 +33,57 @@ class State(ABC):
     window: Surface = MISSING
     manager: StateManager = MISSING
 
-    def __init_subclass__(cls, *, state_name: Optional[str] = None) -> None:
+    _eager_states: List[Type[State]] = []
+    _lazy_states: List[Type[State]] = []
+
+    def __init_subclass__(
+        cls,
+        *,
+        state_name: Optional[str] = None,
+        eager_load: bool = False,
+        lazy_load: bool = False,
+    ) -> None:
+        """Arguments you can pass while subclassing the State.
+
+        :param state_name:
+            | The name of the state. If no `state_name` is passed, it uses the identifier's name.
+
+            .. code-block:: python
+
+                class Game(State, state_name="GameState"): ...
+
+        :param eager_load:
+            | Automatically marks this class to be loaded eagerly.
+
+            .. code-block:: python
+
+                class MainMenu(State, eager_load=True): ...
+
+        :param lazy_load:
+            | Automatically marks this class to be loaded lazily.
+
+            .. code-block:: python
+
+                class MainMenu(State, lazy_load=True): ...
+
+        .. warning::
+            You cannot set ``eager_load`` and ``lazy_load`` both to ``True``. You can only
+            enable one (or none) of them.
+        """
+
         cls.state_name = state_name or cls.__name__
+
+        if lazy_load and eager_load:
+            raise TypeError(
+                "Cannot have both `lazy_load` and `eager_load` set to `True`."
+                " The state must either load lazy or eager."
+            )
+
+        if eager_load:
+            State._eager_states.append(cls)
+
+        elif lazy_load:
+            State._lazy_states.append(cls)
 
     def on_setup(self) -> None:
         r"""This listener is only called once while being loaded into the ``StateManager``.
