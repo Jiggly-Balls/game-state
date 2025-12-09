@@ -28,6 +28,7 @@ Thank you for your interest in contributing to **Game-State**! Contributions—w
      - For improving or refactoring existing code.
 
    - `other/<branch-name>`
+
      - For changes that don’t fit the above categories.
 
 3. Install dependencies (recommended to use uv):
