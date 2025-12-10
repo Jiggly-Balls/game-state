@@ -6,7 +6,7 @@ simple yet effective way to convey it's usage.
 
 You can jump to the specific guide you want to know about-
 
-.. :toctree::
+.. toctree::
   :caption: Table of Contents
 
   lib_guide/getting_started

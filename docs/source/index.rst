@@ -17,8 +17,8 @@ Getting Started
 Check out the guide on how to setup a pygame project with game state along with
 the API reference.
 
-   .. toctree::
-      
-      glossary
-      guide
-      api
+  .. toctree::
+    
+    glossary
+    guide
+    api
