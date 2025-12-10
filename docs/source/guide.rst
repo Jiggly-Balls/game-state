@@ -16,3 +16,4 @@ Select a section from the table of contents:
   guide/demo
   guide/eager_lazy_loading
   guide/state_args
+  guide/auto_state_loading
