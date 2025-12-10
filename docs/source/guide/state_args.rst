@@ -1,10 +1,10 @@
 State Args
 ==========
 
-``game_state.utils.StateArgs`` allows you to pass in arguments to
-``StateManager.load_states`` or ``StateManager.add_lazy_states``. These
-state arguments passed to the method call gets transferred to the state's
-constructor (``__init__``) method.
+``game_state.utils.StateArgs`` provides a convenient way to supply constructor
+arguments to states when calling ``StateManager.load_states`` or
+``StateManager.add_lazy_states``. The arguments you define in StateArgs are
+automatically passed to the state's ``__init__`` method.
 
 A simple example demonstrating state args-
 
