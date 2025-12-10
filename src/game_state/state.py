@@ -23,10 +23,18 @@ class State(ABC):
     :attributes:
         state_name: :class:`str`
             The name of the state. Has to be unique among other states.
+
+            .. versionadded:: 1.1
+
         window: :class:`pygame.Surface`
             The main game window.
+
+            .. versionadded:: 1.0
+
         manager: :class:`StateManager`
             The manager to which the state is binded to.
+
+            .. versionadded:: 1.0
     """
 
     state_name: str = MISSING
