@@ -30,10 +30,14 @@ class StateManager:
     """The State Manager used for managing multiple State(s).
 
     :param window:
+        .. versionadded:: 1.0
+
         The main game window.
 
     :attributes:
         is_running: :class:`bool`
+            .. versionadded:: 2.0
+
             A bool for controlling the game loop. ``True`` by default.
     """
 
@@ -76,9 +80,12 @@ class StateManager:
     def current_state(self) -> Optional[State]:
         """The current state if applied. Will be ``None`` otherwise.
 
+        .. versionchanged:: 2.0
+            Changed from method to property.
+
         .. note::
             This is a read-only attribute. To change states use
-            ``StateManger.change_state`` instead.
+            :meth:`change_state` instead.
         """
         return self._current_state
 
@@ -89,10 +96,71 @@ class StateManager:
         )
 
     @property
+    def last_state(self) -> Optional[State]:
+        """The last state object if any. Will be ``None`` otherwise
+
+        .. versionchanged:: 2.0
+            Changed from method to property.
+
+        .. note::
+            This is a read-only attribute.
+        """
+        return self._last_state
+
+    @last_state.setter
+    def last_state(self, _: Any) -> NoReturn:
+        raise ValueError("Cannot overwrite the last state.")
+
+    @property
+    def lazy_state_map(
+        self,
+    ) -> Dict[str, Tuple[Type[State], Optional[List[StateArgs]]]]:
+        """A dictionary copy of all the added lazy state names mapped to their respective
+        type and state args.
+
+        .. versionadded:: 2.2
+
+        .. note::
+            This is a read-only attribute.
+
+        .. note::
+            Once the lazy state has been fully initialized, it will be removed from the
+            lazy state map.
+        """
+        return self._lazy_states.copy()
+
+    @lazy_state_map.setter
+    def lazy_state_map(self, _: Any) -> NoReturn:
+        raise ValueError("Cannot overwrite the lazy state map.")
+
+    @property
+    def state_map(self) -> Dict[str, State]:
+        """A dictionary copy of all the state names mapped to their respective instance.
+
+        .. versionchanged:: 2.0
+            Changed from method to property.
+
+        .. versionadded:: 1.0
+
+        .. note::
+            This is a read-only attribute.
+        """
+        return self._states.copy()
+
+    @state_map.setter
+    def state_map(self, _: Any) -> NoReturn:
+        raise ValueError("Cannot overwrite the state map.")
+
+    @property
     def global_on_enter(
         self,
     ) -> Optional[Callable[[State, Optional[State]], None]]:
         """The global on_enter listener called right before a state's on_enter listener.
+
+        .. versionchanged:: 2.0.3
+            Global listeners can accept :class:`None` now.
+
+        .. versionadded:: 2.0
 
         .. note::
             This has to be assigned before changing the states.
@@ -146,6 +214,11 @@ class StateManager:
     ) -> Optional[Callable[[Optional[State], State], None]]:
         """The global on_leave listener called right before a state's on_leave listener.
 
+        .. versionchanged:: 2.0.3
+            Global listeners can accept :class:`None` now.
+
+        .. versionadded:: 2.0
+
         .. note::
             This has to be assigned before changing the states.
 
@@ -196,6 +269,11 @@ class StateManager:
     def global_on_setup(self) -> Optional[Callable[[State], None]]:
         """The global ``on_setup`` function for all states.
 
+        .. versionchanged:: 2.0.3
+            Global listeners can accept :class:`None` now.
+
+        .. versionadded:: 2.0
+
         .. note::
             This has to be assigned before loading the states into the manager.
 
@@ -237,56 +315,12 @@ class StateManager:
 
         self._global_on_setup = value
 
-    @property
-    def last_state(self) -> Optional[State]:
-        """The last state object if any. Will be ``None`` otherwise
-
-        .. note::
-            This is a read-only attribute.
-        """
-        return self._last_state
-
-    @last_state.setter
-    def last_state(self, _: Any) -> NoReturn:
-        raise ValueError("Cannot overwrite the last state.")
-
-    @property
-    def lazy_state_map(
-        self,
-    ) -> Dict[str, Tuple[Type[State], Optional[List[StateArgs]]]]:
-        """A dictionary copy of all the added lazy state names mapped to their respective
-        type and state args.
-
-        .. note::
-            This is a read-only attribute.
-
-        .. note::
-            Once the lazy state has been fully initialized, it will be removed from the
-            lazy state map.
-        """
-        return self._lazy_states.copy()
-
-    @lazy_state_map.setter
-    def lazy_state_map(self, _: Any) -> NoReturn:
-        raise ValueError("Cannot overwrite the lazy state map.")
-
-    @property
-    def state_map(self) -> Dict[str, State]:
-        """A dictionary copy of all the state names mapped to their respective instance.
-
-        .. note::
-            This is a read-only attribute.
-        """
-        return self._states.copy()
-
-    @state_map.setter
-    def state_map(self, _: Any) -> NoReturn:
-        raise ValueError("Cannot overwrite the state map.")
-
     def change_state(self, state_name: str) -> None:
         """Changes the current state and updates the last state. This method executes
         the :meth:`State.on_leave` & :meth:`State.on_enter` state & global listeners
         (:meth:`global_on_leave` & :meth:`global_on_enter`)
+
+        .. versionadded:: 1.0
 
         :param state_name:
             | The name of the State you want to switch to.
@@ -344,6 +378,8 @@ class StateManager:
     def connect_state_hook(self, path: str, **kwargs: Any) -> None:
         r"""Calls the hook function of the state file.
 
+        .. versionadded:: 1.0
+
         :param path:
             | The path to the State file containing the hook function to be called.
         :param \**kwargs:
@@ -375,6 +411,8 @@ class StateManager:
         r"""Lazily adds the States into the StateManager.
         Unlike :meth:`load_states`, it only initializes the state when required
         i.e. when :meth:`change_state` switches to the lazy state.
+
+        .. versionadded:: 2.2
 
         :param states:
             | The States to be loaded into the manager.
@@ -444,6 +482,11 @@ class StateManager:
     ) -> None:
         r"""Loads the States into the StateManager.
 
+        .. versionchanged:: 2.1
+            Method now accepts ``state_args``.
+
+        .. versionadded:: 1.0
+
         :param states:
             | The States to be loaded into the manager.
 
@@ -504,6 +547,8 @@ class StateManager:
         r"""Reloads the specified State. A short hand to :meth:`unload_state` &
         :meth:`load_states`.
 
+        .. versionadded:: 1.0
+
         :param state_name:
             | The ``State`` name to be reloaded.
 
@@ -538,10 +583,12 @@ class StateManager:
     def remove_lazy_state(
         self, state_name: str
     ) -> Optional[Tuple[Type[State], Optional[List[StateArgs]]]]:
-        r"""Removes the lazy ``State`` from the ``StateManager``.
+        r"""Removes the specified lazy state from the :class:`StateManager`.
+
+        .. versionadded:: 2.2
 
         :param state_name:
-            | The State to be loaded into the manager.
+            | The state to be removed from the manager.
 
         :param \**kwargs:
             | The keyword arguments to be passed on to the raised errors.
@@ -562,10 +609,12 @@ class StateManager:
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> Type[State]:
-        r"""Unloads the ``State`` from the ``StateManager``.
+        r"""Unloads the specified state from the :class:`StateManager`.
+
+        .. versionadded:: 1.0
 
         :param state_name:
-            | The State to be loaded into the manager.
+            | The state name to be unloaded from the manager.
 
         :param force:
             | Default ``False``.

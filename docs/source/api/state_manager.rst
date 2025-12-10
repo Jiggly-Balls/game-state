@@ -4,4 +4,4 @@ State Manager
 =============
 
 .. autoclass:: StateManager
-    :members:
+  :members:

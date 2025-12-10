@@ -12,7 +12,10 @@ __all__ = ("BaseError", "StateError", "StateLoadError")
 
 
 class BaseError(Exception):
-    r"""The base class to all game-state errors."""
+    r"""The base class to all game-state errors.
+
+    .. versionadded:: 1.0
+    """
 
     def __init__(
         self, *args: Any, last_state: Optional[State] = None, **kwargs: Any
@@ -25,8 +28,14 @@ class BaseError(Exception):
 
 
 class StateError(BaseError):
-    r"""Raised when an operation is done over an invalid state."""
+    r"""Raised when an operation is done over an invalid state.
+
+    .. versionadded:: 1.0
+    """
 
 
 class StateLoadError(BaseError):
-    r"""Raised when an error occurs in loading / unloading a state."""
+    r"""Raised when an error occurs in loading / unloading a state.
+
+    .. versionadded:: 1.0
+    """

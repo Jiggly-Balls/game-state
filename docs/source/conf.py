@@ -14,14 +14,14 @@ author = "Krish Mohan M."
 # release = f"{version_info.major}.{version_info.minor}.{version_info.patch} - {version_info.releaselevel}"
 
 
-version = "2.1"
+version = "2.2"
 release = "2.2.0 - final"
 
 # -- General configuration
 extensions = [
     "sphinx.ext.duration",
     "sphinx.ext.doctest",
-    "numpydoc",
+    # "numpydoc",
     # "sphinx.ext.numpydoc",
     # "sphinx.ext.napolean",
     "sphinx.ext.autodoc",

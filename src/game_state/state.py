@@ -23,10 +23,18 @@ class State(ABC):
     :attributes:
         state_name: :class:`str`
             The name of the state. Has to be unique among other states.
+
+            .. versionadded:: 1.1
+
         window: :class:`pygame.Surface`
             The main game window.
+
+            .. versionadded:: 1.0
+
         manager: :class:`StateManager`
             The manager to which the state is binded to.
+
+            .. versionadded:: 1.0
     """
 
     state_name: str = MISSING
@@ -48,6 +56,8 @@ class State(ABC):
         :param state_name:
             | The name of the state. If no `state_name` is passed, it uses the identifier's name.
 
+            .. versionadded:: 1.1
+
             .. code-block:: python
 
                 class Game(State, state_name="GameState"): ...
@@ -55,12 +65,16 @@ class State(ABC):
         :param eager_load:
             | Automatically marks this class to be loaded eagerly.
 
+            .. versionadded:: 2.2
+
             .. code-block:: python
 
                 class MainMenu(State, eager_load=True): ...
 
         :param lazy_load:
             | Automatically marks this class to be loaded lazily.
+
+            .. versionadded:: 2.2
 
             .. code-block:: python
 
@@ -89,6 +103,8 @@ class State(ABC):
         r"""This listener is only called once while being loaded into the ``StateManager``.
         This is also called when reloading the State.
 
+        .. versionadded:: 2.0
+
         .. warning::
             This method need not be called manually.
 
@@ -98,6 +114,8 @@ class State(ABC):
     def on_enter(self, prevous_state: Optional[State]) -> None:
         r"""This listener is called once when a state has been switched and is
         entering the current state.
+
+        .. versionadded:: 2.0
 
         .. warning::
             This method need not be called manually.
@@ -112,6 +130,8 @@ class State(ABC):
         r"""This listener is called once when the state has been switched and is exiting
         the current one.
 
+        .. versionadded:: 2.0
+
         .. warning::
             This method need not be called manually.
 
@@ -123,6 +143,8 @@ class State(ABC):
     def process_event(self, event: Event) -> None:
         r"""To be called when a pygame event needs to be processed.
 
+        .. versionadded:: 2.0
+
         .. note::
             This method needs to be called manually.
 
@@ -133,6 +155,8 @@ class State(ABC):
 
     def process_update(self, *args: Any) -> None:
         r"""The main game loop method to be executed by the ``StateManager``.
+
+        .. versionadded:: 2.0
 
         .. note::
             This method needs to be called manually.

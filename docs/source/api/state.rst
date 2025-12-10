@@ -4,7 +4,7 @@ State
 =====
 
 .. autoclass:: State
-    :members:
+  :members:
 
-    .. automethod:: __init_subclass__
-        :noindex:
+  .. automethod:: __init_subclass__
+    :noindex:

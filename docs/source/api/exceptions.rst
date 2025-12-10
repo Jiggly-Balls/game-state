@@ -4,10 +4,10 @@ Exceptions
 ==========
 
 .. autoclass:: BaseError
-    :members:
+  :members:
 
 .. autoclass:: StateError
-    :members:
+  :members:
 
 .. autoclass:: StateLoadError
-    :members:
+  :members:
