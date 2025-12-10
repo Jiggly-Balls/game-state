@@ -9,6 +9,7 @@ Select a section from the table of contents:
 
 .. toctree::
   :caption: Table of Contents
+  :maxdepth: 2
 
   guide/getting_started
   guide/state_hooks
