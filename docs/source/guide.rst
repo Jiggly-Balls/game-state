@@ -13,3 +13,4 @@ Select a section from the table of contents:
   guide/getting_started
   guide/state_hooks
   guide/demo
+  guide/eager_lazy_loading
