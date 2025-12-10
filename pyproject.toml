@@ -1,6 +1,6 @@
 [project]
 name = "game_state"
-version = "2.2.0b"
+version = "2.2.0"
 authors = [{ name = "Krish Mohan M.", email = "jigglyballs9000@gmail.com" }]
 description = "A pygame utility package that allows you to handle different screens in an organized manner."
 readme = "README.md"
