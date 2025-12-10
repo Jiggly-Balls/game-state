@@ -5,20 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) when possible.
 
-## [Unreleased]
+## [2.2.0]
 
 ### Added
 
 - Added auto state loading.
 - Added `eager_load` & `lazy_lazy` load parameters to `State.__init_subclass__`.
 - Added documentation for `State.__init_subclass__`.
+- Added guides for lazy, eager loading and state args
 - `StateManager.lazy_state_map` property.
 - `StateManager.add_lazy_states` method.
 - `StateManager.remove_lazy_state` method.
 
 ### Fixed
 
-- Fixed hypertext linking in docs.
+- Fixed many documentation errors.
 
 ## [2.1.0] - 2025-11-04
 
