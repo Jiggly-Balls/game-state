@@ -9,6 +9,6 @@ You can jump to the specific guide you want to know about-
 .. toctree::
   :caption: Table of Contents
 
-  lib_guide/getting_started
-  lib_guide/state_hooks
-  lib_guide/demo
+  guide/getting_started
+  guide/state_hooks
+  guide/demo
