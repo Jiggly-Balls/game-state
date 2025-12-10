@@ -87,6 +87,6 @@ dev = [
     "pytest>=8.4.0",
     "ruff>=0.14.1",
     "sphinx>=8.2.3",
-    "sphinx-autobuild>=2024.10.3",
+    "sphinx-autobuild>=2025.8.25",
     "sphinx-autodoc-typehints>=3.5.2",
 ]
