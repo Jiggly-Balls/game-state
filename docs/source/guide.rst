@@ -15,3 +15,4 @@ Select a section from the table of contents:
   guide/state_hooks
   guide/demo
   guide/eager_lazy_loading
+  guide/state_args
