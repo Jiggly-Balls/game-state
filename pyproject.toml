@@ -30,7 +30,10 @@ classifiers = [
 ]
 
 [project.urls]
+Source = "https://github.com/Jiggly-Balls/game-state"
 Documentation = "https://game-state.readthedocs.io/en/latest/index.html"
+Issues = "https://github.com/Jiggly-Balls/game-state/issues"
+Stars = "https://github.com/Jiggly-Balls/game-state/stargazers"
 
 [build-system]
 requires = ["setuptools>=61.0"]
@@ -47,7 +50,6 @@ quote-style = "double"
 indent-style = "space"
 docstring-code-format = true
 docstring-code-line-length = 72
-
 
 [tool.basedpyright]
 exclude = [
