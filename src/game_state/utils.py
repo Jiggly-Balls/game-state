@@ -14,6 +14,8 @@ __all__ = ("StateArgs", "MISSING")
 class StateArgs:
     """A dataclass to send data to states while loading them in the manager.
 
+    .. versionadded:: 2.1
+
     :param state_name:
         The name of the state which the argument belongs to.
     :param kwargs:
@@ -44,6 +46,8 @@ class StateArgs:
         """Returns the data to be passed on to the state.
         The data returned does not contain ``state_name`` in it.
 
+        .. versionadded:: 2.1
+
         :returns:
             The data of the state arg. Does not include ``state_name`` in it.
         """
@@ -72,4 +76,7 @@ class _MissingSentinel:
 MISSING: Any = _MissingSentinel()
 """Used in areas where an attribute doesn't have a value by default but
 gets defined during runtime. Lesser type checking would be required by using
-this, opposed to using some other default value such as ``None``."""
+this, opposed to using some other default value such as ``None``.
+
+.. versionadded:: 2.0.1
+"""
