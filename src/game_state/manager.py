@@ -78,7 +78,7 @@ class StateManager:
 
         .. note::
             This is a read-only attribute. To change states use
-            ``StateManger.change_state`` instead.
+            :meth:`change_state` instead.
         """
         return self._current_state
 

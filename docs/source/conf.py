@@ -21,7 +21,7 @@ release = "2.2.0 - final"
 extensions = [
     "sphinx.ext.duration",
     "sphinx.ext.doctest",
-    "numpydoc",
+    # "numpydoc",
     # "sphinx.ext.numpydoc",
     # "sphinx.ext.napolean",
     "sphinx.ext.autodoc",
