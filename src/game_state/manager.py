@@ -140,6 +140,8 @@ class StateManager:
         .. versionchanged:: 2.0
             Changed from method to property.
 
+        .. versionadded:: 1.0
+
         .. note::
             This is a read-only attribute.
         """
@@ -581,12 +583,12 @@ class StateManager:
     def remove_lazy_state(
         self, state_name: str
     ) -> Optional[Tuple[Type[State], Optional[List[StateArgs]]]]:
-        r"""Removes the lazy ``State`` from the ``StateManager``.
+        r"""Removes the specified lazy state from the :class:`StateManager`.
 
         .. versionadded:: 2.2
 
         :param state_name:
-            | The State to be loaded into the manager.
+            | The state to be removed from the manager.
 
         :param \**kwargs:
             | The keyword arguments to be passed on to the raised errors.
@@ -607,12 +609,12 @@ class StateManager:
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> Type[State]:
-        r"""Unloads the ``State`` from the ``StateManager``.
+        r"""Unloads the specified state from the :class:`StateManager`.
 
         .. versionadded:: 1.0
 
         :param state_name:
-            | The State to be loaded into the manager.
+            | The state name to be unloaded from the manager.
 
         :param force:
             | Default ``False``.
