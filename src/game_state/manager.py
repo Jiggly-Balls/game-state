@@ -96,6 +96,60 @@ class StateManager:
         )
 
     @property
+    def last_state(self) -> Optional[State]:
+        """The last state object if any. Will be ``None`` otherwise
+
+        .. versionchanged:: 2.0
+            Changed from method to property.
+
+        .. note::
+            This is a read-only attribute.
+        """
+        return self._last_state
+
+    @last_state.setter
+    def last_state(self, _: Any) -> NoReturn:
+        raise ValueError("Cannot overwrite the last state.")
+
+    @property
+    def lazy_state_map(
+        self,
+    ) -> Dict[str, Tuple[Type[State], Optional[List[StateArgs]]]]:
+        """A dictionary copy of all the added lazy state names mapped to their respective
+        type and state args.
+
+        .. versionadded:: 2.2
+
+        .. note::
+            This is a read-only attribute.
+
+        .. note::
+            Once the lazy state has been fully initialized, it will be removed from the
+            lazy state map.
+        """
+        return self._lazy_states.copy()
+
+    @lazy_state_map.setter
+    def lazy_state_map(self, _: Any) -> NoReturn:
+        raise ValueError("Cannot overwrite the lazy state map.")
+
+    @property
+    def state_map(self) -> Dict[str, State]:
+        """A dictionary copy of all the state names mapped to their respective instance.
+
+        .. versionchanged:: 2.0
+            Changed from method to property.
+
+        .. note::
+            This is a read-only attribute.
+        """
+        return self._states.copy()
+
+    @state_map.setter
+    def state_map(self, _: Any) -> NoReturn:
+        raise ValueError("Cannot overwrite the state map.")
+
+    @property
     def global_on_enter(
         self,
     ) -> Optional[Callable[[State, Optional[State]], None]]:
@@ -258,60 +312,6 @@ class StateManager:
                 )
 
         self._global_on_setup = value
-
-    @property
-    def last_state(self) -> Optional[State]:
-        """The last state object if any. Will be ``None`` otherwise
-
-        .. versionchanged:: 2.0
-            Changed from method to property.
-
-        .. note::
-            This is a read-only attribute.
-        """
-        return self._last_state
-
-    @last_state.setter
-    def last_state(self, _: Any) -> NoReturn:
-        raise ValueError("Cannot overwrite the last state.")
-
-    @property
-    def lazy_state_map(
-        self,
-    ) -> Dict[str, Tuple[Type[State], Optional[List[StateArgs]]]]:
-        """A dictionary copy of all the added lazy state names mapped to their respective
-        type and state args.
-
-        .. versionadded:: 2.2
-
-        .. note::
-            This is a read-only attribute.
-
-        .. note::
-            Once the lazy state has been fully initialized, it will be removed from the
-            lazy state map.
-        """
-        return self._lazy_states.copy()
-
-    @lazy_state_map.setter
-    def lazy_state_map(self, _: Any) -> NoReturn:
-        raise ValueError("Cannot overwrite the lazy state map.")
-
-    @property
-    def state_map(self) -> Dict[str, State]:
-        """A dictionary copy of all the state names mapped to their respective instance.
-
-        .. versionchanged:: 2.0
-            Changed from method to property.
-
-        .. note::
-            This is a read-only attribute.
-        """
-        return self._states.copy()
-
-    @state_map.setter
-    def state_map(self, _: Any) -> NoReturn:
-        raise ValueError("Cannot overwrite the state map.")
 
     def change_state(self, state_name: str) -> None:
         """Changes the current state and updates the last state. This method executes
