@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from .errors import StateError, StateLoadError
 from .state import State
+from .utils import MISSING
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -20,9 +21,11 @@ if TYPE_CHECKING:
 __all__ = ("StateManager",)
 
 
-_GLOBAL_ON_SETUP_ARGS: int = 1
+_GLOBAL_ON_SETUP_ARGS: int = 1  # TODO: Remove this in later version.
 _GLOBAL_ON_ENTER_ARGS: int = 2
 _GLOBAL_ON_LEAVE_ARGS: int = 2
+_GLOBAL_ON_LOAD_ARGS: int = 2
+_GLOBAL_ON_UNLOAD_ARGS: int = 2
 _KW_CONSIDER: Tuple[str, str] = ("VAR_KEYWORD", "KEYWORD_ONLY")
 
 
@@ -30,6 +33,10 @@ class StateManager:
     """The State Manager used for managing multiple State(s).
 
     :param window:
+        .. deprecated:: 2.3.0
+
+            | To add class attributes to your own state system subclass :class:`StateManager`
+
         .. versionadded:: 1.0
 
         The main game window.
@@ -41,19 +48,20 @@ class StateManager:
             A bool for controlling the game loop. ``True`` by default.
     """
 
-    def __init__(self, window: Surface) -> None:
+    def __init__(self, window: Surface = MISSING) -> None:
+        # TODO: ADD DEPRECATION WARNING FOR `window`
+
         State.window = window
         State.manager = self
 
         self.is_running: bool = True
 
+        # fmt: off
         self._global_on_setup: Optional[Callable[[State], None]] = None
-        self._global_on_enter: Optional[
-            Callable[[State, Optional[State]], None]
-        ] = None
-        self._global_on_leave: Optional[
-            Callable[[Optional[State], State], None]
-        ] = None
+        self._global_on_enter: Optional[Callable[[State, Optional[State]], None]] = None
+        self._global_on_leave: Optional[Callable[[Optional[State], State], None]] = None
+        self._global_on_load: Optional[Callable[[State, bool], None]] = None
+        # fmt: on
 
         self._lazy_states: Dict[
             str, Tuple[Type[State], Optional[List[StateArgs]]]
@@ -81,9 +89,11 @@ class StateManager:
         """The current state if applied. Will be ``None`` otherwise.
 
         .. versionchanged:: 2.0
-            Changed from method to property.
+
+            | Changed from method to property.
 
         .. note::
+
             This is a read-only attribute. To change states use
             :meth:`change_state` instead.
         """
@@ -100,9 +110,11 @@ class StateManager:
         """The last state object if any. Will be ``None`` otherwise
 
         .. versionchanged:: 2.0
-            Changed from method to property.
+
+            | Changed from method to property.
 
         .. note::
+
             This is a read-only attribute.
         """
         return self._last_state
@@ -121,9 +133,11 @@ class StateManager:
         .. versionadded:: 2.2
 
         .. note::
+
             This is a read-only attribute.
 
         .. note::
+
             Once the lazy state has been fully initialized, it will be removed from the
             lazy state map.
         """
@@ -138,11 +152,13 @@ class StateManager:
         """A dictionary copy of all the state names mapped to their respective instance.
 
         .. versionchanged:: 2.0
-            Changed from method to property.
+
+            | Changed from method to property.
 
         .. versionadded:: 1.0
 
         .. note::
+
             This is a read-only attribute.
         """
         return self._states.copy()
@@ -158,11 +174,13 @@ class StateManager:
         """The global on_enter listener called right before a state's on_enter listener.
 
         .. versionchanged:: 2.0.3
-            Global listeners can accept :class:`None` now.
+
+            | Global listeners can accept :class:`None` now.
 
         .. versionadded:: 2.0
 
         .. note::
+
             This has to be assigned before changing the states.
 
         The first argument passed to the function is the current state and the second
@@ -179,7 +197,11 @@ class StateManager:
                     print(
                         f"GLOBAL ENTER - Entering {current_state.state_name} from {previous_state.state_name}"
                     )
+
+
+            your_manager_instance.global_on_enter = global_on_enter
         """
+
         return self._global_on_enter
 
     @global_on_enter.setter
@@ -215,11 +237,13 @@ class StateManager:
         """The global on_leave listener called right before a state's on_leave listener.
 
         .. versionchanged:: 2.0.3
-            Global listeners can accept :class:`None` now.
+
+            | Global listeners can accept :class:`None` now.
 
         .. versionadded:: 2.0
 
         .. note::
+
             This has to be assigned before changing the states.
 
         The first argument passed to the function is the current state which may be
@@ -236,7 +260,11 @@ class StateManager:
                     print(
                         f"GLOBAL LEAVE - Leaving {current_state.state_name} to {next_state.state_name}"
                     )
+
+
+            your_manager_instance.global_on_leave = global_on_leave
         """
+
         return self._global_on_leave
 
     @global_on_leave.setter
@@ -269,12 +297,18 @@ class StateManager:
     def global_on_setup(self) -> Optional[Callable[[State], None]]:
         """The global ``on_setup`` function for all states.
 
+        .. deprecated:: 2.3.0
+
+            | Use :meth:`global_on_load` instead.
+
         .. versionchanged:: 2.0.3
-            Global listeners can accept :class:`None` now.
+
+            | Global listeners can accept :class:`None` now.
 
         .. versionadded:: 2.0
 
         .. note::
+
             This has to be assigned before loading the states into the manager.
 
         The first argument passed to the function is the current state which has been
@@ -284,9 +318,13 @@ class StateManager:
 
         .. code-block:: python
 
-            def global_setup(state: State) -> None:
+            def global_on_setup(state: State) -> None:
                 print(f"GLOBAL SETUP - Setting up state: {state.state_name}")
+
+
+            your_manager_instance.global_on_setup = global_on_setup
         """
+
         return self._global_on_setup
 
     @global_on_setup.setter
@@ -314,6 +352,118 @@ class StateManager:
                 )
 
         self._global_on_setup = value
+
+    @property
+    def global_on_load(self) -> Optional[Callable[[State, bool], None]]:
+        """The global :meth:`State.on_load` function for all states.
+
+        .. versionadded:: 2.3
+
+        .. note::
+
+            This has to be assigned before loading the states into the manager.
+
+        The first argument passed to the function is the current state which has been
+        setup.
+
+        Example for a ``global_on_load`` function-
+
+        .. code-block:: python
+
+            def global_on_load(state: State, reload: bool) -> None:
+                print(f"GLOBAL LOAD - Loading up state: {state.state_name}")
+                if reload:
+                    print("The state is being reloaded.")
+                else:
+                    print("The state is not being reloaded.")
+
+
+            your_manager_instance.global_on_load = global_on_load
+        """
+
+        return self._global_on_load
+
+    @global_on_load.setter
+    def global_on_load(
+        self, value: Optional[Callable[[State, bool], None]]
+    ) -> None:
+        if value:
+            on_setup_signature = inspect.signature(value)
+            pos_args = self._get_pos_args(on_setup_signature)
+            kw_args = self._get_kw_args(on_setup_signature)
+
+            if (
+                len(on_setup_signature.parameters) != _GLOBAL_ON_LOAD_ARGS
+                or kw_args != 0
+            ):
+                raise TypeError(
+                    f"Expected {_GLOBAL_ON_LOAD_ARGS} positional argument(s) only "
+                    f"for the function to be assigned to global_on_load. "
+                    f"Instead got {pos_args} positional argument(s)"
+                    + (
+                        f" and {kw_args} keyword argument(s)."
+                        if kw_args > 0
+                        else "."
+                    )
+                )
+
+        self._global_on_load = value
+
+    @property
+    def global_on_unload(self) -> Optional[Callable[[State, bool], None]]:
+        """The global :meth:`State.on_unload` function for all states.
+
+        .. versionadded:: 2.3
+
+        .. note::
+
+            This has to be assigned before loading the states into the manager.
+
+        The first argument passed to the function is the current state which has been
+        setup.
+
+        Example for a ``global_on_unload`` function-
+
+        .. code-block:: python
+
+            def global_on_unload(state: State, reload: bool) -> None:
+                print(f"GLOBAL UNLOAD - Loading up state: {state.state_name}")
+                if reload:
+                    print("The state is being reloaded.")
+                else:
+                    print("The state is not being reloaded.")
+
+
+            your_manager_instance.global_on_unload = global_on_unload
+        """
+
+        return self._global_on_load
+
+    @global_on_unload.setter
+    def global_on_unload(
+        self, value: Optional[Callable[[State, bool], None]]
+    ) -> None:
+        if value:
+            on_unload_signature = inspect.signature(value)
+            pos_args = self._get_pos_args(on_unload_signature)
+            kw_args = self._get_kw_args(on_unload_signature)
+
+            if (
+                len(on_unload_signature.parameters) != _GLOBAL_ON_LOAD_ARGS
+                or kw_args != 0
+            ):
+                raise TypeError(
+                    f"Expected {_GLOBAL_ON_UNLOAD_ARGS} positional argument(s) only "
+                    f"for the function to be assigned to global_on_unload. "
+                    f"Instead got {pos_args} positional argument(s)"
+                    + (
+                        f" and {kw_args} keyword argument(s)."
+                        if kw_args > 0
+                        else "."
+                    )
+                )
+
+        self._global_on_load = value
 
     def change_state(self, state_name: str) -> None:
         """Changes the current state and updates the last state. This method executes
@@ -478,17 +628,26 @@ class StateManager:
         self,
         *states: Type[State],
         force: bool = False,
+        is_reloading: bool = False,
         state_args: Optional[Iterable[StateArgs]] = None,
     ) -> None:
         r"""Loads the States into the StateManager.
 
         .. versionchanged:: 2.1
-            Method now accepts ``state_args``.
+
+            | Method now accepts ``state_args``.
 
         .. versionadded:: 1.0
 
         :param states:
             | The States to be loaded into the manager.
+
+        :param is_reloading:
+            | Default ``False``
+            |
+            | A bool to mark the states if they are reloading or not.
+            | This takes effect for :meth:`State.on_load` & :math:`State.on_unload`
+            | and :meth:`global_on_load` & :meth:`global_on_unload`.
 
         :param force:
             | Default ``False``.
@@ -539,6 +698,13 @@ class StateManager:
             self._states[state.state_name] = state(**final_state_args)
             if self._global_on_setup:
                 self._global_on_setup(self._states[state.state_name])
+                # TODO: ADD DEPRECATION WARNING
+
+            if self._global_on_load:
+                self._global_on_load(
+                    self._states[state.state_name], is_reloading
+                )
+
             self._states[state.state_name].on_setup()
 
     def reload_state(
@@ -577,7 +743,7 @@ class StateManager:
         deleted_cls = self.unload_state(
             state_name=state_name, force=force, **kwargs
         )
-        self.load_states(deleted_cls, force=force, **kwargs)
+        self.load_states(deleted_cls, force=force, is_reloading=True, **kwargs)
         return self._states[state_name]
 
     def remove_lazy_state(
@@ -620,7 +786,7 @@ class StateManager:
             | Default ``False``.
             |
             | Unloads the State even if it's an actively running State without raising any
-            | internal error.
+              internal error.
 
             .. warning::
               If set to ``True`` it may lead to unexpected behavior.
