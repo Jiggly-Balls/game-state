@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) when possible.
 
+## [Unreleased]
+
+## Deprecated
+
+- `StateManager.window` is deprecated and staged for removal in later versions.
+- `StateManager.global_on_setup` is deprecated and staged for removal in later versions.
+- `State.window` is deprecated and staged for removal in later versions.
+- `State.global_on_setup` is deprecated and staged for removal in later versions.
+
 ## [2.2.0] - 2025-12-10
 
 ### Added
