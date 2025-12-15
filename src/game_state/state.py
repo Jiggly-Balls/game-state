@@ -29,6 +29,10 @@ class State(ABC):
         window: :class:`pygame.Surface`
             The main game window.
 
+            .. deprecated:: 2.3.0
+
+                | To add class attributes to your own state system subclass :class:`StateManager`.
+
             .. versionadded:: 1.0
 
         manager: :class:`StateManager`
@@ -81,6 +85,7 @@ class State(ABC):
                 class MainMenu(State, lazy_load=True): ...
 
         .. warning::
+
             You cannot set ``eager_load`` and ``lazy_load`` both to ``True``. You can only
             enable one (or none) of them.
         """
@@ -103,11 +108,53 @@ class State(ABC):
         r"""This listener is only called once while being loaded into the ``StateManager``.
         This is also called when reloading the State.
 
+        .. deprecated:: 2.3.0
+
+            | Replaced by :meth:`on_load` as it's more explicit about it's function
+              and allows you to handle state reloads separately.
+
         .. versionadded:: 2.0
 
         .. warning::
+
+            This method need not be called manually.
+        """
+        pass
+
+    def on_load(self, reload: bool) -> None:
+        r"""Called when the state is loaded into the :class:`StateManager`.
+
+        This listener is invoked both during the initial load of the state and
+        when the state is reloaded.
+
+        .. versionadded:: 2.3.0
+
+        .. warning::
+
             This method need not be called manually.
 
+        :param reload:
+            | A :class:`bool` indicating whether the state is being loaded for
+              the first time (``False``) or reloaded (``True``).
+        """
+        pass
+
+    def on_unload(self, reload: bool) -> None:
+        r"""Called when the state is being unloaded from the
+        :class:`StateManager`.
+
+        This listener is invoked both during the initial load of the state and
+        when the state is reloaded.
+
+        .. versionadded:: 2.3.0
+
+        .. warning::
+
+            This method need not be called manually.
+
+        :param reload:
+            | A :class:`bool` indicating whether the state is being unloaded for
+              the first time (``False``) or reloaded (``True``).
         """
         pass
 
@@ -118,11 +165,12 @@ class State(ABC):
         .. versionadded:: 2.0
 
         .. warning::
+
             This method need not be called manually.
 
         :param prevous_state:
             | The state that was running previously. If there are no previous states,
-            | ``None`` is passed
+              ``None`` is passed
         """
         pass
 
@@ -133,6 +181,7 @@ class State(ABC):
         .. versionadded:: 2.0
 
         .. warning::
+
             This method need not be called manually.
 
         :param next_state:
@@ -146,6 +195,7 @@ class State(ABC):
         .. versionadded:: 2.0
 
         .. note::
+
             This method needs to be called manually.
 
         :param event:
@@ -159,6 +209,7 @@ class State(ABC):
         .. versionadded:: 2.0
 
         .. note::
+
             This method needs to be called manually.
 
         :param \*args:
