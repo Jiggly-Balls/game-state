@@ -33,7 +33,7 @@ __all__ = ("StateManager",)
 # S = TypeVar("S", bound=State["Any"])
 
 
-S = TypeVar("S", bound="State[Any]")
+S = TypeVar("S", bound="State")
 # M = TypeVar("M", bound="StateManager[Any]")
 
 _GLOBAL_ON_SETUP_ARGS: int = 1  # TODO: Remove this in later version.
@@ -67,7 +67,7 @@ class StateManager(Generic[S]):
         self,
         window: Surface = MISSING,
         *,
-        bound_state_type: Type[S] = State["StateManager[S]"],
+        bound_state_type: Type[S] = State,
     ) -> None:
         # TODO: ADD DEPRECATION WARNING FOR `window`
 

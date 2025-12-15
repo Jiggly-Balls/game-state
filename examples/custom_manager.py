@@ -22,7 +22,7 @@ class Window:
 # Setting up our custom state and manager classes to accept custom data-
 
 
-class CustomBaseState(State["CustomManager"]):
+class CustomBaseState(State):
     player: Player = MISSING
     screen: Window = MISSING
 
@@ -59,6 +59,7 @@ class MainMenu(CustomBaseState):
         print()
         print(f"{self.state_name}: {self.player}")
         print(f"{self.state_name}: {self.screen}")
+        self.manager.state_map
 
 
 ###############################################

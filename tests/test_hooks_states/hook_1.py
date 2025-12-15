@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING
 from src.game_state import State
 
 if TYPE_CHECKING:
-    from typing import Any
-
-    from src.game_state import StateManager
+    pass
 
 
-class HookState1(State[StateManager[Any]]): ...
+class HookState1(State):
+    def on_load(self, reload: bool) -> None:
+        print(self.manager.state_map)  # <- Shows typing.Any
 
 
 def hook() -> None:

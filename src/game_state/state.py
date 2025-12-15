@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING
 
 from .utils import MISSING
 
@@ -16,10 +16,10 @@ if TYPE_CHECKING:
 
 __all__ = ("State",)
 
-M = TypeVar("M", bound="StateManager[Any]")
+# M = TypeVar("M", bound="StateManager[Any]")
 
 
-class State(Generic[M], ABC):
+class State(ABC):
     """The State class which works as an individual screen.
 
     :attributes:
@@ -45,10 +45,10 @@ class State(Generic[M], ABC):
 
     state_name: str = MISSING
     window: Surface = MISSING
-    manager: M = MISSING
+    manager: StateManager[State] = MISSING
 
-    _eager_states: List[Type[State["M"]]] = []
-    _lazy_states: List[Type[State["M"]]] = []
+    _eager_states: List[Type[State]] = []
+    _lazy_states: List[Type[State]] = []
 
     def __init_subclass__(
         cls,
@@ -160,7 +160,7 @@ class State(Generic[M], ABC):
         """
         pass
 
-    def on_enter(self, prevous_state: Optional[State["M"]]) -> None:
+    def on_enter(self, prevous_state: Optional[State]) -> None:
         r"""This listener is called once when a state has been switched and is
         entering the current state.
 
@@ -176,7 +176,7 @@ class State(Generic[M], ABC):
         """
         pass
 
-    def on_leave(self, next_state: State["M"]) -> None:
+    def on_leave(self, next_state: State) -> None:
         r"""This listener is called once when the state has been switched and is exiting
         the current one.
 
