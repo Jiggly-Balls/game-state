@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import importlib
 import inspect
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 from .errors import StateError, StateLoadError
 from .state import State
@@ -11,7 +11,16 @@ from .utils import MISSING
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
     from inspect import Signature
-    from typing import Any, Dict, List, NoReturn, Optional, Tuple, Type
+    from typing import (
+        Any,
+        Dict,
+        List,
+        NoReturn,
+        Optional,
+        Tuple,
+        Type,
+        TypeVar,
+    )
 
     from pygame import Surface
 
@@ -21,6 +30,12 @@ if TYPE_CHECKING:
 __all__ = ("StateManager",)
 
 
+# S = TypeVar("S", bound=State["Any"])
+
+
+S = TypeVar("S", bound="State[Any]")
+# M = TypeVar("M", bound="StateManager[Any]")
+
 _GLOBAL_ON_SETUP_ARGS: int = 1  # TODO: Remove this in later version.
 _GLOBAL_ON_ENTER_ARGS: int = 2
 _GLOBAL_ON_LEAVE_ARGS: int = 2
@@ -29,7 +44,7 @@ _GLOBAL_ON_UNLOAD_ARGS: int = 2
 _KW_CONSIDER: Tuple[str, str] = ("VAR_KEYWORD", "KEYWORD_ONLY")
 
 
-class StateManager:
+class StateManager(Generic[S]):
     """The State Manager used for managing multiple State(s).
 
     :param window:
@@ -48,27 +63,33 @@ class StateManager:
             A bool for controlling the game loop. ``True`` by default.
     """
 
-    def __init__(self, window: Surface = MISSING) -> None:
+    def __init__(
+        self,
+        window: Surface = MISSING,
+        *,
+        bound_state_type: Type[S] = State["StateManager[S]"],
+    ) -> None:
         # TODO: ADD DEPRECATION WARNING FOR `window`
 
-        State.window = window
-        State.manager = self
+        self.bound_state_type: Type[S] = bound_state_type
+        self.bound_state_type.window = window
+        self.bound_state_type.manager = self
 
         self.is_running: bool = True
 
         # fmt: off
-        self._global_on_setup: Optional[Callable[[State], None]] = None
-        self._global_on_enter: Optional[Callable[[State, Optional[State]], None]] = None
-        self._global_on_leave: Optional[Callable[[Optional[State], State], None]] = None
-        self._global_on_load: Optional[Callable[[State, bool], None]] = None
+        self._global_on_setup: Optional[Callable[[S], None]] = None
+        self._global_on_enter: Optional[Callable[[S, Optional[S]], None]] = None
+        self._global_on_leave: Optional[Callable[[Optional[S], S], None]] = None
+        self._global_on_load: Optional[Callable[[S, bool], None]] = None
         # fmt: on
 
         self._lazy_states: Dict[
-            str, Tuple[Type[State], Optional[List[StateArgs]]]
+            str, Tuple[Type[S], Optional[List[StateArgs]]]
         ] = {}
-        self._states: Dict[str, State] = {}
-        self._current_state: Optional[State] = None
-        self._last_state: Optional[State] = None
+        self._states: Dict[str, S] = {}
+        self._current_state: Optional[S] = None
+        self._last_state: Optional[S] = None
 
     def _get_kw_args(self, signature: Signature) -> int:
         amount = 0
@@ -85,7 +106,7 @@ class StateManager:
         return amount
 
     @property
-    def current_state(self) -> Optional[State]:
+    def current_state(self) -> Optional[S]:
         """The current state if applied. Will be ``None`` otherwise.
 
         .. versionchanged:: 2.0
@@ -106,7 +127,7 @@ class StateManager:
         )
 
     @property
-    def last_state(self) -> Optional[State]:
+    def last_state(self) -> Optional[S]:
         """The last state object if any. Will be ``None`` otherwise
 
         .. versionchanged:: 2.0
@@ -126,7 +147,7 @@ class StateManager:
     @property
     def lazy_state_map(
         self,
-    ) -> Dict[str, Tuple[Type[State], Optional[List[StateArgs]]]]:
+    ) -> Dict[str, Tuple[Type[S], Optional[List[StateArgs]]]]:
         """A dictionary copy of all the added lazy state names mapped to their respective
         type and state args.
 
@@ -148,7 +169,7 @@ class StateManager:
         raise ValueError("Cannot overwrite the lazy state map.")
 
     @property
-    def state_map(self) -> Dict[str, State]:
+    def state_map(self) -> Dict[str, S]:
         """A dictionary copy of all the state names mapped to their respective instance.
 
         .. versionchanged:: 2.0
@@ -170,7 +191,7 @@ class StateManager:
     @property
     def global_on_enter(
         self,
-    ) -> Optional[Callable[[State, Optional[State]], None]]:
+    ) -> Optional[Callable[[S, Optional[S]], None]]:
         """The global on_enter listener called right before a state's on_enter listener.
 
         .. versionchanged:: 2.0.3
@@ -206,7 +227,7 @@ class StateManager:
 
     @global_on_enter.setter
     def global_on_enter(
-        self, value: Optional[Callable[[State, Optional[State]], None]]
+        self, value: Optional[Callable[[S, Optional[S]], None]]
     ) -> None:
         if value:
             on_enter_signature = inspect.signature(value)
@@ -233,7 +254,7 @@ class StateManager:
     @property
     def global_on_leave(
         self,
-    ) -> Optional[Callable[[Optional[State], State], None]]:
+    ) -> Optional[Callable[[Optional[S], S], None]]:
         """The global on_leave listener called right before a state's on_leave listener.
 
         .. versionchanged:: 2.0.3
@@ -269,7 +290,7 @@ class StateManager:
 
     @global_on_leave.setter
     def global_on_leave(
-        self, value: Optional[Callable[[Optional[State], State], None]]
+        self, value: Optional[Callable[[Optional[S], S], None]]
     ) -> None:
         if value:
             on_leave_signature = inspect.signature(value)
@@ -294,7 +315,7 @@ class StateManager:
         self._global_on_leave = value
 
     @property
-    def global_on_setup(self) -> Optional[Callable[[State], None]]:
+    def global_on_setup(self) -> Optional[Callable[[S], None]]:
         """The global ``on_setup`` function for all states.
 
         .. deprecated:: 2.3.0
@@ -328,9 +349,7 @@ class StateManager:
         return self._global_on_setup
 
     @global_on_setup.setter
-    def global_on_setup(
-        self, value: Optional[Callable[[State], None]]
-    ) -> None:
+    def global_on_setup(self, value: Optional[Callable[[S], None]]) -> None:
         if value:
             on_setup_signature = inspect.signature(value)
             pos_args = self._get_pos_args(on_setup_signature)
@@ -354,7 +373,7 @@ class StateManager:
         self._global_on_setup = value
 
     @property
-    def global_on_load(self) -> Optional[Callable[[State, bool], None]]:
+    def global_on_load(self) -> Optional[Callable[[S, bool], None]]:
         """The global :meth:`State.on_load` function for all states.
 
         .. versionadded:: 2.3
@@ -385,7 +404,7 @@ class StateManager:
 
     @global_on_load.setter
     def global_on_load(
-        self, value: Optional[Callable[[State, bool], None]]
+        self, value: Optional[Callable[[S, bool], None]]
     ) -> None:
         if value:
             on_setup_signature = inspect.signature(value)
@@ -410,7 +429,7 @@ class StateManager:
         self._global_on_load = value
 
     @property
-    def global_on_unload(self) -> Optional[Callable[[State, bool], None]]:
+    def global_on_unload(self) -> Optional[Callable[[S, bool], None]]:
         """The global :meth:`State.on_unload` function for all states.
 
         .. versionadded:: 2.3
@@ -441,7 +460,7 @@ class StateManager:
 
     @global_on_unload.setter
     def global_on_unload(
-        self, value: Optional[Callable[[State, bool], None]]
+        self, value: Optional[Callable[[S, bool], None]]
     ) -> None:
         if value:
             on_unload_signature = inspect.signature(value)
@@ -554,7 +573,7 @@ class StateManager:
 
     def add_lazy_states(
         self,
-        *lazy_states: Type[State],
+        *lazy_states: Type[S],
         force: bool = False,
         state_args: Optional[Iterable[StateArgs]] = None,
     ) -> None:
@@ -589,21 +608,15 @@ class StateManager:
         """
 
         args_cache: Dict[str, Optional[StateArgs]] = {}
-        all_states: List[Type[State]] = State._lazy_states.copy()  # pyright: ignore[reportPrivateUsage]
+        all_states: List[Type[S]] = self.bound_state_type._lazy_states.copy()  # pyright: ignore[reportPrivateUsage, reportAssignmentType]
         all_states.extend(lazy_states)
-        State._lazy_states.clear()  # pyright: ignore[reportPrivateUsage]
+        self.bound_state_type._lazy_states.clear()  # pyright: ignore[reportPrivateUsage]
 
         if state_args:
             for argument in state_args:
                 args_cache[argument.state_name] = argument
 
         for lazy_state in all_states:
-            if not issubclass(lazy_state, State):
-                raise StateError(
-                    "The passed argument(s) is not a subclass of State.",
-                    last_state=self._last_state,
-                )
-
             if (
                 not force
                 and lazy_state.state_name in self._states
@@ -626,7 +639,7 @@ class StateManager:
 
     def load_states(
         self,
-        *states: Type[State],
+        *states: Type[S],
         force: bool = False,
         is_reloading: bool = False,
         state_args: Optional[Iterable[StateArgs]] = None,
@@ -671,21 +684,15 @@ class StateManager:
         """
 
         args_cache: Dict[str, Dict[str, Any]] = {}
-        all_states: List[Type[State]] = State._eager_states.copy()  # pyright: ignore[reportPrivateUsage]
+        all_states: List[Type[S]] = self.bound_state_type._eager_states.copy()  # pyright: ignore[reportPrivateUsage, reportAssignmentType]
         all_states.extend(states)
-        State._eager_states.clear()  # pyright: ignore[reportPrivateUsage]
+        self.bound_state_type._eager_states.clear()  # pyright: ignore[reportPrivateUsage]
 
         if state_args:
             for argument in state_args:
                 args_cache[argument.state_name] = argument.get_data()
 
         for state in all_states:
-            if not issubclass(state, State):
-                raise StateError(
-                    "The passed argument(s) is not a subclass of State.",
-                    last_state=self._last_state,
-                )
-
             final_state_args = args_cache.get(state.state_name, {})
 
             if not force and state.state_name in self._states:
@@ -709,7 +716,7 @@ class StateManager:
 
     def reload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
-    ) -> State:
+    ) -> S:
         r"""Reloads the specified State. A short hand to :meth:`unload_state` &
         :meth:`load_states`.
 
@@ -748,7 +755,7 @@ class StateManager:
 
     def remove_lazy_state(
         self, state_name: str
-    ) -> Optional[Tuple[Type[State], Optional[List[StateArgs]]]]:
+    ) -> Optional[Tuple[Type[S], Optional[List[StateArgs]]]]:
         r"""Removes the specified lazy state from the :class:`StateManager`.
 
         .. versionadded:: 2.2
@@ -774,7 +781,7 @@ class StateManager:
 
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
-    ) -> Type[State]:
+    ) -> Type[S]:
         r"""Unloads the specified state from the :class:`StateManager`.
 
         .. versionadded:: 1.0
