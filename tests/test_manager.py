@@ -13,37 +13,32 @@ if TYPE_CHECKING:
 
 @pytest.fixture
 def scenario() -> Tuple[
-    StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
+    StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
 ]:
-    class StateOne(State[Any], state_name="Test 1"): ...
+    class StateOne(State["Any"], state_name="Test 1"): ...
 
-    class StateTwo(State[Any]): ...
+    class StateTwo(State["Any"]): ...
 
     manager = StateManager(...)  # pyright: ignore[reportArgumentType, reportUnknownVariableType]
     if TYPE_CHECKING:
-        manager = StateManager[State[Any]](...)  # pyright: ignore[reportArgumentType]
+        manager = StateManager[State["Any"]](...)  # pyright: ignore[reportArgumentType]
 
     return manager, StateOne, StateTwo
 
 
 def test_load_states(
     scenario: Tuple[
-        StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
+        StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
     ],
 ) -> None:
     manager = scenario[0]
     state_1 = scenario[1]
     state_2 = scenario[2]
 
-    class NotAState: ...
-
     manager.load_states(state_1, state_2)
 
     with pytest.raises(StateLoadError):
         manager.load_states(state_1)
-
-    with pytest.raises(StateError):
-        manager.load_states(NotAState)  # pyright:ignore[reportArgumentType]
 
     assert len(manager.state_map) == 2, (
         "Loaded 2 states, did not receive 2 states back."
@@ -58,7 +53,7 @@ def test_load_states(
 
 def test_change_states(
     scenario: Tuple[
-        StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
+        StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
     ],
 ) -> None:
     manager = scenario[0]

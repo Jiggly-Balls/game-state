@@ -13,22 +13,22 @@ if TYPE_CHECKING:
 
 @pytest.fixture
 def scenario() -> Tuple[
-    StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
+    StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
 ]:
-    class StateOne(State[Any]): ...
+    class StateOne(State["Any"]): ...
 
-    class StateTwo(State[Any]): ...
+    class StateTwo(State["Any"]): ...
 
     manager = StateManager(...)  # pyright: ignore[reportArgumentType, reportUnknownVariableType]
     if TYPE_CHECKING:
-        manager = StateManager[State[Any]](...)  # pyright: ignore[reportArgumentType]
+        manager = StateManager[State["Any"]](...)  # pyright: ignore[reportArgumentType]
 
     return manager, StateOne, StateTwo
 
 
 def test_lazy_states(
     scenario: Tuple[
-        StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
+        StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
     ],
 ) -> None:
     manager, eager_state, lazy_state = scenario
@@ -57,7 +57,7 @@ def test_lazy_states(
 
 def test_remove_lazy_states(
     scenario: Tuple[
-        StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
+        StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
     ],
 ) -> None:
     manager, EagerState, LazyState = scenario
