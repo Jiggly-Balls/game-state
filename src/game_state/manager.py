@@ -677,9 +677,6 @@ class StateManager(Generic[S]):
             :exc:`game_state.errors.StateLoadError`
                 | Raised when the state has already been loaded.
                 | Only raised when ``force`` is set to ``False``.
-
-            :exc:`game_state.errors.StateError`
-                | Raised when the passed argument(s) is not subclassed from ``State``.
         """
 
         args_cache: Dict[str, Dict[str, Any]] = {}
