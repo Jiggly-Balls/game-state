@@ -44,7 +44,7 @@ class State(Generic[S], ABC):
     """
 
     state_name: str = MISSING
-    window: Surface = MISSING
+    window: Surface = MISSING  # TODO: Remove in later versions
     manager: StateManager[State[S]] = MISSING
 
     _eager_states: List[Type[State[S]]] = []
