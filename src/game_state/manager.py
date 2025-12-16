@@ -30,11 +30,7 @@ if TYPE_CHECKING:
 __all__ = ("StateManager",)
 
 
-# S = TypeVar("S", bound=State["Any"])
-
-
-S = TypeVar("S", bound="State")
-# M = TypeVar("M", bound="StateManager[Any]")
+S = TypeVar("S", bound="State[Any]")
 
 _GLOBAL_ON_SETUP_ARGS: int = 1  # TODO: Remove this in later version.
 _GLOBAL_ON_ENTER_ARGS: int = 2
@@ -73,7 +69,7 @@ class StateManager(Generic[S]):
 
         self.bound_state_type: Type[S] = bound_state_type
         self.bound_state_type.window = window
-        self.bound_state_type.manager = self
+        self.bound_state_type.manager = self  # pyright: ignore[reportAttributeAccessIssue]
 
         self.is_running: bool = True
 

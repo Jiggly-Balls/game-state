@@ -1,6 +1,6 @@
 from game_state import State, StateManager
 from game_state.utils import MISSING
-
+from typing import Optional
 
 # Classes that we want all our states to share-
 
@@ -22,7 +22,7 @@ class Window:
 # Setting up our custom state and manager classes to accept custom data-
 
 
-class CustomBaseState(State):
+class CustomBaseState(State["CustomBaseState"]):
     player: Player = MISSING
     screen: Window = MISSING
 
@@ -52,6 +52,7 @@ class Game(CustomBaseState):
         print()
         print(f"{self.state_name}: {self.player}")
         print(f"{self.state_name}: {self.screen}")
+        self.manager.state_map
 
 
 class MainMenu(CustomBaseState):
@@ -59,7 +60,12 @@ class MainMenu(CustomBaseState):
         print()
         print(f"{self.state_name}: {self.player}")
         print(f"{self.state_name}: {self.screen}")
-        self.manager.state_map
+
+    def on_enter(self, prevous_state: Optional[CustomBaseState]) -> None:
+        return super().on_enter(prevous_state)
+
+    def on_leave(self, next_state: CustomBaseState) -> None:
+        return super().on_leave(next_state)
 
 
 ###############################################
