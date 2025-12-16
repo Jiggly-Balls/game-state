@@ -72,7 +72,6 @@ class GameState(State["Any"], state_name="Game"):
                 50,
             ),
         )
-
         pygame.display.update()
 
 

@@ -86,7 +86,7 @@ def main() -> None:
     screen = pygame.display.set_mode((500, 600))
     # Create a basic 500x600 pixel window
 
-    state_manager = StateManager[State[Any]](screen)
+    state_manager = StateManager[State["Any"]](screen)
     state_manager.add_lazy_states()  # Loads all lazy states
     state_manager.load_states()  # Loads all eager states
 
