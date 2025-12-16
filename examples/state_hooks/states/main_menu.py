@@ -6,7 +6,7 @@ from game_state import State
 GREEN = (0, 255, 0)
 
 
-class MainMenuState(State, state_name="MainMenu"):
+class MainMenuState(State[Any], state_name="MainMenu"):
     def process_event(self, event: pygame.event.Event) -> None:
         # This is executed in our our game loop for every event.
 

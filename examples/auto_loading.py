@@ -1,3 +1,5 @@
+from typing import Any
+
 import pygame
 from game_state import State, StateManager
 
@@ -9,7 +11,7 @@ pygame.display.init()
 pygame.display.set_caption("Game State Example")
 
 
-class MainMenuState(State, state_name="MainMenu", lazy_load=True):
+class MainMenuState(State[Any], state_name="MainMenu", lazy_load=True):
     def on_setup(self) -> None:
         print(f"{self.state_name} has loaded!")
 
@@ -35,7 +37,7 @@ class MainMenuState(State, state_name="MainMenu", lazy_load=True):
         pygame.display.update()
 
 
-class GameState(State, state_name="Game", lazy_load=True):
+class GameState(State[Any], state_name="Game", lazy_load=True):
     def __init__(self) -> None:
         self.player_x: float = 250.0
 
@@ -84,7 +86,7 @@ def main() -> None:
     screen = pygame.display.set_mode((500, 600))
     # Create a basic 500x600 pixel window
 
-    state_manager = StateManager(screen)
+    state_manager = StateManager[State[Any]](screen)
     state_manager.add_lazy_states()  # Loads all lazy states
     state_manager.load_states()  # Loads all eager states
 

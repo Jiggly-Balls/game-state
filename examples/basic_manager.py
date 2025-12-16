@@ -1,3 +1,5 @@
+from typing import Any
+
 import pygame
 from game_state import State, StateManager
 
@@ -9,7 +11,7 @@ pygame.display.init()
 pygame.display.set_caption("Game State Example")
 
 
-class MainMenuState(State, state_name="MainMenu"):
+class MainMenuState(State[Any], state_name="MainMenu"):
     def process_event(self, event: pygame.event.Event) -> None:
         # This is executed in our our game loop for every event.
 
@@ -32,7 +34,7 @@ class MainMenuState(State, state_name="MainMenu"):
         pygame.display.update()
 
 
-class GameState(State, state_name="Game"):
+class GameState(State["Any"], state_name="Game"):
     def __init__(self) -> None:
         self.player_x: float = 250.0
 
@@ -78,7 +80,7 @@ def main() -> None:
     screen = pygame.display.set_mode((500, 600))
     # Create a basic 500x600 pixel window
 
-    state_manager = StateManager(screen)
+    state_manager = StateManager[State[Any]](screen)
     state_manager.load_states(MainMenuState, GameState)
     # We pass in all the screens that we want to use in our game / app.
 

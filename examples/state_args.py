@@ -1,6 +1,9 @@
+from typing import Any
+
 import pygame
 from game_state import State, StateManager
 from game_state.utils import StateArgs
+
 
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
@@ -10,9 +13,9 @@ pygame.display.init()
 pygame.display.set_caption("Game State Example")
 
 
-class MainMenuState(State, state_name="MainMenu"):
+class MainMenuState(State[Any], state_name="MainMenu"):
     def __init__(self, bg_colour: tuple[int, int, int]) -> None:
-        self.bg_colour = bg_colour
+        self.bg_colour: tuple[int, int, int] = bg_colour
 
     def process_event(self, event: pygame.event.Event) -> None:
         # This is executed in our our game loop for every event.
@@ -36,7 +39,7 @@ class MainMenuState(State, state_name="MainMenu"):
         pygame.display.update()
 
 
-class GameState(State, state_name="Game"):
+class GameState(State[Any], state_name="Game"):
     def __init__(self, player_x: float) -> None:
         self.player_x: float = player_x
 
@@ -86,7 +89,7 @@ def main() -> None:
     main_menu_args = StateArgs(state_name="MainMenu", bg_colour=GREEN)
     game_args = StateArgs(state_name="Game", player_x=250.0)
 
-    state_manager = StateManager(screen)
+    state_manager = StateManager[State[Any]](screen)
     state_manager.load_states(
         MainMenuState, GameState, state_args=(main_menu_args, game_args)
     )
