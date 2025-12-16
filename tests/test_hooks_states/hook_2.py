@@ -1,7 +1,9 @@
+from typing import Any
+
 from src.game_state import State
 
 
-class HookState2(State): ...
+class HookState2(State[Any]): ...
 
 
 def hook() -> None:

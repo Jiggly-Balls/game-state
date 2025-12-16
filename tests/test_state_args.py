@@ -8,7 +8,7 @@ from src.game_state import State, StateManager
 from src.game_state.utils import StateArgs
 
 if TYPE_CHECKING:
-    from typing import Tuple, Type
+    from typing import Any, Tuple, Type
 
 
 DATA_1: int = 1
@@ -16,20 +16,33 @@ DATA_2: str = "Guten Morgen"
 
 
 @pytest.fixture
-def states() -> Tuple[Type[State], Type[State], Type[State]]:
-    class StateOne(State):
+def manager() -> StateManager[State[Any]]:
+    manager = StateManager(...)  # pyright: ignore[reportArgumentType, reportUnknownVariableType]
+    if TYPE_CHECKING:
+        manager = StateManager[State[Any]](...)  # pyright: ignore[reportArgumentType]
+
+    return manager
+
+
+@pytest.fixture
+def states() -> Tuple[
+    Type[State[Any]],
+    Type[State[Any]],
+    Type[State[Any]],
+]:
+    class StateOne(State[Any]):
         def __init__(self, data_1: int) -> None:
             assert data_1 == DATA_1, (
                 f"Expected passed data to be {DATA_1}, instead got {data_1}."
             )
 
-    class StateTwo(State):
+    class StateTwo(State[Any]):
         def __init__(self, data_2: str) -> None:
             assert data_2 == DATA_2, (
                 f"Expected passed data to be {DATA_2}, instead got {data_2}."
             )
 
-    class StateThree(State): ...
+    class StateThree(State[Any]): ...
 
     return StateOne, StateTwo, StateThree
 
@@ -43,10 +56,14 @@ def data() -> Tuple[StateArgs, StateArgs]:
 
 
 def test_state_args(
-    states: Tuple[Type[State], Type[State], Type[State]],
+    manager: StateManager[State[Any]],
+    states: Tuple[
+        Type[State[Any]],
+        Type[State[Any]],
+        Type[State[Any]],
+    ],
     data: Tuple[StateArgs, StateArgs],
 ) -> None:
-    manager = StateManager(...)  # pyright: ignore[reportArgumentType]
     manager.load_states(
         *states,
         state_args=data,
@@ -54,11 +71,14 @@ def test_state_args(
 
 
 def test_lazy_state_args(
-    states: Tuple[Type[State], Type[State], Type[State]],
+    manager: StateManager[State[Any]],
+    states: Tuple[
+        Type[State[Any]],
+        Type[State[Any]],
+        Type[State[Any]],
+    ],
     data: Tuple[StateArgs, StateArgs],
 ) -> None:
-    manager = StateManager(...)  # pyright: ignore[reportArgumentType]
-
     manager.add_lazy_states(*states, state_args=data)
 
     for state in states:
@@ -67,10 +87,10 @@ def test_lazy_state_args(
 
 
 def test_remove_lazy_state_args(
-    states: Tuple[Type[State], Type[State], Type[State]],
+    manager: StateManager[State[Any]],
+    states: Tuple[Type[State[Any]], Type[State[Any]], Type[State[Any]]],
     data: Tuple[StateArgs, StateArgs],
 ) -> None:
-    manager = StateManager(...)  # pyright: ignore[reportArgumentType]
     manager.add_lazy_states(*states, state_args=data)
 
     for state, resource in zip(states[:2], data):

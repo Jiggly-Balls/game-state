@@ -39,6 +39,10 @@ _GLOBAL_ON_LOAD_ARGS: int = 2
 _GLOBAL_ON_UNLOAD_ARGS: int = 2
 _KW_CONSIDER: Tuple[str, str] = ("VAR_KEYWORD", "KEYWORD_ONLY")
 
+# TODO:
+# Implement on_load functionality
+# Implement on_unload functionality
+
 
 class StateManager(Generic[S]):
     """The State Manager used for managing multiple State(s).
