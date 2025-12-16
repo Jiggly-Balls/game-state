@@ -19,7 +19,6 @@ if TYPE_CHECKING:
         Optional,
         Tuple,
         Type,
-        TypeVar,
     )
 
     from pygame import Surface
