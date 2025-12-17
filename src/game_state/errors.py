@@ -18,11 +18,14 @@ class BaseError(Exception):
     """
 
     def __init__(
-        self, *args: Any, last_state: Optional[State] = None, **kwargs: Any
+        self,
+        *args: Any,
+        last_state: Optional[State["Any"]] = None,
+        **kwargs: Any,
     ) -> None:
         super().__init__(*args)
 
-        self.last_state: Optional[State] = last_state
+        self.last_state: Optional[State["Any"]] = last_state
         for key, value in kwargs.items():
             setattr(self, key, value)
 

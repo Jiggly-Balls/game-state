@@ -8,22 +8,28 @@ from src.game_state import State, StateManager
 from src.game_state.errors import StateLoadError
 
 if TYPE_CHECKING:
-    from typing import Tuple, Type
+    from typing import Any, Tuple, Type
 
 
 @pytest.fixture
-def scenario() -> Tuple[StateManager, Type[State], Type[State]]:
-    class StateOne(State): ...
+def scenario() -> Tuple[
+    StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
+]:
+    class StateOne(State["Any"]): ...
 
-    class StateTwo(State): ...
+    class StateTwo(State["Any"]): ...
 
-    manager = StateManager(...)  # pyright: ignore[reportArgumentType]
+    manager = StateManager(...)  # pyright: ignore[reportArgumentType, reportUnknownVariableType]
+    if TYPE_CHECKING:
+        manager = StateManager[State["Any"]](...)  # pyright: ignore[reportArgumentType]
 
     return manager, StateOne, StateTwo
 
 
 def test_lazy_states(
-    scenario: Tuple[StateManager, Type[State], Type[State]],
+    scenario: Tuple[
+        StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
+    ],
 ) -> None:
     manager, eager_state, lazy_state = scenario
 
@@ -50,7 +56,9 @@ def test_lazy_states(
 
 
 def test_remove_lazy_states(
-    scenario: Tuple[StateManager, Type[State], Type[State]],
+    scenario: Tuple[
+        StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
+    ],
 ) -> None:
     manager, EagerState, LazyState = scenario
     manager.add_lazy_states(LazyState)

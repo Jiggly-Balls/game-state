@@ -60,7 +60,7 @@ exclude = [
     "build/",
     "dist/",
     "local/",
-    "examples/",
+    # "examples/",
     "docs/",
     "lib_testing/",
 ]

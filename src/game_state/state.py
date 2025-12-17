@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 from .utils import MISSING
 
@@ -16,8 +16,10 @@ if TYPE_CHECKING:
 
 __all__ = ("State",)
 
+S = TypeVar("S", bound="State[Any]")
 
-class State(ABC):
+
+class State(Generic[S], ABC):
     """The State class which works as an individual screen.
 
     :attributes:
@@ -42,11 +44,11 @@ class State(ABC):
     """
 
     state_name: str = MISSING
-    window: Surface = MISSING
-    manager: StateManager = MISSING
+    window: Surface = MISSING  # TODO: Remove in later versions
+    manager: StateManager[State[S]] = MISSING
 
-    _eager_states: List[Type[State]] = []
-    _lazy_states: List[Type[State]] = []
+    _eager_states: List[Type[State[S]]] = []
+    _lazy_states: List[Type[State[S]]] = []
 
     def __init_subclass__(
         cls,
@@ -99,10 +101,10 @@ class State(ABC):
             )
 
         if eager_load:
-            State._eager_states.append(cls)
+            cls._eager_states.append(cls)
 
         elif lazy_load:
-            State._lazy_states.append(cls)
+            cls._lazy_states.append(cls)
 
     def on_setup(self) -> None:
         r"""This listener is only called once while being loaded into the ``StateManager``.
@@ -158,7 +160,7 @@ class State(ABC):
         """
         pass
 
-    def on_enter(self, prevous_state: Optional[State]) -> None:
+    def on_enter(self, prevous_state: Optional[S]) -> None:
         r"""This listener is called once when a state has been switched and is
         entering the current state.
 
@@ -174,7 +176,7 @@ class State(ABC):
         """
         pass
 
-    def on_leave(self, next_state: State) -> None:
+    def on_leave(self, next_state: S) -> None:
         r"""This listener is called once when the state has been switched and is exiting
         the current one.
 
@@ -189,7 +191,9 @@ class State(ABC):
         """
         pass
 
-    def process_event(self, event: Event) -> None:
+    def process_event(
+        self, event: Event
+    ) -> None:  # TODO: Update annotation & docstring to drop pygame types.
         r"""To be called when a pygame event needs to be processed.
 
         .. versionadded:: 2.0

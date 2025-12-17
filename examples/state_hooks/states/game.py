@@ -6,10 +6,10 @@ from game_state import State
 BLUE = (0, 0, 255)
 
 
-class GameState(State, state_name="Game"):
+class GameState(State[Any], state_name="Game"):
     def __init__(self) -> None:
         self.player_x: float = 250.0
-        self.speed = 200
+        self.speed: int = 200
 
     def process_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.QUIT:

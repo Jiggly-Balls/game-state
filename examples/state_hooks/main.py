@@ -1,6 +1,8 @@
-import pygame
-from game_state import StateManager
 from pathlib import Path
+from typing import Any
+
+import pygame
+from game_state import State, StateManager
 
 pygame.init()
 pygame.display.init()
@@ -11,7 +13,7 @@ def main() -> None:
     screen = pygame.display.set_mode((500, 600))
     # Create a basic 500x600 pixel window
 
-    state_manager = StateManager(screen)
+    state_manager = StateManager[State[Any]](screen)
 
     path_obj = Path("states.")
 
