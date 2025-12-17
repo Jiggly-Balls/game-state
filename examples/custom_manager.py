@@ -37,17 +37,9 @@ class CustomBaseState(State["CustomBaseState"]):
         pass
 
 
-class CustomManager(StateManager["CustomBaseState"]):
-    def __init__(self, player: Player, screen: pygame.Surface) -> None:
-        super().__init__(bound_state_type=CustomBaseState)
-
-        CustomBaseState.player = player
-        CustomBaseState.screen = screen
-
-
 ###############################################
 
-# Using our custom state and manager-
+# Using our custom state-
 
 
 class GameState(CustomBaseState, state_name="Game"):
@@ -114,9 +106,20 @@ class MainMenuState(CustomBaseState, state_name="MainMenu"):
 
 def main() -> None:
     my_player = Player(20, 10)
-    screen = pygame.display.set_mode((300, 300))
+    screen = pygame.display.set_mode((500, 600))
 
-    state_manager = CustomManager(my_player, screen)
+    state_manager = StateManager(
+        bound_state_type=CustomBaseState, player=my_player, screen=screen
+    )
+    # `bound_state_type` accepts our new base state class (CustomBaseState).
+    # A base state is a class from which all our actual state implementation
+    # subclasses from. Normally our states subclasses from `game_state.State`
+    # but we can extend the functionality of it by creating our own base state
+    # and using that as the parent class
+    #
+    # StateManager also allows you to pass in any kwargs which then gets passed
+    # in to bound_state_type's class attributes.
+
     state_manager.load_states(GameState, MainMenuState)
     state_manager.change_state("MainMenu")
 
