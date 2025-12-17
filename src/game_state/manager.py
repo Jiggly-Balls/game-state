@@ -67,12 +67,16 @@ class StateManager(Generic[S]):
         window: Surface = MISSING,
         *,
         bound_state_type: Type[S] = State,
+        **kwargs: Any,
     ) -> None:
         # TODO: ADD DEPRECATION WARNING FOR `window`
 
         self.bound_state_type: Type[S] = bound_state_type
         self.bound_state_type.window = window
         self.bound_state_type.manager = self  # pyright: ignore[reportAttributeAccessIssue]
+
+        for name, value in kwargs.items():
+            setattr(self.bound_state_type, name, value)
 
         self.is_running: bool = True
 
