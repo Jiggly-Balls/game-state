@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
 from .utils import MISSING
 
 if TYPE_CHECKING:
-    from typing import Any, List, Optional, Type
+    from typing import Any, List, Literal, Optional, Type
 
     from pygame import Surface
     from pygame.event import Event
@@ -49,6 +49,31 @@ class State(Generic[S], ABC):
 
     _eager_states: List[Type[State[S]]] = []
     _lazy_states: List[Type[State[S]]] = []
+
+    @overload
+    def __init_subclass__(
+        cls,
+        *,
+        state_name: Optional[str] = ...,
+        eager_load: Literal[False] = ...,
+        lazy_load: Literal[False] = ...,
+    ) -> None: ...
+    @overload
+    def __init_subclass__(
+        cls,
+        *,
+        state_name: Optional[str] = ...,
+        eager_load: Literal[True] = ...,
+        lazy_load: Literal[False] = ...,
+    ) -> None: ...
+    @overload
+    def __init_subclass__(
+        cls,
+        *,
+        state_name: Optional[str] = ...,
+        eager_load: Literal[False] = ...,
+        lazy_load: Literal[True] = ...,
+    ) -> None: ...
 
     def __init_subclass__(
         cls,
