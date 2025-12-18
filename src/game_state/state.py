@@ -9,7 +9,6 @@ if TYPE_CHECKING:
     from typing import Any, List, Literal, Optional, Type
 
     from pygame import Surface
-    from pygame.event import Event
 
     from .manager import StateManager
 
@@ -216,10 +215,13 @@ class State(Generic[S], ABC):
         """
         pass
 
-    def process_event(
-        self, event: Event
-    ) -> None:  # TODO: Update annotation & docstring to drop pygame types.
+    def process_event(self, event: Any) -> None:
         r"""To be called when a pygame event needs to be processed.
+
+
+        .. versionchanged:: 2.3
+
+            | Changed the type of ``event`` from ``pygame.Event`` to ``typing.Any``
 
         .. versionadded:: 2.0
 
@@ -228,7 +230,7 @@ class State(Generic[S], ABC):
             This method needs to be called manually.
 
         :param event:
-            | The pygame event object.
+            | The event object you want to consume.
         """
         pass
 
