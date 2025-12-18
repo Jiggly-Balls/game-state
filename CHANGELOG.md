@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Deprecated
+### Deprecated
 
 - `StateManager.window` is deprecated and staged for removal in later versions.
 - `StateManager.global_on_setup` is deprecated and staged for removal in later versions.
