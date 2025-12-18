@@ -9,7 +9,7 @@ A utility package for pygame to manage multiple screens.
 
 """
 
-__version__ = "2.2.0"
+__version__ = "2.3.0b"
 __title__ = "game-state"
 __author__ = "Krish Mohan M."
 __license__ = "MIT"

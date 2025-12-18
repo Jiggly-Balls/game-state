@@ -218,7 +218,6 @@ class State(Generic[S], ABC):
     def process_event(self, event: Any) -> None:
         r"""To be called when a pygame event needs to be processed.
 
-
         .. versionchanged:: 2.3
 
             | Changed the type of ``event`` from ``pygame.Event`` to ``typing.Any``

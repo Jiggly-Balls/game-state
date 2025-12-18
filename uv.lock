@@ -345,7 +345,7 @@ wheels = [
 
 [[package]]
 name = "game-state"
-version = "2.2.0"
+version = "2.3.0b0"
 source = { editable = "." }
 
 [package.dev-dependencies]
