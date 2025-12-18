@@ -93,6 +93,7 @@ class StateManager(Generic[S]):
         self._states: Dict[str, S] = {}
         self._current_state: Optional[S] = None
         self._last_state: Optional[S] = None
+        self._is_reloading: bool = False
 
     def _get_kw_args(self, signature: Signature) -> int:
         amount = 0
@@ -644,7 +645,6 @@ class StateManager(Generic[S]):
         self,
         *states: Type[S],
         force: bool = False,
-        is_reloading: bool = False,
         state_args: Optional[Iterable[StateArgs]] = None,
     ) -> None:
         r"""Loads the States into the StateManager.
@@ -657,13 +657,6 @@ class StateManager(Generic[S]):
 
         :param states:
             | The States to be loaded into the manager.
-
-        :param is_reloading:
-            | Default ``False``
-            |
-            | A bool to mark the states if they are reloading or not.
-            | This takes effect for :meth:`State.on_load` & :math:`State.on_unload`
-            | and :meth:`global_on_load` & :meth:`global_on_unload`.
 
         :param force:
             | Default ``False``.
@@ -709,10 +702,13 @@ class StateManager(Generic[S]):
 
             if self._global_on_load:
                 self._global_on_load(
-                    self._states[state.state_name], is_reloading
+                    self._states[state.state_name], self._is_reloading
                 )
 
-            self._states[state.state_name].on_setup()
+            self._states[
+                state.state_name
+            ].on_setup()  # TODO: Remove in later versions
+            self._states[state.state_name].on_load(self._is_reloading)
 
     def reload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
@@ -746,11 +742,39 @@ class StateManager(Generic[S]):
                 | Raised when the state has already been loaded.
                 | Only raised when ``force`` is set to ``False``.
         """
+        if state_name not in self._states:
+            state_keys = self.state_map.keys()
+            lazy_state_keys = self.lazy_state_map.keys()
 
+            message = f"State: `{state_name}` doesn't exist to be unloaded"
+
+            if len(state_keys) == 0 and len(lazy_state_keys) == 0:
+                message = f"No state has been loaded to unload `{state_name}`."
+
+            if len(state_keys) > 0:
+                message += (
+                    f" from the following states: `{', '.join(state_keys)}`"
+                )
+
+            if state_name in lazy_state_keys:
+                message += (
+                    "; but exists as a lazy state. "
+                    "Did you mean to use `StateManager.remove_lazy_state` instead?"
+                )
+
+            raise StateLoadError(
+                message,
+                last_state=self._last_state,
+                **kwargs,
+            )
+
+        self._is_reloading = True
         deleted_cls = self.unload_state(
             state_name=state_name, force=force, **kwargs
         )
-        self.load_states(deleted_cls, force=force, is_reloading=True, **kwargs)
+        self.load_states(deleted_cls, force=force, **kwargs)
+        self._is_reloading = False
+
         return self._states[state_name]
 
     def remove_lazy_state(
@@ -850,6 +874,7 @@ class StateManager(Generic[S]):
                 **kwargs,
             )
 
+        self._states[state_name].on_unload(self._is_reloading)
         cls_ref = self._states[state_name].__class__
         del self._states[state_name]
         return cls_ref
