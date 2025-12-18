@@ -26,6 +26,7 @@ Using the Library
 -----------------
 
 .. note::
+
   This library has been updated to version 2.0, introducing breaking changes that are not backward
   compatible with version 1.x.
 
@@ -33,6 +34,12 @@ Using the Library
   `game-state v1.1.3 Documentation <https://game-state.readthedocs.io/en/v1.1.3/guide.html#using-the-library>`_
 
   We highly recommend upgrading to version 2.0, as it offers significant optimizations and improvements over v1.
+
+.. note::
+
+  Since version ``2.3.0`` onwards, the library deprecates all pygame-specific attributes / parameters to aim
+  being more independant. This allows ``game-state`` to be integrated by any other framework and not just
+  pygame.
 
 Let's create a simple pygame script having two screens. One screen will display
 green colour and the other will display blue with a moveable red square.
@@ -45,6 +52,7 @@ green colour and the other will display blue with a moveable red square.
     import pygame
 
     from game_state import State, StateManager
+    from game_state.utils import MISSING
 
 
     pygame.init()
@@ -55,16 +63,29 @@ green colour and the other will display blue with a moveable red square.
     BLUE = (0, 255, 0)
     GREEN = (0, 0, 255)
 
+Before creating our states, we need to first create our base state that
+defines a core structure that all our actual state inherits from.
 
-Now that we have imported and set the display of our app, let's create a main
-menu screen.
+.. admonition:: Defining our base state
+  :class: seealso
+
+  .. code-block:: python
+
+    class MyBaseState(State["MyBaseState"]):
+        screen: pygame.Surface = MISSING
+        # Mention the attributes we want all our states to share.
+
+In this example we'll keep it simple and have only one attribute to share across all our states (``screen``).
+It's opitional to assign ``MISSING`` to the attribute but it's recommended.
+
+Now that we have created our base state, let's create a main menu screen.
 
 .. admonition:: Creating a simple screen
   :class: seealso
 
   .. code-block:: python
 
-    class MainMenuState(State, state_name="MainMenu"):
+    class MainMenuState(MyBaseState, state_name="MainMenu"):
         def process_event(self, event: pygame.event.Event) -> None:
           # This is executed in our our game loop for every event.
 
@@ -76,7 +97,7 @@ menu screen.
         def process_update(self, dt: float) -> None:
             # This is executed in our game loop.
 
-            self.window.fill(GREEN)
+            self.screen.fill(GREEN)
             pygame.display.update()
 
 
@@ -97,14 +118,18 @@ Now that we have created a screen, let's add it to our screen manager and run it
         screen = pygame.display.set_mode((500, 600))
         # Create a basic 500x600 pixel window
 
-        state_manager = StateManager(screen)
+        state_manager = StateManager(bound_state_type=MyBaseState, screen=screen)
+        # `bound_state_type` takes in the base state we have made.
+        # Don't forget to pass in kwargs to assign to the attributes we've defined
+        # in our ``MyBaseState`` class.
+
         state_manager.load_states(MainMenuState)
         # We pass in all the screens that we want to use in our game / app.
 
-        state_manager.change_state("MainMenu") 
+        state_manager.change_state("MainMenu")
         # We need to use the name we supplied in the __init_sublcass__'s `state_name`.
         # If no state_name was passed, we use the class name itself.
-        
+
         clock = pygame.time.Clock()
 
         while state_manager.is_running:
@@ -118,20 +143,20 @@ Now that we have created a screen, let's add it to our screen manager and run it
 
             state_manager.current_state.process_update(dt)
             # Calling the update function of the running state.
-        
+
     if __name__ == "__main__":
         main()
 
 There you have it! We have set up a simple screen using the Game State library.
 Adding more screens is just as simple as the subclassing ``State`` & adding it
-to the ``StateManager``. 
+to the ``StateManager``.
 
 .. admonition:: Adding the main game screen to our state manager.
   :class: seealso
 
   .. code-block:: python
 
-      class MainMenuState(State, state_name="MainMenu"):
+      class MainMenuState(MyBaseState, state_name="MainMenu"):
           def process_event(self, event: pygame.event.Event) -> None:
               # This is executed in our our game loop for every event.
 
@@ -150,11 +175,11 @@ to the ``StateManager``.
           def process_update(self, *args: float) -> None:
               # This is executed in our game loop.
 
-              self.window.fill(GREEN)
+              self.screen.fill(GREEN)
               pygame.display.update()
 
 
-      class GameState(State, state_name="Game"):
+      class GameState(MyBaseState, state_name="Game"):
           def __init__(self) -> None:
               self.player_x: float = 250.0
 
@@ -172,7 +197,7 @@ to the ``StateManager``.
           def process_update(self, *args: float) -> None:
               dt = args[0]
 
-              self.window.fill(BLUE)
+              self.screen.fill(BLUE)
 
               # Player movement-
               pressed = pygame.key.get_pressed()
@@ -183,7 +208,7 @@ to the ``StateManager``.
                   self.player_x += speed * dt
 
               pygame.draw.rect(
-                  self.window,
+                  self.screen,
                   "red",
                   (
                       self.player_x,
@@ -209,6 +234,7 @@ State! The final code will look something like this-
 
   import pygame
   from game_state import State, StateManager
+  from game_state.utils import MISSING
 
   GREEN = (0, 255, 0)
   BLUE = (0, 0, 255)
@@ -218,7 +244,12 @@ State! The final code will look something like this-
   pygame.display.set_caption("Game State Example")
 
 
-  class MainMenuState(State, state_name="MainMenu"):
+  class MyBaseState(State["MyBaseState"]):
+      screen: pygame.Surface = MISSING
+      # Mention the attributes we want all our states to share.
+
+
+  class MainMenuState(MyBaseState, state_name="MainMenu"):
       def process_event(self, event: pygame.event.Event) -> None:
           # This is executed in our our game loop for every event.
 
@@ -237,11 +268,11 @@ State! The final code will look something like this-
       def process_update(self, *args: float) -> None:
           # This is executed in our game loop.
 
-          self.window.fill(GREEN)
+          self.screen.fill(GREEN)
           pygame.display.update()
 
 
-  class GameState(State, state_name="Game"):
+  class GameState(MyBaseState, state_name="Game"):
       def __init__(self) -> None:
           self.player_x: float = 250.0
 
@@ -259,7 +290,7 @@ State! The final code will look something like this-
       def process_update(self, *args: float) -> None:
           dt = args[0]
 
-          self.window.fill(BLUE)
+          self.screen.fill(BLUE)
 
           # Player movement-
           pressed = pygame.key.get_pressed()
@@ -270,7 +301,7 @@ State! The final code will look something like this-
               self.player_x += speed * dt
 
           pygame.draw.rect(
-              self.window,
+              self.screen,
               "red",
               (
                   self.player_x,
@@ -287,7 +318,7 @@ State! The final code will look something like this-
       screen = pygame.display.set_mode((500, 600))
       # Create a basic 500x600 pixel window
 
-      state_manager = StateManager(screen)
+      state_manager = StateManager(bonud_state_type=MyBaseState, screen=screen)
       state_manager.load_states(MainMenuState, GameState)
       # We pass in all the screens that we want to use in our game / app.
 
