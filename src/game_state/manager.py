@@ -44,16 +44,23 @@ _KW_CONSIDER: Tuple[str, str] = ("VAR_KEYWORD", "KEYWORD_ONLY")
 
 
 class StateManager(Generic[S]):
-    """The State Manager used for managing multiple State(s).
+    r"""The State Manager used for managing multiple State(s).
 
     :param window:
         .. deprecated:: 2.3.0
 
-            | To add class attributes to your own state system subclass :class:`StateManager`
+            | To add class attributes to your own state system, make a base state
+                (with your custom attributes) and make all your states inherit from it.
+                Check the official guide for more info.
 
         .. versionadded:: 1.0
 
         The main game window.
+    :param bound_state_type:
+        The base state class which all states inherits from.
+    :type bound_state_type: type[State]
+    :param \**kwargs:
+        The keyword arguments to bind to ``bound_state_type``.
 
     :attributes:
         is_running: :class:`bool`
@@ -111,7 +118,9 @@ class StateManager(Generic[S]):
 
     @property
     def current_state(self) -> Optional[S]:
-        """The current state if applied. Will be ``None`` otherwise.
+        r"""The current state if applied. Will be ``None`` otherwise.
+
+        :type: :class:`State` | :class:`None`
 
         .. versionchanged:: 2.0
 
@@ -132,7 +141,9 @@ class StateManager(Generic[S]):
 
     @property
     def last_state(self) -> Optional[S]:
-        """The last state object if any. Will be ``None`` otherwise
+        r"""The last state object if any. Will be ``None`` otherwise
+
+        :type: State | None
 
         .. versionchanged:: 2.0
 
@@ -152,8 +163,10 @@ class StateManager(Generic[S]):
     def lazy_state_map(
         self,
     ) -> Dict[str, Tuple[Type[S], Optional[List[StateArgs]]]]:
-        """A dictionary copy of all the added lazy state names mapped to their respective
+        r"""A dictionary copy of all the added lazy state names mapped to their respective
         type and state args.
+
+        :type: dict[str, tuple[type[State], None | list[StateArgs]]]
 
         .. versionadded:: 2.2
 
@@ -174,7 +187,9 @@ class StateManager(Generic[S]):
 
     @property
     def state_map(self) -> Dict[str, S]:
-        """A dictionary copy of all the state names mapped to their respective instance.
+        r"""A dictionary copy of all the state names mapped to their respective instance.
+
+        :type: dict[str, State]
 
         .. versionchanged:: 2.0
 
@@ -196,7 +211,9 @@ class StateManager(Generic[S]):
     def global_on_enter(
         self,
     ) -> Optional[Callable[[S, Optional[S]], None]]:
-        """The global on_enter listener called right before a state's on_enter listener.
+        r"""The global on_enter listener called right before a state's on_enter listener.
+
+        :type: None | typing.Callable[[State, typing.Optional[State]], None]
 
         .. versionchanged:: 2.0.3
 
@@ -259,7 +276,9 @@ class StateManager(Generic[S]):
     def global_on_leave(
         self,
     ) -> Optional[Callable[[Optional[S], S], None]]:
-        """The global on_leave listener called right before a state's on_leave listener.
+        r"""The global on_leave listener called right before a state's on_leave listener.
+
+        :type: None | typing.Callable[[typing.Optional[State], State], None]
 
         .. versionchanged:: 2.0.3
 
@@ -320,7 +339,9 @@ class StateManager(Generic[S]):
 
     @property
     def global_on_setup(self) -> Optional[Callable[[S], None]]:
-        """The global ``on_setup`` function for all states.
+        r"""The global ``on_setup`` function for all states.
+
+        :type: None | typing.Callable[[State], None]
 
         .. deprecated:: 2.3.0
 
@@ -378,7 +399,9 @@ class StateManager(Generic[S]):
 
     @property
     def global_on_load(self) -> Optional[Callable[[S, bool], None]]:
-        """The global :meth:`State.on_load` function for all states.
+        r"""The global :meth:`State.on_load` function for all states.
+
+        :type: None | typing.Callable[[State, bool], None]
 
         .. versionadded:: 2.3
 
@@ -434,7 +457,9 @@ class StateManager(Generic[S]):
 
     @property
     def global_on_unload(self) -> Optional[Callable[[S, bool], None]]:
-        """The global :meth:`State.on_unload` function for all states.
+        r"""The global :meth:`State.on_unload` function for all states.
+
+        :type: None | typing.Callable[[State, bool], None]
 
         .. versionadded:: 2.3
 
@@ -489,7 +514,7 @@ class StateManager(Generic[S]):
         self._global_on_load = value
 
     def change_state(self, state_name: str) -> None:
-        """Changes the current state and updates the last state. This method executes
+        r"""Changes the current state and updates the last state. This method executes
         the :meth:`State.on_leave` & :meth:`State.on_enter` state & global listeners
         (:meth:`global_on_leave` & :meth:`global_on_enter`)
 
