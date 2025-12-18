@@ -1,7 +1,7 @@
-from typing import Any
-
 import pygame
 from game_state import State, StateManager
+from game_state.utils import MISSING
+
 
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
@@ -11,7 +11,12 @@ pygame.display.init()
 pygame.display.set_caption("Game State Example")
 
 
-class MainMenuState(State[Any], state_name="MainMenu"):
+class MyBaseState(State["MyBaseState"]):
+    screen: pygame.Surface = MISSING
+    # Mention the attributes we want all our states to share.
+
+
+class MainMenuState(MyBaseState, state_name="MainMenu"):
     def process_event(self, event: pygame.event.Event) -> None:
         # This is executed in our our game loop for every event.
 
@@ -30,11 +35,11 @@ class MainMenuState(State[Any], state_name="MainMenu"):
     def process_update(self, *args: float) -> None:
         # This is executed in our game loop.
 
-        self.window.fill(GREEN)
+        self.screen.fill(GREEN)
         pygame.display.update()
 
 
-class GameState(State["Any"], state_name="Game"):
+class GameState(MyBaseState, state_name="Game"):
     def __init__(self) -> None:
         self.player_x: float = 250.0
 
@@ -52,7 +57,7 @@ class GameState(State["Any"], state_name="Game"):
     def process_update(self, *args: float) -> None:
         dt = args[0]
 
-        self.window.fill(BLUE)
+        self.screen.fill(BLUE)
 
         # Player movement-
         pressed = pygame.key.get_pressed()
@@ -63,7 +68,7 @@ class GameState(State["Any"], state_name="Game"):
             self.player_x += speed * dt
 
         pygame.draw.rect(
-            self.window,
+            self.screen,
             "red",
             (
                 self.player_x,
@@ -79,7 +84,13 @@ def main() -> None:
     screen = pygame.display.set_mode((500, 600))
     # Create a basic 500x600 pixel window
 
-    state_manager = StateManager[State[Any]](screen)
+    state_manager = StateManager[MyBaseState](
+        bound_state_type=MyBaseState, screen=screen
+    )
+    # `bound_state_type` takes in the base state we have made.
+    # Don't forget to pass in kwargs to assign to the attributes we've defined
+    # in our ``MyBaseState`` class.
+
     state_manager.load_states(MainMenuState, GameState)
     # We pass in all the screens that we want to use in our game / app.
 
