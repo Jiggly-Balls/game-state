@@ -1,7 +1,7 @@
 Guide
 =====
 
-This guide introduces the primary components of the *game-state* library and
+This guide introduces the primary components of the ``game-state`` library and
 illustrates their usage through focused examples. Each section covers a specific
 aspect of the library to help you integrate it into your workflow.
 
