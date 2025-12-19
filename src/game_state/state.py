@@ -28,13 +28,15 @@ class State(Generic[S], ABC):
             .. versionadded:: 1.1
 
         window: :class:`pygame.Surface`
-            The main game window.
-
             .. deprecated:: 2.3.0
 
-                | To add class attributes to your own state system subclass :class:`StateManager`.
+                | To add class attributes to your own state system, make a base state
+                  (with your custom attributes) and make all your states inherit from it.
+                  Check the official guide for more info.
 
             .. versionadded:: 1.0
+
+            The main game window.
 
         manager: :class:`StateManager`
             The manager to which the state is binded to.
@@ -108,7 +110,7 @@ class State(Generic[S], ABC):
 
             .. code-block:: python
 
-                class MainMenu(State, lazy_load=True): ...
+                class PauseMenu(State, lazy_load=True): ...
 
         .. warning::
 
@@ -184,7 +186,7 @@ class State(Generic[S], ABC):
         """
         pass
 
-    def on_enter(self, prevous_state: Optional[S]) -> None:
+    def on_enter(self, previous_state: Optional[S]) -> None:
         r"""This listener is called once when a state has been switched and is
         entering the current state.
 
@@ -194,9 +196,10 @@ class State(Generic[S], ABC):
 
             This method need not be called manually.
 
-        :param prevous_state:
+        :param previous_state:
             | The state that was running previously. If there are no previous states,
               ``None`` is passed
+        :type previous_state: typing.Optional[State]
         """
         pass
 
@@ -212,11 +215,12 @@ class State(Generic[S], ABC):
 
         :param next_state:
             | The next state that is going to be applied.
+        :type next_state: State
         """
         pass
 
     def process_event(self, event: Any) -> None:
-        r"""To be called when a pygame event needs to be processed.
+        r"""To be called when an event needs to be processed.
 
         .. versionchanged:: 2.3
 
@@ -234,7 +238,7 @@ class State(Generic[S], ABC):
         pass
 
     def process_update(self, *args: Any) -> None:
-        r"""The main game loop method to be executed by the ``StateManager``.
+        r"""The main game loop method to be executed through the :class:`StateManager`.
 
         .. versionadded:: 2.0
 
