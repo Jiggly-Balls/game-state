@@ -9,9 +9,9 @@ functionalities that help manage game states, transitions, and listener handling
 
     Global Listener
         A Global Listener functions similarly to a :term:`State Listener` but is triggered
-        universally, if defined. It responds to the same predefined conditions as 
+        universally, if defined. It responds to the same predefined conditions as
         regular listeners but executes before the corresponding State Listener.
-        Global Listeners do not override State Listeners; instead, they run 
+        Global Listeners do not override State Listeners; instead, they run
         alongside them, allowing for additional global behavior.
 
     State
@@ -19,7 +19,7 @@ functionalities that help manage game states, transitions, and listener handling
         a specific part of the game's flow, such as a main menu, gameplay level, or
         pause screen. States help manage transitions and ensure that different parts of
         the game function independently while maintaining overall game logic.
-    
+
     State Hook
         A State Hook links states that are defined across multiple files, enabling
         fluid integration and communication between them. It typically works by
@@ -28,9 +28,9 @@ functionalities that help manage game states, transitions, and listener handling
 
     State Listener
         A State Listener is a method within the State class that responds to specific
-        conditions or transitions. Examples include ``on_setup``, ``on_enter``, and
-        ``on_leave``, which execute automatically at key moments in a state's
-        lifecycle. Listeners help manage state changes by running predefined logic when
+        conditions or transitions. Examples include ``on_load``, ``on_unload``, ``on_enter``,
+        and ``on_leave``, which execute automatically at key moments in a state's lifecycle.
+        Listeners help manage state changes by running predefined logic when
         certain events occur.
 
     State Manager
