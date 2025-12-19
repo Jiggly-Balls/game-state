@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 
-- All the following deprecations are staged for removal in version `2.4.0`
+- All the following deprecations are staged for removal in version `2.4.0`.
 - `window` parameter in `StateManager`'s `__init__` is deprecated and staged for removal.
 - `StateManager.global_on_setup` is deprecated and staged for removal.
 - `State.window` is deprecated and staged for removal.
@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added auto state loading.
 - Added `eager_load` & `lazy_lazy` load parameters to `State.__init_subclass__`.
 - Added documentation for `State.__init_subclass__`.
-- Added guides for lazy, eager loading and state args
+- Added guides for lazy, eager loading and state args.
 - `StateManager.lazy_state_map` property.
 - `StateManager.add_lazy_states` method.
 - `StateManager.remove_lazy_state` method.
@@ -51,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `game_state.utils.StateArgs`
+- Added `game_state.utils.StateArgs`.
 - Added documentation for `game_state.utils` module.
 - Added examples on `game_state.utils.StateArgs` and it's usage.
 
@@ -91,7 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `src/game_state/utils.py` containing-
   - `_MissingSentinel` protected class.
-  - `MISSING` variable (instance of `_MissingSentinel`)
+  - `MISSING` variable (instance of `_MissingSentinel`).
 
 ### Changed
 
