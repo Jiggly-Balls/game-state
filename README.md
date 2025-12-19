@@ -12,7 +12,7 @@
 
 # Game-State
 
-A state machine for organizing different in-game screens for pygame.
+A state machine for organizing different in-game screens in python.
 
 ## Table of Contents
 
