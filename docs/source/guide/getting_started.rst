@@ -14,8 +14,8 @@ Install ``game_state`` through pip in your terminal-
 
    (.venv) $ pip install game_state
 
-Since ``game_state`` does not have any dependancies, we need to manually
-install the pygame library (or ``pygame-ce`` if you're using that).
+``game-state`` is designed to be independent of any specific framework or engine.
+For this example, we will walk through integrating game-state with a pygame(-ce) based project.
 
 .. code-block:: console
 
@@ -63,8 +63,8 @@ green colour and the other will display blue with a moveable red square.
     BLUE = (0, 255, 0)
     GREEN = (0, 0, 255)
 
-Before creating our states, we need to first create our base state that
-defines a core structure that all our actual state inherits from.
+Before creating our states, we need to first make a base state that
+defines the core structure which all our actual states inherits from.
 
 .. admonition:: Defining our base state
   :class: seealso
@@ -76,7 +76,7 @@ defines a core structure that all our actual state inherits from.
         # Mention the attributes we want all our states to share.
 
 In this example we'll keep it simple and have only one attribute to share across all our states (``screen``).
-It's opitional to assign ``MISSING`` to the attribute but it's recommended.
+It's opitional to assign ``MISSING`` to the attribute but it's recommended to do so.
 
 Now that we have created our base state, let's create a main menu screen.
 
@@ -327,8 +327,6 @@ State! The final code will look something like this-
       # If no state_name was passed, we use the class name itself.
 
       clock = pygame.time.Clock()
-
-      assert state_manager.current_state is not None
 
       while state_manager.is_running:
           # The state manager has a `is_running` attribute which is `True` by default
