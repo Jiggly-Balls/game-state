@@ -42,8 +42,8 @@ One displaying green colour and the other blue with a player.
 
 ```py
 import pygame
-
 from game_state import State, StateManager
+from game_state.utils import MISSING
 
 
 GREEN = (0, 255, 0)
@@ -54,71 +54,83 @@ pygame.display.init()
 pygame.display.set_caption("Game State Example")
 
 
-class MainMenuState(State, state_name="MainMenu"):
-   def process_event(self, event: pygame.event.Event) -> None:
-      if event.type == pygame.QUIT:
+class MyBaseState(State["MyBaseState"]):
+    screen: pygame.Surface = MISSING
+
+
+class MainMenuState(MyBaseState, state_name="MainMenu"):
+    def process_event(self, event: pygame.event.Event) -> None:
+        if event.type == pygame.QUIT:
             self.manager.is_running = False
 
-      if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
             self.manager.change_state("Game")
 
-   def process_update(self, dt: float) -> None:
-      self.window.fill(GREEN)
-      pygame.display.update()
+    def process_update(self, *args: float) -> None:
+        self.screen.fill(GREEN)
+        pygame.display.update()
 
 
-class GameState(State, state_name="Game"):
-   def __init__(self) -> None:
-      self.player_x = 250
+class GameState(MyBaseState, state_name="Game"):
+    def __init__(self) -> None:
+        self.player_x: float = 250.0
 
-   def process_event(self, event: pygame.event.Event) -> None:
-      if event.type == pygame.QUIT:
+    def process_event(self, event: pygame.event.Event) -> None:
+        if event.type == pygame.QUIT:
             self.manager.is_running = False
 
-      if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
             self.manager.change_state("MainMenu")
 
-   def process_update(self, dt: float) -> None:
-      self.window.fill(BLUE)
-      pressed = pygame.key.get_pressed()
-      if pressed[pygame.K_a]:
+    def process_update(self, *args: float) -> None:
+        dt = args[0]
+
+        self.screen.fill(BLUE)
+
+        # Player movement-
+        pressed = pygame.key.get_pressed()
+        if pressed[pygame.K_a]:
             self.player_x -= speed * dt
 
-      if pressed[pygame.K_d]:
+        if pressed[pygame.K_d]:
             self.player_x += speed * dt
 
-      pygame.draw.rect(
-            self.window,
+        pygame.draw.rect(
+            self.screen,
             "red",
             (
-               self.player_x,
-               100,
-               50,
-               50,
+                self.player_x,
+                100,
+                50,
+                50,
             ),
-      )
+        )
+        pygame.display.update()
 
-      pygame.display.update()
 
 def main() -> None:
-   screen = pygame.display.set_mode((500, 600))
+    screen = pygame.display.set_mode((500, 600))
 
-   state_manager = StateManager(screen)
-   state_manager.load_states(MainMenuState, GameState)
-   state_manager.change_state("MainMenu")
+    state_manager = StateManager[MyBaseState](
+        bound_state_type=MyBaseState, screen=screen
+    )
+    state_manager.load_states(MainMenuState, GameState)
+    state_manager.change_state("MainMenu")
 
-   clock = pygame.time.Clock()
+    clock = pygame.time.Clock()
 
-   while state_manager.is_running:
-      dt = clock.tick(60) / 1000
+    while state_manager.is_running:
+        dt = clock.tick(60) / 1000
 
-      for event in pygame.event.get():
+        for event in pygame.event.get():
             state_manager.current_state.process_event(event)
 
-      state_manager.current_state.process_update(dt)
+        state_manager.current_state.process_update(dt)
+
 
 if __name__ == "__main__":
-   main()
+    main()
+
 ```
 
 You can have a look at the [game state guide](https://game-state.readthedocs.io/en/latest/guide.html#using-the-library) for a more detailed explaination.
