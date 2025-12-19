@@ -5,14 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) when possible.
 
-## [Unreleased]
+## [2.3.0] - 2025-12-19
+
+### Added
+
+- `State.on_load` method.
+- `State.on_unload` method.
+- Added overloads for `State.__init_subclass__` method.
+
+### Fixed
+
+- Fixed a typo in `State.on_enter` parameter.
+
+### Changed
+
+- `State` and `StateManager` are generics now for extended typing support.
+- Updated guides to move away from the deprecations.
+- Changed the type of `event` in `State.process_event` from `pygame.Event` to `typing.Any`.
 
 ### Deprecated
 
-- `StateManager.window` is deprecated and staged for removal in later versions.
-- `StateManager.global_on_setup` is deprecated and staged for removal in later versions.
-- `State.window` is deprecated and staged for removal in later versions.
-- `State.global_on_setup` is deprecated and staged for removal in later versions.
+- All the following deprecations are staged for removal in version `2.4.0`
+- `window` parameter in `StateManager`'s `__init__` is deprecated and staged for removal.
+- `StateManager.global_on_setup` is deprecated and staged for removal.
+- `State.window` is deprecated and staged for removal.
+- `State.global_on_setup` is deprecated and staged for removal.
 
 ## [2.2.0] - 2025-12-10
 
