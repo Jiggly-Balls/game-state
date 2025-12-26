@@ -222,6 +222,11 @@ class State(Generic[S], ABC):
     def process_event(self, event: Any) -> None:
         r"""To be called when an event needs to be processed.
 
+        .. deprecated:: 2.3.1
+
+            | Add your own ``process_event`` in your subclasses. This is to prevent any type
+              checking issues.
+
         .. versionchanged:: 2.3
 
             | Changed the type of ``event`` from ``pygame.Event`` to ``typing.Any``
@@ -239,6 +244,11 @@ class State(Generic[S], ABC):
 
     def process_update(self, *args: Any) -> None:
         r"""The main game loop method to be executed through the :class:`StateManager`.
+
+        .. deprecated:: 2.3.1
+
+            | Add your own ``process_update`` in your subclasses. This is to prevent any type
+              checking issues.
 
         .. versionadded:: 2.0
 
