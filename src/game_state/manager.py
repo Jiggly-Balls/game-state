@@ -801,15 +801,14 @@ class StateManager(Generic[S]):
     def remove_lazy_state(
         self, state_name: str
     ) -> Optional[Tuple[Type[S], Optional[List[StateArgs]]]]:
-        r"""Removes the specified lazy state from the :class:`StateManager`.
+        r"""Removes the specified lazy state from the :class:`StateManager`. This will
+        silently fail if the lazy state has been loaded to the manager, which in case
+        you will have to unload via :meth:`unload_state
 
         .. versionadded:: 2.2
 
         :param state_name:
             | The state to be removed from the manager.
-
-        :param \**kwargs:
-            | The keyword arguments to be passed on to the raised errors.
 
         :returns:
             | Either returns :class:`None` if the lazy state was not found or it returns a
