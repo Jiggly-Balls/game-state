@@ -3,7 +3,7 @@ from pathlib import Path
 import pygame
 from game_state import StateManager
 
-from base_state import MyBaseState
+from base_state import MyBaseState  # pyright: ignore[reportImplicitRelativeImport]
 
 pygame.init()
 pygame.display.init()

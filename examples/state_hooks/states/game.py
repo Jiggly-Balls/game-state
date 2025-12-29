@@ -1,7 +1,7 @@
 from typing import Any
 
 import pygame
-from base_state import MyBaseState
+from base_state import MyBaseState  # pyright: ignore[reportImplicitRelativeImport]
 
 BLUE = (0, 0, 255)
 
