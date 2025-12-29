@@ -1,12 +1,12 @@
 from typing import Any
 
 import pygame
-from game_state import State
+from base_state import MyBaseState
 
 GREEN = (0, 255, 0)
 
 
-class MainMenuState(State[Any], state_name="MainMenu"):
+class MainMenuState(MyBaseState, state_name="MainMenu"):
     def process_event(self, event: pygame.event.Event) -> None:
         # This is executed in our our game loop for every event.
 
@@ -22,7 +22,7 @@ class MainMenuState(State[Any], state_name="MainMenu"):
 
             self.manager.change_state("Game")
 
-    def process_update(self, *args: float) -> None:
+    def process_update(self, dt: float) -> None:
         # This is executed in our game loop.
 
         self.window.fill(GREEN)

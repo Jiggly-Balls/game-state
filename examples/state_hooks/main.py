@@ -1,8 +1,9 @@
 from pathlib import Path
-from typing import Any
 
 import pygame
-from game_state import State, StateManager
+from game_state import StateManager
+
+from base_state import MyBaseState
 
 pygame.init()
 pygame.display.init()
@@ -10,10 +11,12 @@ pygame.display.set_caption("Game State Hooks Example")
 
 
 def main() -> None:
-    screen = pygame.display.set_mode((500, 600))
+    window = pygame.display.set_mode((500, 600))
     # Create a basic 500x600 pixel window
 
-    state_manager = StateManager[State[Any]](screen)
+    state_manager = StateManager[MyBaseState](
+        bound_state_type=MyBaseState, window=window
+    )
 
     path_obj = Path("states.")
 

@@ -1,8 +1,6 @@
-from typing import Any
-
 import pygame
 from game_state import State, StateManager
-from game_state.utils import StateArgs
+from game_state.utils import MISSING, StateArgs
 
 
 GREEN = (0, 255, 0)
@@ -13,7 +11,18 @@ pygame.display.init()
 pygame.display.set_caption("Game State Example")
 
 
-class MainMenuState(State[Any], state_name="MainMenu"):
+class MyBaseState(State["MyBaseState"]):
+    window: pygame.Surface = MISSING
+    # Mention the attributes we want all our states to share.
+
+    def process_event(self, event: pygame.event.Event) -> None:
+        pass
+
+    def process_update(self, dt: float) -> None:
+        pass
+
+
+class MainMenuState(MyBaseState, state_name="MainMenu"):
     def __init__(self, bg_colour: tuple[int, int, int]) -> None:
         self.bg_colour: tuple[int, int, int] = bg_colour
 
@@ -32,14 +41,14 @@ class MainMenuState(State[Any], state_name="MainMenu"):
 
             self.manager.change_state("Game")
 
-    def process_update(self, *args: float) -> None:
+    def process_update(self, dt: float) -> None:
         # This is executed in our game loop.
 
         self.window.fill(self.bg_colour)
         pygame.display.update()
 
 
-class GameState(State[Any], state_name="Game"):
+class GameState(MyBaseState, state_name="Game"):
     def __init__(self, player_x: float) -> None:
         self.player_x: float = player_x
 
@@ -54,9 +63,7 @@ class GameState(State[Any], state_name="Game"):
 
             self.manager.change_state("MainMenu")
 
-    def process_update(self, *args: float) -> None:
-        dt = args[0]
-
+    def process_update(self, dt: float) -> None:
         self.window.fill(BLUE)
 
         # Player movement-
@@ -82,14 +89,16 @@ class GameState(State[Any], state_name="Game"):
 
 
 def main() -> None:
-    screen = pygame.display.set_mode((500, 600))
+    window = pygame.display.set_mode((500, 600))
 
     # The arguments we want to send to our MainMenuState & GameState constructor.
     # And we pass it to the state_manager.load_states
     main_menu_args = StateArgs(state_name="MainMenu", bg_colour=GREEN)
     game_args = StateArgs(state_name="Game", player_x=250.0)
 
-    state_manager = StateManager[State[Any]](screen)
+    state_manager = StateManager[MyBaseState](
+        bound_state_type=MyBaseState, window=window
+    )
     state_manager.load_states(
         MainMenuState, GameState, state_args=(main_menu_args, game_args)
     )
