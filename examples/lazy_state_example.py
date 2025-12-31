@@ -1,7 +1,6 @@
-from typing import Any
-
 import pygame
 from game_state import State, StateManager
+from game_state.utils import MISSING
 
 
 GREEN = (0, 255, 0)
@@ -12,7 +11,18 @@ pygame.display.init()
 pygame.display.set_caption("Game State Example")
 
 
-class MainMenuState(State[Any], state_name="MainMenu"):
+class MyBaseState(State["MyBaseState"]):
+    window: pygame.Surface = MISSING
+    # Mention the attributes we want all our states to share.
+
+    def process_event(self, event: pygame.event.Event) -> None:
+        pass
+
+    def process_update(self, dt: float) -> None:
+        pass
+
+
+class MainMenuState(MyBaseState, state_name="MainMenu"):
     def on_setup(self) -> None:
         print(f"{self.state_name} has initialized!")
 
@@ -31,14 +41,14 @@ class MainMenuState(State[Any], state_name="MainMenu"):
 
             self.manager.change_state("Game")
 
-    def process_update(self, *args: float) -> None:
+    def process_update(self, dt: float) -> None:
         # This is executed in our game loop.
 
         self.window.fill(GREEN)
         pygame.display.update()
 
 
-class GameState(State[Any], state_name="Game"):
+class GameState(MyBaseState, state_name="Game"):
     def __init__(self) -> None:
         self.player_x: float = 250.0
 
@@ -56,9 +66,7 @@ class GameState(State[Any], state_name="Game"):
 
             self.manager.change_state("MainMenu")
 
-    def process_update(self, *args: float) -> None:
-        dt = args[0]
-
+    def process_update(self, dt: float) -> None:
         self.window.fill(BLUE)
 
         # Player movement-
@@ -84,10 +92,12 @@ class GameState(State[Any], state_name="Game"):
 
 
 def main() -> None:
-    screen = pygame.display.set_mode((500, 600))
+    window = pygame.display.set_mode((500, 600))
     # Create a basic 500x600 pixel window
 
-    state_manager = StateManager[State[Any]](screen)
+    state_manager = StateManager[MyBaseState](
+        bound_state_type=MyBaseState, window=window
+    )
     state_manager.add_lazy_states(MainMenuState, GameState)
     # The states that we want to load lazily. Currently it is only cached in the manager.
 

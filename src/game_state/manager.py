@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Generic, TypeVar
 
 from .errors import StateError, StateLoadError
 from .state import State
-from .utils import MISSING
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -21,8 +20,6 @@ if TYPE_CHECKING:
         Type,
     )
 
-    from pygame import Surface
-
     from .utils import StateArgs
 
 
@@ -31,7 +28,6 @@ __all__ = ("StateManager",)
 
 S = TypeVar("S", bound="State[Any]")
 
-_GLOBAL_ON_SETUP_ARGS: int = 1  # TODO: Remove this in later version.
 _GLOBAL_ON_ENTER_ARGS: int = 2
 _GLOBAL_ON_LEAVE_ARGS: int = 2
 _GLOBAL_ON_LOAD_ARGS: int = 2
@@ -42,16 +38,6 @@ _KW_CONSIDER: Tuple[str, str] = ("VAR_KEYWORD", "KEYWORD_ONLY")
 class StateManager(Generic[S]):
     r"""The State Manager used for managing multiple State(s).
 
-    :param window:
-        .. deprecated:: 2.3.0
-
-            | To add class attributes to your own state system, make a base state
-                (with your custom attributes) and make all your states inherit from it.
-                Check the official guide for more info.
-
-        .. versionadded:: 1.0
-
-        The main game window.
     :param bound_state_type:
         The base state class which all states inherits from.
     :type bound_state_type: type[State]
@@ -67,15 +53,11 @@ class StateManager(Generic[S]):
 
     def __init__(
         self,
-        window: Surface = MISSING,
         *,
         bound_state_type: Type[S] = State,
         **kwargs: Any,
     ) -> None:
-        # TODO: ADD DEPRECATION WARNING FOR `window`
-
         self.bound_state_type: Type[S] = bound_state_type
-        self.bound_state_type.window = window
         self.bound_state_type.manager = self  # pyright: ignore[reportAttributeAccessIssue]
 
         for name, value in kwargs.items():
@@ -332,66 +314,6 @@ class StateManager(Generic[S]):
                 )
 
         self._global_on_leave = value
-
-    @property
-    def global_on_setup(self) -> Optional[Callable[[S], None]]:
-        r"""The global ``on_setup`` function for all states.
-
-        :type: None | typing.Callable[[State], None]
-
-        .. deprecated:: 2.3.0
-
-            | Use :meth:`global_on_load` instead.
-
-        .. versionchanged:: 2.0.3
-
-            | Global listeners can accept :class:`None` now.
-
-        .. versionadded:: 2.0
-
-        .. note::
-
-            This has to be assigned before loading the states into the manager.
-
-        The first argument passed to the function is the current state which has been
-        setup.
-
-        Example for a ``global_on_setup`` function-
-
-        .. code-block:: python
-
-            def global_on_setup(state: State) -> None:
-                print(f"GLOBAL SETUP - Setting up state: {state.state_name}")
-
-
-            your_manager_instance.global_on_setup = global_on_setup
-        """
-
-        return self._global_on_setup
-
-    @global_on_setup.setter
-    def global_on_setup(self, value: Optional[Callable[[S], None]]) -> None:
-        if value:
-            on_setup_signature = inspect.signature(value)
-            pos_args = self._get_pos_args(on_setup_signature)
-            kw_args = self._get_kw_args(on_setup_signature)
-
-            if (
-                len(on_setup_signature.parameters) != _GLOBAL_ON_SETUP_ARGS
-                or kw_args != 0
-            ):
-                raise TypeError(
-                    f"Expected {_GLOBAL_ON_SETUP_ARGS} positional argument(s) only "
-                    f"for the function to be assigned to global_on_setup. "
-                    f"Instead got {pos_args} positional argument(s)"
-                    + (
-                        f" and {kw_args} keyword argument(s)."
-                        if kw_args > 0
-                        else "."
-                    )
-                )
-
-        self._global_on_setup = value
 
     @property
     def global_on_load(self) -> Optional[Callable[[S, bool], None]]:
@@ -717,18 +639,12 @@ class StateManager(Generic[S]):
                 )
 
             self._states[state.state_name] = state(**final_state_args)
-            if self._global_on_setup:
-                self._global_on_setup(self._states[state.state_name])
-                # TODO: ADD DEPRECATION WARNING
 
             if self._global_on_load:
                 self._global_on_load(
                     self._states[state.state_name], self._is_reloading
                 )
 
-            self._states[
-                state.state_name
-            ].on_setup()  # TODO: Remove in later versions
             self._states[state.state_name].on_load(self._is_reloading)
 
     def reload_state(

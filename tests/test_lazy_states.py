@@ -19,9 +19,7 @@ def scenario() -> Tuple[
 
     class StateTwo(State["Any"]): ...
 
-    manager = StateManager(...)  # pyright: ignore[reportArgumentType, reportUnknownVariableType]
-    if TYPE_CHECKING:
-        manager = StateManager[State["Any"]](...)  # pyright: ignore[reportArgumentType]
+    manager = StateManager[State["Any"]]()
 
     return manager, StateOne, StateTwo
 

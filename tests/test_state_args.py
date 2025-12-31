@@ -17,9 +17,7 @@ DATA_2: str = "Guten Morgen"
 
 @pytest.fixture
 def manager() -> StateManager[State["Any"]]:
-    manager = StateManager(...)  # pyright: ignore[reportArgumentType, reportUnknownVariableType]
-    if TYPE_CHECKING:
-        manager = StateManager[State["Any"]](...)  # pyright: ignore[reportArgumentType]
+    manager = StateManager[State["Any"]]()
 
     return manager
 

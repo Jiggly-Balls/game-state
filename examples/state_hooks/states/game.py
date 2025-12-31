@@ -1,12 +1,12 @@
 from typing import Any
 
 import pygame
-from game_state import State
+from base_state import MyBaseState  # pyright: ignore[reportImplicitRelativeImport]
 
 BLUE = (0, 0, 255)
 
 
-class GameState(State[Any], state_name="Game"):
+class GameState(MyBaseState, state_name="Game"):
     def __init__(self) -> None:
         self.player_x: float = 250.0
         self.speed: int = 200
@@ -22,9 +22,7 @@ class GameState(State[Any], state_name="Game"):
 
             self.manager.change_state("MainMenu")
 
-    def process_update(self, *args: float) -> None:
-        dt = args[0]
-
+    def process_update(self, dt: float) -> None:
         self.window.fill(BLUE)
 
         # Player movement-

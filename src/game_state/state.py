@@ -8,8 +8,6 @@ from .utils import MISSING
 if TYPE_CHECKING:
     from typing import Any, List, Literal, Optional, Type
 
-    from pygame import Surface
-
     from .manager import StateManager
 
 
@@ -27,17 +25,6 @@ class State(Generic[S], ABC):
 
             .. versionadded:: 1.1
 
-        window: :class:`pygame.Surface`
-            .. deprecated:: 2.3.0
-
-                | To add class attributes to your own state system, make a base state
-                  (with your custom attributes) and make all your states inherit from it.
-                  Check the official guide for more info.
-
-            .. versionadded:: 1.0
-
-            The main game window.
-
         manager: :class:`StateManager`
             The manager to which the state is binded to.
 
@@ -45,7 +32,6 @@ class State(Generic[S], ABC):
     """
 
     state_name: str = MISSING
-    window: Surface = MISSING  # TODO: Remove in later versions
     manager: StateManager[State[S]] = MISSING
 
     _eager_states: List[Type[State[S]]] = []
@@ -132,23 +118,6 @@ class State(Generic[S], ABC):
         elif lazy_load:
             cls._lazy_states.append(cls)
 
-    def on_setup(self) -> None:
-        r"""This listener is only called once while being loaded into the ``StateManager``.
-        This is also called when reloading the State.
-
-        .. deprecated:: 2.3.0
-
-            | Replaced by :meth:`on_load` as it's more explicit about it's function
-              and allows you to handle state reloads separately.
-
-        .. versionadded:: 2.0
-
-        .. warning::
-
-            This method need not be called manually.
-        """
-        pass
-
     def on_load(self, reload: bool) -> None:
         r"""Called when the state is loaded into the :class:`StateManager`.
 
@@ -216,47 +185,5 @@ class State(Generic[S], ABC):
         :param next_state:
             | The next state that is going to be applied.
         :type next_state: State
-        """
-        pass
-
-    def process_event(self, event: Any) -> None:
-        r"""To be called when an event needs to be processed.
-
-        .. deprecated:: 2.3.1
-
-            | Add your own ``process_event`` in your subclasses. This is to prevent any type
-              checking issues.
-
-        .. versionchanged:: 2.3
-
-            | Changed the type of ``event`` from ``pygame.Event`` to ``typing.Any``
-
-        .. versionadded:: 2.0
-
-        .. note::
-
-            This method needs to be called manually.
-
-        :param event:
-            | The event object you want to consume.
-        """
-        pass
-
-    def process_update(self, *args: Any) -> None:
-        r"""The main game loop method to be executed through the :class:`StateManager`.
-
-        .. deprecated:: 2.3.1
-
-            | Add your own ``process_update`` in your subclasses. This is to prevent any type
-              checking issues.
-
-        .. versionadded:: 2.0
-
-        .. note::
-
-            This method needs to be called manually.
-
-        :param \*args:
-            | The arguments to be passed on to the update counter.
         """
         pass

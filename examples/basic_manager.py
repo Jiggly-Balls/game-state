@@ -12,8 +12,14 @@ pygame.display.set_caption("Game State Example")
 
 
 class MyBaseState(State["MyBaseState"]):
-    screen: pygame.Surface = MISSING
+    window: pygame.Surface = MISSING
     # Mention the attributes we want all our states to share.
+
+    def process_event(self, event: pygame.event.Event) -> None:
+        pass
+
+    def process_update(self, dt: float) -> None:
+        pass
 
 
 class MainMenuState(MyBaseState, state_name="MainMenu"):
@@ -32,10 +38,10 @@ class MainMenuState(MyBaseState, state_name="MainMenu"):
 
             self.manager.change_state("Game")
 
-    def process_update(self, *args: float) -> None:
+    def process_update(self, dt: float) -> None:
         # This is executed in our game loop.
 
-        self.screen.fill(GREEN)
+        self.window.fill(GREEN)
         pygame.display.update()
 
 
@@ -54,10 +60,8 @@ class GameState(MyBaseState, state_name="Game"):
 
             self.manager.change_state("MainMenu")
 
-    def process_update(self, *args: float) -> None:
-        dt = args[0]
-
-        self.screen.fill(BLUE)
+    def process_update(self, dt: float) -> None:
+        self.window.fill(BLUE)
 
         # Player movement-
         pressed = pygame.key.get_pressed()
@@ -68,7 +72,7 @@ class GameState(MyBaseState, state_name="Game"):
             self.player_x += speed * dt
 
         pygame.draw.rect(
-            self.screen,
+            self.window,
             "red",
             (
                 self.player_x,
@@ -81,11 +85,11 @@ class GameState(MyBaseState, state_name="Game"):
 
 
 def main() -> None:
-    screen = pygame.display.set_mode((500, 600))
+    window = pygame.display.set_mode((500, 600))
     # Create a basic 500x600 pixel window
 
     state_manager = StateManager[MyBaseState](
-        bound_state_type=MyBaseState, screen=screen
+        bound_state_type=MyBaseState, window=window
     )
     # `bound_state_type` takes in the base state we have made.
     # Don't forget to pass in kwargs to assign to the attributes we've defined

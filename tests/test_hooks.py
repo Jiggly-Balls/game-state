@@ -1,21 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import Any
 
 import pytest
 
 from src.game_state import State, StateManager
 from src.game_state.errors import StateError
 
-if TYPE_CHECKING:
-    from typing import Any
-
 
 def test_hooks() -> None:
-    state_manager = StateManager(...)  # pyright: ignore[reportArgumentType, reportUnknownVariableType]
-
-    if TYPE_CHECKING:
-        state_manager = StateManager[State[Any]](...)  # pyright: ignore[reportArgumentType]
+    state_manager = StateManager[State[Any]]()
 
     state_manager.connect_state_hook("tests.test_hooks_states.hook_1")
     state_manager.connect_state_hook("tests.test_hooks_states.hook_2")

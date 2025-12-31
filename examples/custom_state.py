@@ -33,7 +33,7 @@ class CustomBaseState(State["CustomBaseState"]):
     def process_event(self, event: pygame.event.Event) -> None:
         pass
 
-    def process_update(self, dt: float) -> None:  # pyright: ignore[reportIncompatibleMethodOverride]
+    def process_update(self, dt: float) -> None:
         pass
 
 
