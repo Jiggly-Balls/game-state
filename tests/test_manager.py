@@ -24,7 +24,7 @@ def scenario() -> Tuple[
     return manager, StateOne, StateTwo
 
 
-def test_load_states(
+def test_load_unload_states(
     scenario: Tuple[
         StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
     ],
@@ -47,6 +47,39 @@ def test_load_states(
     assert state_2.state_name in manager.state_map, (
         f"Expected {state_2.state_name} in state map."
     )
+
+    with pytest.raises(StateLoadError):
+        manager.unload_state("UNLOADED STATE")
+
+    unloaded_state_1 = manager.unload_state(state_1.state_name)
+    assert unloaded_state_1 == state_1, (
+        f"Expected state: {state_1=}, instead got {unloaded_state_1=}"
+    )
+
+    unloaded_state_2 = manager.unload_state(state_2.state_name)
+    assert unloaded_state_2 == state_2, (
+        f"Expected state: {state_2=}, instead got {unloaded_state_2=}"
+    )
+
+
+def test_relaod_states() -> None:
+    manager = StateManager[State["Any"]]()
+
+    class BaseState(State["BaseState"]):
+        reloaded: bool = False
+
+    class StateOne(BaseState):
+        def on_load(self, reload: bool) -> None:
+            BaseState.reloaded = reload
+
+    manager.load_states(StateOne)
+
+    with pytest.raises(StateLoadError):
+        manager.reload_state("UNKOWN STATE")
+
+    manager.reload_state("StateOne")
+
+    assert BaseState.reloaded, "Expected BaseState reload to be complete."
 
 
 def test_change_states(
