@@ -8,3 +8,5 @@ Utils
 
 .. autodata:: game_state.utils.MISSING
   :annotation: = _MissingSentinel()
+
+.. autodata:: game_state.utils.setup_logging

@@ -739,7 +739,7 @@ class StateManager(Generic[S]):
     ) -> Optional[Tuple[Type[S], Optional[List[StateArgs]]]]:
         r"""Removes the specified lazy state from the :class:`StateManager`. This will
         silently fail if the lazy state has been loaded to the manager, which in case
-        you will have to unload via :meth:`unload_state
+        you will have to unload via :meth:`unload_state`.
 
         .. versionadded:: 2.2
 
