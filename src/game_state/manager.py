@@ -544,8 +544,9 @@ class StateManager(Generic[S]):
 
         .. versionadded:: 2.2
 
-        :param states:
-            | The States to be loaded into the manager.
+        :param lazy_states:
+            | The states to be loaded into the manager as lazy states.
+        :type lazy_states: State
 
         :param force:
             | Default ``False``.
@@ -615,6 +616,7 @@ class StateManager(Generic[S]):
 
         :param states:
             | The States to be loaded into the manager.
+        :type states: State
 
         :param force:
             | Default ``False``.
@@ -686,8 +688,9 @@ class StateManager(Generic[S]):
               If set to ``True`` it may lead to unexpected behavior.
 
         :param \**kwargs:
-            | The keyword arguments to be passed to the
-            | ``StateManager.unload_state`` & ``StateManager.load_state``.
+            | The keyword arguments to be passed to the :meth:`unload_state` & :meth:`load_states`.
+
+        :rtype: State
 
         :returns:
             | Returns the newly made :class:`State` instance.
@@ -746,6 +749,8 @@ class StateManager(Generic[S]):
         :param state_name:
             | The state to be removed from the manager.
 
+        :rtype: None | typing.Tuple[typing.Type[State], typing.Optional[typing.List[StateArgs]]]
+
         :returns:
             | Either returns :class:`None` if the lazy state was not found or it returns a
             | tuple with the first element being the lazy state and the second being
@@ -782,6 +787,8 @@ class StateManager(Generic[S]):
 
         :param \**kwargs:
             | The keyword arguments to be passed on to the raised errors.
+
+        :rtype: typing.Type[State]
 
         :returns:
             | The :class:`State` class of the deleted State name.
