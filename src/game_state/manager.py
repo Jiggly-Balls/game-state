@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 import inspect
+import logging
 from typing import TYPE_CHECKING, Generic, TypeVar
 
 from .errors import StateError, StateLoadError
@@ -24,6 +25,7 @@ if TYPE_CHECKING:
 
 
 __all__ = ("StateManager",)
+logger = logging.getLogger(__name__)
 
 
 S = TypeVar("S", bound="State[Any]")
@@ -448,6 +450,8 @@ class StateManager(Generic[S]):
 
         if state_name not in self._states:
             if state_name in self._lazy_states:
+                logger.debug("Loading lazy state: %s", state_name)
+
                 fetched_lazy_state, lazy_state_args = self._lazy_states[
                     state_name
                 ]
@@ -479,15 +483,24 @@ class StateManager(Generic[S]):
                     last_state=self._last_state,
                 )
 
+        logger.debug(
+            "Changing from state %s to %s",
+            getattr(self.current_state, "state_name", "None"),
+            state_name,
+        )
+
         self._last_state = self._current_state
         self._current_state = self._states[state_name]
         if self._global_on_leave:
+            logger.debug("Calling global_on_leave")
             self._global_on_leave(self._last_state, self._current_state)
 
         if self._last_state:
+            logger.debug("Calling %s.on_leave", self._last_state.state_name)
             self._last_state.on_leave(self._current_state)
 
         if self._global_on_enter:
+            logger.debug("Calling global_on_enter")
             self._global_on_enter(self._current_state, self._last_state)
         self._current_state.on_enter(self._last_state)
 
@@ -516,6 +529,7 @@ class StateManager(Generic[S]):
                 **kwargs,
             )
 
+        logger.debug("Hooking up state: %s", state.__name__)
         state.__dict__["hook"](**kwargs)
 
     def add_lazy_states(
@@ -583,6 +597,7 @@ class StateManager(Generic[S]):
                 lazy_state,
                 lazy_state_arg,
             )
+            logger.debug("Added lazy state: %s", lazy_state.state_name)
 
     def load_states(
         self,
@@ -639,12 +654,15 @@ class StateManager(Generic[S]):
                 )
 
             self._states[state.state_name] = state(**final_state_args)
+            logger.debug("Loaded state: %s", state.state_name)
 
             if self._global_on_load:
+                logger.debug("Calling global_on_load")
                 self._global_on_load(
                     self._states[state.state_name], self._is_reloading
                 )
 
+            logger.debug("Calling %s.on_load", state.state_name)
             self._states[state.state_name].on_load(self._is_reloading)
 
     def reload_state(
@@ -705,6 +723,8 @@ class StateManager(Generic[S]):
                 **kwargs,
             )
 
+        logger.debug("Reloading state: %s", state_name)
+
         self._is_reloading = True
         deleted_cls = self.unload_state(
             state_name=state_name, force=force, **kwargs
@@ -719,7 +739,7 @@ class StateManager(Generic[S]):
     ) -> Optional[Tuple[Type[S], Optional[List[StateArgs]]]]:
         r"""Removes the specified lazy state from the :class:`StateManager`. This will
         silently fail if the lazy state has been loaded to the manager, which in case
-        you will have to unload via :meth:`unload_state
+        you will have to unload via :meth:`unload_state`.
 
         .. versionadded:: 2.2
 
@@ -735,8 +755,10 @@ class StateManager(Generic[S]):
         try:
             cls_ref = self._lazy_states[state_name]
             del self._lazy_states[state_name]
+            logger.debug("Successfully removed lazy state: %s", state_name)
             return cls_ref
         except KeyError:
+            logger.error("Failed to remove lazy state: %s", state_name)
             return None
 
     def unload_state(
@@ -810,7 +832,11 @@ class StateManager(Generic[S]):
                 **kwargs,
             )
 
+        logger.debug("Calling %s.on_unload", state_name)
         self._states[state_name].on_unload(self._is_reloading)
+
         cls_ref = self._states[state_name].__class__
         del self._states[state_name]
+        logger.debug("Successfully unloaded state: %s", state_name)
+
         return cls_ref
