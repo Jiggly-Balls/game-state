@@ -17,8 +17,7 @@ __copyright__ = "Copyright 2024-present Krish Mohan M."
 
 from typing import Literal, NamedTuple
 
-from .manager import StateManager
-from .state import State
+from .sync_machine import State, StateManager
 
 __all__ = ("State", "StateManager", "version_info")
 

@@ -5,14 +5,15 @@ import inspect
 import logging
 from typing import TYPE_CHECKING, Generic, TypeVar
 
-from .errors import StateError, StateLoadError
-from .state import State
+from ..errors import StateError, StateLoadError
+from .state import AsyncState
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
     from inspect import Signature
     from typing import (
         Any,
+        Awaitable,
         Dict,
         List,
         NoReturn,
@@ -21,14 +22,14 @@ if TYPE_CHECKING:
         Type,
     )
 
-    from .utils import StateArgs
+    from ..utils import StateArgs
 
 
-__all__ = ("StateManager",)
+__all__ = ("AsyncStateManager",)
 logger = logging.getLogger(__name__)
 
 
-S = TypeVar("S", bound="State[Any]")
+S = TypeVar("S", bound="AsyncState[Any]")
 
 _GLOBAL_ON_ENTER_ARGS: int = 2
 _GLOBAL_ON_LEAVE_ARGS: int = 2
@@ -37,7 +38,7 @@ _GLOBAL_ON_UNLOAD_ARGS: int = 2
 _KW_CONSIDER: Tuple[str, str] = ("VAR_KEYWORD", "KEYWORD_ONLY")
 
 
-class StateManager(Generic[S]):
+class AsyncStateManager(Generic[S]):
     r"""The State Manager used for managing multiple State(s).
 
     :param bound_state_type:
@@ -56,7 +57,7 @@ class StateManager(Generic[S]):
     def __init__(
         self,
         *,
-        bound_state_type: Type[S] = State,
+        bound_state_type: Type[S] = AsyncState,
         **kwargs: Any,
     ) -> None:
         self.bound_state_type: Type[S] = bound_state_type
@@ -68,10 +69,10 @@ class StateManager(Generic[S]):
         self.is_running: bool = True
 
         # fmt: off
-        self._global_on_setup: Optional[Callable[[S], None]] = None
-        self._global_on_enter: Optional[Callable[[S, Optional[S]], None]] = None
-        self._global_on_leave: Optional[Callable[[Optional[S], S], None]] = None
-        self._global_on_load: Optional[Callable[[S, bool], None]] = None
+        self._global_on_setup: Optional[Callable[[S], Awaitable[None]]] = None
+        self._global_on_enter: Optional[Callable[[S, Optional[S]], Awaitable[None]]] = None
+        self._global_on_leave: Optional[Callable[[Optional[S], S], Awaitable[None]]] = None
+        self._global_on_load: Optional[Callable[[S, bool], Awaitable[None]]] = None
         # fmt: on
 
         self._lazy_states: Dict[
@@ -188,10 +189,12 @@ class StateManager(Generic[S]):
         raise ValueError("Cannot overwrite the state map.")
 
     @property
-    def global_on_enter(
+    async def global_on_enter(
         self,
     ) -> Optional[Callable[[S, Optional[S]], None]]:
-        r"""The global on_enter listener called right before a state's on_enter listener.
+        r"""|coro|
+
+        The global on_enter listener called right before a state's on_enter listener.
 
         :type: None | typing.Callable[[State, typing.Optional[State]], None]
 
@@ -227,7 +230,7 @@ class StateManager(Generic[S]):
         return self._global_on_enter
 
     @global_on_enter.setter
-    def global_on_enter(
+    async def global_on_enter(
         self, value: Optional[Callable[[S, Optional[S]], None]]
     ) -> None:
         if value:
@@ -253,10 +256,12 @@ class StateManager(Generic[S]):
         self._global_on_enter = value
 
     @property
-    def global_on_leave(
+    async def global_on_leave(
         self,
     ) -> Optional[Callable[[Optional[S], S], None]]:
-        r"""The global on_leave listener called right before a state's on_leave listener.
+        r"""|coro|
+
+        The global on_leave listener called right before a state's on_leave listener.
 
         :type: None | typing.Callable[[typing.Optional[State], State], None]
 
@@ -292,7 +297,7 @@ class StateManager(Generic[S]):
         return self._global_on_leave
 
     @global_on_leave.setter
-    def global_on_leave(
+    async def global_on_leave(
         self, value: Optional[Callable[[Optional[S], S], None]]
     ) -> None:
         if value:
@@ -318,8 +323,10 @@ class StateManager(Generic[S]):
         self._global_on_leave = value
 
     @property
-    def global_on_load(self) -> Optional[Callable[[S, bool], None]]:
-        r"""The global :meth:`State.on_load` function for all states.
+    async def global_on_load(self) -> Optional[Callable[[S, bool], None]]:
+        r"""|coro|
+
+        The global :meth:`State.on_load` function for all states.
 
         :type: None | typing.Callable[[State, bool], None]
 
@@ -350,7 +357,7 @@ class StateManager(Generic[S]):
         return self._global_on_load
 
     @global_on_load.setter
-    def global_on_load(
+    async def global_on_load(
         self, value: Optional[Callable[[S, bool], None]]
     ) -> None:
         if value:
@@ -376,8 +383,10 @@ class StateManager(Generic[S]):
         self._global_on_load = value
 
     @property
-    def global_on_unload(self) -> Optional[Callable[[S, bool], None]]:
-        r"""The global :meth:`State.on_unload` function for all states.
+    async def global_on_unload(self) -> Optional[Callable[[S, bool], None]]:
+        r"""|coro|
+
+        The global :meth:`State.on_unload` function for all states.
 
         :type: None | typing.Callable[[State, bool], None]
 
@@ -408,7 +417,7 @@ class StateManager(Generic[S]):
         return self._global_on_load
 
     @global_on_unload.setter
-    def global_on_unload(
+    async def global_on_unload(
         self, value: Optional[Callable[[S, bool], None]]
     ) -> None:
         if value:
@@ -433,7 +442,7 @@ class StateManager(Generic[S]):
 
         self._global_on_load = value
 
-    def change_state(self, state_name: str) -> None:
+    async def change_state(self, state_name: str) -> None:
         r"""Changes the current state and updates the last state. This method executes
         the :meth:`State.on_leave` & :meth:`State.on_enter` state & global listeners
         (:meth:`global_on_leave` & :meth:`global_on_enter`)
@@ -455,7 +464,7 @@ class StateManager(Generic[S]):
                 fetched_lazy_state, lazy_state_args = self._lazy_states[
                     state_name
                 ]
-                self.load_states(
+                await self.load_states(
                     fetched_lazy_state, state_args=lazy_state_args
                 )
                 del self._lazy_states[state_name]
@@ -491,18 +500,19 @@ class StateManager(Generic[S]):
 
         self._last_state = self._current_state
         self._current_state = self._states[state_name]
+
         if self._global_on_leave:
             logger.debug("Calling global_on_leave")
-            self._global_on_leave(self._last_state, self._current_state)
+            await self._global_on_leave(self._last_state, self._current_state)
 
         if self._last_state:
             logger.debug("Calling %s.on_leave", self._last_state.state_name)
-            self._last_state.on_leave(self._current_state)
+            await self._last_state.on_leave(self._current_state)
 
         if self._global_on_enter:
             logger.debug("Calling global_on_enter")
-            self._global_on_enter(self._current_state, self._last_state)
-        self._current_state.on_enter(self._last_state)
+            await self._global_on_enter(self._current_state, self._last_state)
+        await self._current_state.on_enter(self._last_state)
 
     def connect_state_hook(self, path: str, **kwargs: Any) -> None:
         r"""Calls the hook function of the state file.
@@ -600,7 +610,7 @@ class StateManager(Generic[S]):
             )
             logger.debug("Added lazy state: %s", lazy_state.state_name)
 
-    def load_states(
+    async def load_states(
         self,
         *states: Type[S],
         force: bool = False,
@@ -660,14 +670,14 @@ class StateManager(Generic[S]):
 
             if self._global_on_load:
                 logger.debug("Calling global_on_load")
-                self._global_on_load(
+                await self._global_on_load(
                     self._states[state.state_name], self._is_reloading
                 )
 
             logger.debug("Calling %s.on_load", state.state_name)
-            self._states[state.state_name].on_load(self._is_reloading)
+            await self._states[state.state_name].on_load(self._is_reloading)
 
-    def reload_state(
+    async def reload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> S:
         r"""Reloads the specified State. A short hand to :meth:`unload_state` &
@@ -729,10 +739,10 @@ class StateManager(Generic[S]):
         logger.debug("Reloading state: %s", state_name)
 
         self._is_reloading = True
-        deleted_cls = self.unload_state(
+        deleted_cls = await self.unload_state(
             state_name=state_name, force=force, **kwargs
         )
-        self.load_states(deleted_cls, force=force, **kwargs)
+        await self.load_states(deleted_cls, force=force, **kwargs)
         self._is_reloading = False
 
         return self._states[state_name]
@@ -766,7 +776,7 @@ class StateManager(Generic[S]):
             logger.error("Failed to remove lazy state: %s", state_name)
             return None
 
-    def unload_state(
+    async def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> Type[S]:
         r"""Unloads the specified state from the :class:`StateManager`.
@@ -840,7 +850,7 @@ class StateManager(Generic[S]):
             )
 
         logger.debug("Calling %s.on_unload", state_name)
-        self._states[state_name].on_unload(self._is_reloading)
+        await self._states[state_name].on_unload(self._is_reloading)
 
         cls_ref = self._states[state_name].__class__
         del self._states[state_name]

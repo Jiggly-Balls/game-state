@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .state import State
+from .async_machine import AsyncState
+from .sync_machine import State
 
 if TYPE_CHECKING:
-    from typing import Any, Optional
+    from typing import Any, Optional, Union
 
 
 __all__ = ("BaseError", "StateError", "StateLoadError")
@@ -20,12 +21,14 @@ class BaseError(Exception):
     def __init__(
         self,
         *args: Any,
-        last_state: Optional[State["Any"]] = None,
+        last_state: Optional[Union[State["Any"], AsyncState["Any"]]] = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args)
 
-        self.last_state: Optional[State["Any"]] = last_state
+        self.last_state: Optional[Union[State["Any"], AsyncState["Any"]]] = (
+            last_state
+        )
         for key, value in kwargs.items():
             setattr(self, key, value)
 
