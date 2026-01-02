@@ -17,9 +17,16 @@ __copyright__ = "Copyright 2024-present Krish Mohan M."
 
 from typing import Literal, NamedTuple
 
+from .async_machine import AsyncState, AsyncStateManager
 from .sync_machine import State, StateManager
 
-__all__ = ("State", "StateManager", "version_info")
+__all__ = (
+    "AsyncState",
+    "AsyncStateManager",
+    "State",
+    "StateManager",
+    "version_info",
+)
 
 
 class VersionInfo(NamedTuple):
