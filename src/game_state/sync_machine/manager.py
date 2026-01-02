@@ -68,7 +68,6 @@ class StateManager(Generic[S]):
         self.is_running: bool = True
 
         # fmt: off
-        self._global_on_setup: Optional[Callable[[S], None]] = None
         self._global_on_enter: Optional[Callable[[S, Optional[S]], None]] = None
         self._global_on_leave: Optional[Callable[[Optional[S], S], None]] = None
         self._global_on_load: Optional[Callable[[S, bool], None]] = None

@@ -69,7 +69,6 @@ class AsyncStateManager(Generic[S]):
         self.is_running: bool = True
 
         # fmt: off
-        self._global_on_setup: Optional[Callable[[S], Awaitable[None]]] = None
         self._global_on_enter: Optional[Callable[[S, Optional[S]], Awaitable[None]]] = None
         self._global_on_leave: Optional[Callable[[Optional[S], S], Awaitable[None]]] = None
         self._global_on_load: Optional[Callable[[S, bool], Awaitable[None]]] = None
@@ -189,9 +188,9 @@ class AsyncStateManager(Generic[S]):
         raise ValueError("Cannot overwrite the state map.")
 
     @property
-    async def global_on_enter(
+    def global_on_enter(
         self,
-    ) -> Optional[Callable[[S, Optional[S]], None]]:
+    ) -> Optional[Callable[[S, Optional[S]], Awaitable[None]]]:
         r"""|coro|
 
         The global on_enter listener called right before a state's on_enter listener.
@@ -230,8 +229,8 @@ class AsyncStateManager(Generic[S]):
         return self._global_on_enter
 
     @global_on_enter.setter
-    async def global_on_enter(
-        self, value: Optional[Callable[[S, Optional[S]], None]]
+    def global_on_enter(
+        self, value: Optional[Callable[[S, Optional[S]], Awaitable[None]]]
     ) -> None:
         if value:
             on_enter_signature = inspect.signature(value)
@@ -256,9 +255,9 @@ class AsyncStateManager(Generic[S]):
         self._global_on_enter = value
 
     @property
-    async def global_on_leave(
+    def global_on_leave(
         self,
-    ) -> Optional[Callable[[Optional[S], S], None]]:
+    ) -> Optional[Callable[[Optional[S], S], Awaitable[None]]]:
         r"""|coro|
 
         The global on_leave listener called right before a state's on_leave listener.
@@ -297,8 +296,8 @@ class AsyncStateManager(Generic[S]):
         return self._global_on_leave
 
     @global_on_leave.setter
-    async def global_on_leave(
-        self, value: Optional[Callable[[Optional[S], S], None]]
+    def global_on_leave(
+        self, value: Optional[Callable[[Optional[S], S], Awaitable[None]]]
     ) -> None:
         if value:
             on_leave_signature = inspect.signature(value)
@@ -323,7 +322,7 @@ class AsyncStateManager(Generic[S]):
         self._global_on_leave = value
 
     @property
-    async def global_on_load(self) -> Optional[Callable[[S, bool], None]]:
+    def global_on_load(self) -> Optional[Callable[[S, bool], Awaitable[None]]]:
         r"""|coro|
 
         The global :meth:`State.on_load` function for all states.
@@ -357,8 +356,8 @@ class AsyncStateManager(Generic[S]):
         return self._global_on_load
 
     @global_on_load.setter
-    async def global_on_load(
-        self, value: Optional[Callable[[S, bool], None]]
+    def global_on_load(
+        self, value: Optional[Callable[[S, bool], Awaitable[None]]]
     ) -> None:
         if value:
             on_setup_signature = inspect.signature(value)
@@ -383,7 +382,9 @@ class AsyncStateManager(Generic[S]):
         self._global_on_load = value
 
     @property
-    async def global_on_unload(self) -> Optional[Callable[[S, bool], None]]:
+    def global_on_unload(
+        self,
+    ) -> Optional[Callable[[S, bool], Awaitable[None]]]:
         r"""|coro|
 
         The global :meth:`State.on_unload` function for all states.
@@ -417,8 +418,8 @@ class AsyncStateManager(Generic[S]):
         return self._global_on_load
 
     @global_on_unload.setter
-    async def global_on_unload(
-        self, value: Optional[Callable[[S, bool], None]]
+    def global_on_unload(
+        self, value: Optional[Callable[[S, bool], Awaitable[None]]]
     ) -> None:
         if value:
             on_unload_signature = inspect.signature(value)
