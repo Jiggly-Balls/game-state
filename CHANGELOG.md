@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.4.0]
 
+### Added
+
+- `game_state.AsyncStateManager`.
+- `game_state.AsyncState`.
+
 ### Fixed
 
 - Fixed documentation for `StateManager`.
@@ -14,6 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated test cases to improve coverage.
+
+### Removed
+
+- `window` parameter in `StateManager`'s `__init__`.
+- `StateManager.global_on_setup` property.
+- `State.window` attribute.
+- `State.on_setup`.
+- `State.process_event`.
+- `State.process_update`.
 
 ## [2.3.1] - 2025-12-31
 

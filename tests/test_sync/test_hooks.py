@@ -11,8 +11,12 @@ from src.game_state.errors import StateError
 def test_hooks() -> None:
     state_manager = StateManager[State[Any]]()
 
-    state_manager.connect_state_hook("tests.test_hooks_states.hook_1")
-    state_manager.connect_state_hook("tests.test_hooks_states.hook_2")
+    state_manager.connect_state_hook(
+        "tests.test_sync.test_hooks_states.hook_1"
+    )
+    state_manager.connect_state_hook(
+        "tests.test_sync.test_hooks_states.hook_2"
+    )
 
     STATE_1_NAME = "HookState1"
     TOTAL_VALID_LOADED_STATES: int = 2
@@ -26,7 +30,9 @@ def test_hooks() -> None:
     )
 
     with pytest.raises(StateError):
-        state_manager.connect_state_hook("tests.test_hooks_states.hook_3")
+        state_manager.connect_state_hook(
+            "tests.test_sync.test_hooks_states.hook_3"
+        )
 
     loaded_states = len(state_manager.state_map)
 

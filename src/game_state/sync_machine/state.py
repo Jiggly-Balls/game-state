@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC
 from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
-from .utils import MISSING
+from ..utils import MISSING
 
 if TYPE_CHECKING:
     from typing import Any, List, Literal, Optional, Type
@@ -126,7 +126,7 @@ class State(Generic[S], ABC):
 
         .. versionadded:: 2.3.0
 
-        .. warning::
+        .. note::
 
             This method need not be called manually.
 
@@ -145,7 +145,7 @@ class State(Generic[S], ABC):
 
         .. versionadded:: 2.3.0
 
-        .. warning::
+        .. note::
 
             This method need not be called manually.
 
@@ -161,7 +161,7 @@ class State(Generic[S], ABC):
 
         .. versionadded:: 2.0
 
-        .. warning::
+        .. note::
 
             This method need not be called manually.
 
@@ -178,7 +178,7 @@ class State(Generic[S], ABC):
 
         .. versionadded:: 2.0
 
-        .. warning::
+        .. note::
 
             This method need not be called manually.
 
