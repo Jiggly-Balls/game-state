@@ -440,7 +440,7 @@ class StateManager(Generic[S]):
         .. versionadded:: 1.0
 
         :param state_name:
-            | The name of the State you want to switch to.
+            | The name of the state you want to switch to.
 
         :raises:
             :exc:`game_state.errors.StateError`
@@ -509,7 +509,7 @@ class StateManager(Generic[S]):
         .. versionadded:: 1.0
 
         :param path:
-            | The path to the State file containing the hook function to be called.
+            | The path to the state file containing the hook function to be called.
         :param \**kwargs:
             | The keyword arguments to be passed to the hook function.
 
@@ -521,7 +521,7 @@ class StateManager(Generic[S]):
         state = importlib.import_module(path)
         if "hook" not in state.__dict__:
             raise StateError(
-                "\nAn error occurred in loading State Path-\n"
+                "\nAn error occurred in loading state path-\n"
                 f"`{path}`\n"
                 "`hook` function was not found in state file to load.\n",
                 last_state=self._last_state,
@@ -550,7 +550,7 @@ class StateManager(Generic[S]):
         :param force:
             | Default ``False``.
             |
-            | Loads the State regardless of whether the State has already been loaded or not
+            | Loads the state regardless of whether the state has already been loaded or not
             | without raising any internal error.
 
             .. warning::
@@ -563,9 +563,6 @@ class StateManager(Generic[S]):
             :exc:`game_state.errors.StateLoadError`
                 | Raised when the state has already been loaded.
                 | Only raised when ``force`` is set to ``False``.
-
-            :exc:`game_state.errors.StateLoadError`
-                | Raised when the passed argument(s) is not subclassed from ``State``.
         """
 
         args_cache: Dict[str, Optional[StateArgs]] = {}
@@ -620,7 +617,7 @@ class StateManager(Generic[S]):
         :param force:
             | Default ``False``.
             |
-            | Loads the State regardless of whether the State has already been loaded or not
+            | Loads the state regardless of whether the state has already been loaded or not
             | without raising any internal error.
 
             .. warning::
@@ -669,18 +666,18 @@ class StateManager(Generic[S]):
     def reload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> S:
-        r"""Reloads the specified State. A short hand to :meth:`unload_state` &
+        r"""Reloads the specified state. A short hand to :meth:`unload_state` &
         :meth:`load_states`.
 
         .. versionadded:: 1.0
 
         :param state_name:
-            | The ``State`` name to be reloaded.
+            | The state name to be reloaded.
 
         :param force:
             | Default ``False``.
             |
-            | Reloads the State even if it's an actively running State without
+            | Reloads the state even if it's an actively running state without
             | raising any internal error.
 
             .. warning::
@@ -778,7 +775,7 @@ class StateManager(Generic[S]):
         :param force:
             | Default ``False``.
             |
-            | Unloads the State even if it's an actively running State without raising any
+            | Unloads the state even if it's an actively running state without raising any
               internal error.
 
             .. warning::
@@ -790,14 +787,14 @@ class StateManager(Generic[S]):
         :rtype: typing.Type[State]
 
         :returns:
-            | The :class:`State` class of the deleted State name.
+            | The :class:`State` class of the deleted state name.
 
         :raises:
             :exc:`game_state.errors.StateLoadError`
                 | Raised when the state doesn't exist in the manager to be unloaded.
 
             :exc:`game_state.errors.StateError`
-                | Raised when trying to unload an actively running State.
+                | Raised when trying to unload an actively running state.
                 | Only raised when ``force`` is set to ``False``.
         """
 
