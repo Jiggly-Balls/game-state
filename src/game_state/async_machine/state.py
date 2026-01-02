@@ -126,7 +126,7 @@ class AsyncState(Generic[S], ABC):
 
         .. versionadded:: 2.3.0
 
-        .. warning::
+        .. note::
 
             This method need not be called manually.
 
@@ -145,7 +145,7 @@ class AsyncState(Generic[S], ABC):
 
         .. versionadded:: 2.3.0
 
-        .. warning::
+        .. note::
 
             This method need not be called manually.
 
@@ -161,7 +161,7 @@ class AsyncState(Generic[S], ABC):
 
         .. versionadded:: 2.0
 
-        .. warning::
+        .. note::
 
             This method need not be called manually.
 
@@ -178,7 +178,7 @@ class AsyncState(Generic[S], ABC):
 
         .. versionadded:: 2.0
 
-        .. warning::
+        .. note::
 
             This method need not be called manually.
 
