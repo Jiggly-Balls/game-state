@@ -2,12 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .async_machine import AsyncState
-from .sync_machine import State
-
 if TYPE_CHECKING:
     from typing import Any, Optional, Union
 
+    from .async_machine import AsyncState
+    from .sync_machine import State
 
 __all__ = ("BaseError", "StateError", "StateLoadError")
 
