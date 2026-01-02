@@ -42,10 +42,10 @@ class AsyncStateManager(Generic[S]):
     r"""The State Manager used for managing multiple State(s).
 
     :param bound_state_type:
-        The base state class which all states inherits from.
+        | The base state class which all states inherits from.
     :type bound_state_type: type[State]
     :param \**kwargs:
-        The keyword arguments to bind to ``bound_state_type``.
+        | The keyword arguments to bind to ``bound_state_type``.
 
     :attributes:
         is_running: :class:`bool`
@@ -191,9 +191,7 @@ class AsyncStateManager(Generic[S]):
     def global_on_enter(
         self,
     ) -> Optional[Callable[[S, Optional[S]], Awaitable[None]]]:
-        r"""|coro|
-
-        The global on_enter listener called right before a state's on_enter listener.
+        r"""The global on_enter listener called right before a state's on_enter listener.
 
         :type: None | typing.Callable[[State, typing.Optional[State]], None]
 
@@ -214,7 +212,7 @@ class AsyncStateManager(Generic[S]):
 
         .. code-block:: python
 
-            def global_on_enter(
+            async def global_on_enter(
                 current_state: State, previous_state: None | State
             ) -> None:
                 if previous_state:
@@ -258,9 +256,7 @@ class AsyncStateManager(Generic[S]):
     def global_on_leave(
         self,
     ) -> Optional[Callable[[Optional[S], S], Awaitable[None]]]:
-        r"""|coro|
-
-        The global on_leave listener called right before a state's on_leave listener.
+        r"""The global on_leave listener called right before a state's on_leave listener.
 
         :type: None | typing.Callable[[typing.Optional[State], State], None]
 
@@ -281,7 +277,7 @@ class AsyncStateManager(Generic[S]):
 
         .. code-block:: python
 
-            def global_on_leave(
+            async def global_on_leave(
                 current_state: None | State, next_state: State
             ) -> None:
                 if current_state:
@@ -323,9 +319,7 @@ class AsyncStateManager(Generic[S]):
 
     @property
     def global_on_load(self) -> Optional[Callable[[S, bool], Awaitable[None]]]:
-        r"""|coro|
-
-        The global :meth:`State.on_load` function for all states.
+        r"""The global :meth:`State.on_load` function for all states.
 
         :type: None | typing.Callable[[State, bool], None]
 
@@ -342,7 +336,7 @@ class AsyncStateManager(Generic[S]):
 
         .. code-block:: python
 
-            def global_on_load(state: State, reload: bool) -> None:
+            async def global_on_load(state: State, reload: bool) -> None:
                 print(f"GLOBAL LOAD - Loading up state: {state.state_name}")
                 if reload:
                     print("The state is being reloaded.")
@@ -617,7 +611,9 @@ class AsyncStateManager(Generic[S]):
         force: bool = False,
         state_args: Optional[Iterable[StateArgs]] = None,
     ) -> None:
-        r"""Loads the States into the StateManager.
+        r"""|coro|
+
+        Loads the States into the StateManager.
 
         .. versionchanged:: 2.1
 
@@ -681,7 +677,9 @@ class AsyncStateManager(Generic[S]):
     async def reload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> S:
-        r"""Reloads the specified State. A short hand to :meth:`unload_state` &
+        r"""|coro|
+
+        Reloads the specified State. A short hand to :meth:`unload_state` &
         :meth:`load_states`.
 
         .. versionadded:: 1.0
@@ -780,7 +778,9 @@ class AsyncStateManager(Generic[S]):
     async def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> Type[S]:
-        r"""Unloads the specified state from the :class:`StateManager`.
+        r"""|coro|
+
+        Unloads the specified state from the :class:`StateManager`.
 
         .. versionadded:: 1.0
 
