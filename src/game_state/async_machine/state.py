@@ -176,7 +176,7 @@ class AsyncState(Generic[S], ABC):
         r"""This listener is called once when the state has been switched and is exiting
         the current one.
 
-        .. versionadded:: 2.0
+        .. versionadded:: 2.4
 
         .. note::
 
