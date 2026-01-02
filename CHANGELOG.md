@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.4.0]
 
+### Added
+
+- `game_state.AsyncStateManager`
+- `game_state.AsyncState`
+
 ### Fixed
 
 - Fixed documentation for `StateManager`.
