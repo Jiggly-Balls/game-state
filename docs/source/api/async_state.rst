@@ -1,9 +1,9 @@
 .. currentmodule:: game_state
 
-State
-=====
+Async State
+===========
 
-.. autoclass:: State
+.. autoclass:: AsyncState
   :members:
 
   .. automethod:: __init_subclass__

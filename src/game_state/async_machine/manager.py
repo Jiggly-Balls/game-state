@@ -379,9 +379,7 @@ class AsyncStateManager(Generic[S]):
     def global_on_unload(
         self,
     ) -> Optional[Callable[[S, bool], Awaitable[None]]]:
-        r"""|coro|
-
-        The global :meth:`AsyncState.on_unload` function for all states.
+        r"""The global :meth:`AsyncState.on_unload` function for all states.
 
         :type: None | typing.Callable[[AsyncState, bool], None]
 
@@ -608,9 +606,7 @@ class AsyncStateManager(Generic[S]):
         force: bool = False,
         state_args: Optional[Iterable[StateArgs]] = None,
     ) -> None:
-        r"""|coro|
-
-        Loads the States into the StateManager.
+        r"""Loads the States into the StateManager.
 
         .. versionchanged:: 2.1
 
@@ -674,9 +670,7 @@ class AsyncStateManager(Generic[S]):
     async def reload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> S:
-        r"""|coro|
-
-        Reloads the specified state. A short hand to :meth:`unload_state` &
+        r"""Reloads the specified state. A short hand to :meth:`unload_state` &
         :meth:`load_states`.
 
         .. versionadded:: 1.0
@@ -775,9 +769,7 @@ class AsyncStateManager(Generic[S]):
     async def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> Type[S]:
-        r"""|coro|
-
-        Unloads the specified state from the :class:`StateManager`.
+        r"""Unloads the specified state from the :class:`StateManager`.
 
         .. versionadded:: 1.0
 

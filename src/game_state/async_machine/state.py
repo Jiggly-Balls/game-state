@@ -25,7 +25,7 @@ class AsyncState(Generic[S], ABC):
 
             .. versionadded:: 1.1
 
-        manager: :class:`StateManager`
+        manager: :class:`AsyncStateManager`
             The manager to which the state is binded to.
 
             .. versionadded:: 1.0
@@ -78,7 +78,7 @@ class AsyncState(Generic[S], ABC):
 
             .. code-block:: python
 
-                class Game(State, state_name="GameState"): ...
+                class Game(AsyncState, state_name="GameState"): ...
 
         :param eager_load:
             | Automatically marks this class to be loaded eagerly.
@@ -87,7 +87,7 @@ class AsyncState(Generic[S], ABC):
 
             .. code-block:: python
 
-                class MainMenu(State, eager_load=True): ...
+                class MainMenu(AsyncState, eager_load=True): ...
 
         :param lazy_load:
             | Automatically marks this class to be loaded lazily.
@@ -96,7 +96,7 @@ class AsyncState(Generic[S], ABC):
 
             .. code-block:: python
 
-                class PauseMenu(State, lazy_load=True): ...
+                class PauseMenu(AsyncState, lazy_load=True): ...
 
         .. warning::
 
@@ -119,7 +119,7 @@ class AsyncState(Generic[S], ABC):
             cls._lazy_states.append(cls)
 
     async def on_load(self, reload: bool) -> None:
-        r"""Called when the state is loaded into the :class:`StateManager`.
+        r"""Called when the state is loaded into the :class:`AsyncStateManager`.
 
         This listener is invoked both during the initial load of the state and
         when the state is reloaded.
@@ -138,7 +138,7 @@ class AsyncState(Generic[S], ABC):
 
     async def on_unload(self, reload: bool) -> None:
         r"""Called when the state is being unloaded from the
-        :class:`StateManager`.
+        :class:`AsyncStateManager`.
 
         This listener is invoked both during the initial load of the state and
         when the state is reloaded.
