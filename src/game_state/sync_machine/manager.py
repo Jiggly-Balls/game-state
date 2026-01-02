@@ -41,10 +41,10 @@ class StateManager(Generic[S]):
     r"""The State Manager used for managing multiple State(s).
 
     :param bound_state_type:
-        The base state class which all states inherits from.
+        | The base state class which all states inherits from.
     :type bound_state_type: type[State]
     :param \**kwargs:
-        The keyword arguments to bind to ``bound_state_type``.
+        | The keyword arguments to bind to ``bound_state_type``.
 
     :attributes:
         is_running: :class:`bool`
