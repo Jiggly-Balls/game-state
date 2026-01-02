@@ -23,12 +23,12 @@ class AsyncState(Generic[S], ABC):
         state_name: :class:`str`
             The name of the state. Has to be unique among other states.
 
-            .. versionadded:: 1.1
+            .. versionadded:: 2.4
 
         manager: :class:`AsyncStateManager`
             The manager to which the state is binded to.
 
-            .. versionadded:: 1.0
+            .. versionadded:: 2.4
     """
 
     state_name: str = MISSING
@@ -74,7 +74,7 @@ class AsyncState(Generic[S], ABC):
         :param state_name:
             | The name of the state. If no `state_name` is passed, it uses the identifier's name.
 
-            .. versionadded:: 1.1
+            .. versionadded:: 2.4
 
             .. code-block:: python
 
@@ -83,7 +83,7 @@ class AsyncState(Generic[S], ABC):
         :param eager_load:
             | Automatically marks this class to be loaded eagerly.
 
-            .. versionadded:: 2.2
+            .. versionadded:: 2.4
 
             .. code-block:: python
 
@@ -92,7 +92,7 @@ class AsyncState(Generic[S], ABC):
         :param lazy_load:
             | Automatically marks this class to be loaded lazily.
 
-            .. versionadded:: 2.2
+            .. versionadded:: 2.4
 
             .. code-block:: python
 
@@ -124,7 +124,7 @@ class AsyncState(Generic[S], ABC):
         This listener is invoked both during the initial load of the state and
         when the state is reloaded.
 
-        .. versionadded:: 2.3.0
+        .. versionadded:: 2.4
 
         .. note::
 
@@ -143,7 +143,7 @@ class AsyncState(Generic[S], ABC):
         This listener is invoked both during the initial load of the state and
         when the state is reloaded.
 
-        .. versionadded:: 2.3.0
+        .. versionadded:: 2.4
 
         .. note::
 
@@ -159,7 +159,7 @@ class AsyncState(Generic[S], ABC):
         r"""This listener is called once when a state has been switched and is
         entering the current state.
 
-        .. versionadded:: 2.0
+        .. versionadded:: 2.4
 
         .. note::
 

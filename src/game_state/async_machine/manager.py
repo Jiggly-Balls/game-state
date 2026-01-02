@@ -49,7 +49,7 @@ class AsyncStateManager(Generic[S]):
 
     :attributes:
         is_running: :class:`bool`
-            .. versionadded:: 2.0
+            .. versionadded:: 2.4
 
             A bool for controlling the game loop. ``True`` by default.
     """
@@ -102,9 +102,7 @@ class AsyncStateManager(Generic[S]):
 
         :type: :class:`AsyncState` | :class:`None`
 
-        .. versionchanged:: 2.0
-
-            | Changed from method to property.
+        .. versionadded:: 2.4
 
         .. note::
 
@@ -125,9 +123,7 @@ class AsyncStateManager(Generic[S]):
 
         :type: AsyncState | None
 
-        .. versionchanged:: 2.0
-
-            | Changed from method to property.
+        .. versionadded:: 2.4
 
         .. note::
 
@@ -148,7 +144,7 @@ class AsyncStateManager(Generic[S]):
 
         :type: dict[str, tuple[type[AsyncState], None | list[StateArgs]]]
 
-        .. versionadded:: 2.2
+        .. versionadded:: 2.4
 
         .. note::
 
@@ -171,11 +167,7 @@ class AsyncStateManager(Generic[S]):
 
         :type: dict[str, AsyncState]
 
-        .. versionchanged:: 2.0
-
-            | Changed from method to property.
-
-        .. versionadded:: 1.0
+        .. versionadded:: 2.4
 
         .. note::
 
@@ -195,11 +187,7 @@ class AsyncStateManager(Generic[S]):
 
         :type: None | typing.Callable[[AsyncState, typing.Optional[AsyncState]], None]
 
-        .. versionchanged:: 2.0.3
-
-            | Global listeners can accept :class:`None` now.
-
-        .. versionadded:: 2.0
+        .. versionadded:: 2.4
 
         .. note::
 
@@ -260,11 +248,7 @@ class AsyncStateManager(Generic[S]):
 
         :type: None | typing.Callable[[typing.Optional[AsyncState], AsyncState], None]
 
-        .. versionchanged:: 2.0.3
-
-            | Global listeners can accept :class:`None` now.
-
-        .. versionadded:: 2.0
+        .. versionadded:: 2.4
 
         .. note::
 
@@ -323,7 +307,7 @@ class AsyncStateManager(Generic[S]):
 
         :type: None | typing.Callable[[AsyncState, bool], None]
 
-        .. versionadded:: 2.3
+        .. versionadded:: 2.4
 
         .. note::
 
@@ -383,7 +367,7 @@ class AsyncStateManager(Generic[S]):
 
         :type: None | typing.Callable[[AsyncState, bool], None]
 
-        .. versionadded:: 2.3
+        .. versionadded:: 2.4
 
         .. note::
 
@@ -440,7 +424,7 @@ class AsyncStateManager(Generic[S]):
         the :meth:`AsyncState.on_leave` & :meth:`AsyncState.on_enter` state & global listeners
         (:meth:`global_on_leave` & :meth:`global_on_enter`)
 
-        .. versionadded:: 1.0
+        .. versionadded:: 2.4
 
         :param state_name:
             | The name of the state you want to switch to.
@@ -510,7 +494,7 @@ class AsyncStateManager(Generic[S]):
     async def connect_state_hook(self, path: str, **kwargs: Any) -> None:
         r"""Calls the hook function of the state file.
 
-        .. versionadded:: 1.0
+        .. versionadded:: 2.4
 
         :param path:
             | The path to the state file containing the hook function to be called.
@@ -545,7 +529,7 @@ class AsyncStateManager(Generic[S]):
         Unlike :meth:`load_states`, it only initializes the state when required
         i.e. when :meth:`change_state` switches to the lazy state.
 
-        .. versionadded:: 2.2
+        .. versionadded:: 2.4
 
         :param lazy_states:
             | The states to be loaded into the manager as lazy states.
@@ -608,11 +592,7 @@ class AsyncStateManager(Generic[S]):
     ) -> None:
         r"""Loads the States into the StateManager.
 
-        .. versionchanged:: 2.1
-
-            | Method now accepts ``state_args``.
-
-        .. versionadded:: 1.0
+        .. versionadded:: 2.4
 
         :param states:
             | The States to be loaded into the manager.
@@ -673,7 +653,7 @@ class AsyncStateManager(Generic[S]):
         r"""Reloads the specified state. A short hand to :meth:`unload_state` &
         :meth:`load_states`.
 
-        .. versionadded:: 1.0
+        .. versionadded:: 2.4
 
         :param state_name:
             | The state name to be reloaded.
@@ -744,7 +724,7 @@ class AsyncStateManager(Generic[S]):
         silently fail if the lazy state has been loaded to the manager, which in case
         you will have to unload via :meth:`unload_state`.
 
-        .. versionadded:: 2.2
+        .. versionadded:: 2.4
 
         :param state_name:
             | The state to be removed from the manager.
@@ -771,7 +751,7 @@ class AsyncStateManager(Generic[S]):
     ) -> Type[S]:
         r"""Unloads the specified state from the :class:`StateManager`.
 
-        .. versionadded:: 1.0
+        .. versionadded:: 2.4
 
         :param state_name:
             | The state name to be unloaded from the manager.
