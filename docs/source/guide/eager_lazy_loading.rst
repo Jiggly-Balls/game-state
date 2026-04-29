@@ -25,12 +25,12 @@ A mock example of eager loading-
 
 
   class Game(State):
-      def on_setup(self) -> None:
+      def on_load(self, reload: bool) -> None:
           print(f"{self.state_name} state has been setup!")
 
 
   class MainMenu(State):
-      def on_setup(self) -> None:
+      def on_load(self, reload: bool) -> None:
           print(f"{self.state_name} state has been setup!")
   
   manager = StateManager(...)  # ... is a placeholder instead of our actual screen.
@@ -64,12 +64,12 @@ Using the same example as before with a slight change-
 
 
   class Game(State):
-      def on_setup(self) -> None:
+      def on_load(self, reload: bool) -> None:
           print(f"{self.state_name} state has been setup!")
 
 
   class MainMenu(State):
-      def on_setup(self) -> None:
+      def on_load(self, reload: bool) -> None:
           print(f"{self.state_name} state has been setup!")
   
   manager = StateManager(...)  # ... is a placeholder instead of our actual screen.
@@ -88,12 +88,12 @@ Let's make those changes and observe the output-
 
 
   class Game(State):
-      def on_setup(self) -> None:
+      def on_load(self, reload: bool) -> None:
           print(f"{self.state_name} state has been setup!")
 
 
   class MainMenu(State):
-      def on_setup(self) -> None:
+      def on_load(self, reload: bool) -> None:
           print(f"{self.state_name} state has been setup!")
   
   manager = StateManager(...)  # ... is a placeholder instead of our actual screen.

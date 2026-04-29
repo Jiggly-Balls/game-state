@@ -18,7 +18,7 @@ A simple example demonstrating state args-
       def __init__(self, player_pos: tuple[int, int]) -> None:
           self.player_pos = player_pos
 
-      def on_setup(self) -> None:
+      def on_load(self, reload: bool) -> None:
           print(f"{self.state_name} state has been setup!")
           print(f"Player position: {self.player_pos}\n")
 
@@ -27,7 +27,7 @@ A simple example demonstrating state args-
       def __init__(self, bg_colour: str) -> None:
           self.bg_colour = bg_colour
 
-      def on_setup(self) -> None:
+      def on_load(self, reload: bool) -> None:
           print(f"{self.state_name} state has been setup!")
           print(f"Background colour: {self.bg_colour}")
 

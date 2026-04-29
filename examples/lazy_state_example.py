@@ -23,7 +23,7 @@ class MyBaseState(State["MyBaseState"]):
 
 
 class MainMenuState(MyBaseState, state_name="MainMenu"):
-    def on_setup(self) -> None:
+    def on_load(self, reload: bool) -> None:
         print(f"{self.state_name} has initialized!")
 
     def process_event(self, event: pygame.event.Event) -> None:
@@ -52,7 +52,7 @@ class GameState(MyBaseState, state_name="Game"):
     def __init__(self) -> None:
         self.player_x: float = 250.0
 
-    def on_setup(self) -> None:
+    def on_load(self, reload: bool) -> None:
         print(f"{self.state_name} has initialized!")
 
     def process_event(self, event: pygame.event.Event) -> None:

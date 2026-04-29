@@ -20,12 +20,12 @@ or passing in paths of the state files.
 
 
   class Game(State, lazy_load=True):  # loads the state lazily
-      def on_setup(self) -> None:
+      def on_load(self, reload: bool) -> None:
           print(f"{self.state_name} state has been setup!")
 
 
   class MainMenu(State, eager_load=True):  # Loads the state eagarly
-      def on_setup(self) -> None:
+      def on_load(self, reload: bool) -> None:
           print(f"{self.state_name} state has been setup!")
   
 
