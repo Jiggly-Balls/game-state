@@ -33,7 +33,7 @@ Create and activate a virtual environment in your workspace (optional) and run t
 pip install game_state
 ```
 
-> **Note:** This package does not have any dependancy on `pygame`, hence you will need to install them separately on your own. This gives you the freedom to work with `pygame`, `pygame-ce` or any of it's forks.
+> **Note:** This package does not have any dependancy on `pygame`, hence you will need to install them separately on your own. This gives you the freedom to work with `pygame`, `pygame-ce` or any other library.
 
 ### Getting Started
 
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     main()
 ```
 
-You can have a look at the [game state guide](https://game-state.readthedocs.io/en/latest/guide.html#using-the-library) for a more detailed explaination.
+You can have a look at the [game state guide](https://game-state.readthedocs.io/en/latest/guide/getting_started.html#using-the-library) for a more detailed explaination.
 
 ### Links
 
