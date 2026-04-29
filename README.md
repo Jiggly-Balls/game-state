@@ -55,7 +55,14 @@ pygame.display.set_caption("Game State Example")
 
 
 class MyBaseState(State["MyBaseState"]):
-    screen: pygame.Surface = MISSING
+    window: pygame.Surface = MISSING
+    # Attributes we want all our states to share.
+
+    def process_event(self, event: pygame.event.Event) -> None:
+        pass
+
+    def process_update(self, dt: float) -> None:
+        pass
 
 
 class MainMenuState(MyBaseState, state_name="MainMenu"):
@@ -66,8 +73,8 @@ class MainMenuState(MyBaseState, state_name="MainMenu"):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
             self.manager.change_state("Game")
 
-    def process_update(self, *args: float) -> None:
-        self.screen.fill(GREEN)
+    def process_update(self, dt: float) -> None:
+        self.window.fill(GREEN)
         pygame.display.update()
 
 
@@ -82,12 +89,9 @@ class GameState(MyBaseState, state_name="Game"):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
             self.manager.change_state("MainMenu")
 
-    def process_update(self, *args: float) -> None:
-        dt = args[0]
+    def process_update(self, dt: float) -> None:
+        self.window.fill(BLUE)
 
-        self.screen.fill(BLUE)
-
-        # Player movement-
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_a]:
             self.player_x -= speed * dt
@@ -96,24 +100,17 @@ class GameState(MyBaseState, state_name="Game"):
             self.player_x += speed * dt
 
         pygame.draw.rect(
-            self.screen,
+            self.window,
             "red",
-            (
-                self.player_x,
-                100,
-                50,
-                50,
-            ),
+            (self.player_x, 100, 50, 50),
         )
         pygame.display.update()
 
 
 def main() -> None:
-    screen = pygame.display.set_mode((500, 600))
+    window = pygame.display.set_mode((500, 600))
 
-    state_manager = StateManager[MyBaseState](
-        bound_state_type=MyBaseState, screen=screen
-    )
+    state_manager = StateManager(bound_state_type=MyBaseState, window=window)
     state_manager.load_states(MainMenuState, GameState)
     state_manager.change_state("MainMenu")
 
@@ -130,7 +127,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
 ```
 
 You can have a look at the [game state guide](https://game-state.readthedocs.io/en/latest/guide.html#using-the-library) for a more detailed explaination.
