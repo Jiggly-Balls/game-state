@@ -1,17 +1,17 @@
 all: ruff
 
 ruff:
-	uv run ruff format
-	uv run ruff check --fix
+	uv run --dev ruff format
+	uv run --dev ruff check --fix
 
 check:
-	uv run basedpyright .
+	uv run --dev basedpyright .
 
 test:
-	uv run coverage run -m pytest
+	uv run --dev coverage run -m pytest
 
 coverage:
-	uv run coverage report
+	uv run --dev coverage report
 
 test-docs:
-	uv run sphinx-autobuild docs/source docs/_build/html
+	uv run --dev sphinx-autobuild docs/source docs/_build/html
