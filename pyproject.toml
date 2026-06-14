@@ -5,7 +5,9 @@ authors = [{ name = "Krish Mohan M.", email = "jigglyballs9000@gmail.com" }]
 description = "A pygame utility package that allows you to handle different screens in an organized manner."
 readme = "README.md"
 requires-python = ">=3.8"
-dependencies = []
+dependencies = [
+    "ruff>=0.15.17",
+]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Natural Language :: English",
@@ -38,18 +40,6 @@ Stars = "https://github.com/Jiggly-Balls/game-state/stargazers"
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
-
-[tool.ruff]
-line-length = 79
-lint.extend-select = ["ANN", "I"]
-lint.ignore = ["ANN401"]
-lint.fixable = ["I", "F401"]
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-docstring-code-format = true
-docstring-code-line-length = 72
 
 [tool.basedpyright]
 exclude = [
