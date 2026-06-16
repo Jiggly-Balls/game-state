@@ -16,7 +16,7 @@ DATA_2: str = "Guten Morgen"
 
 
 @pytest.fixture
-def manager() -> StateManager[State["Any"]]:
+def manager() -> StateManager[State[Any]]:
     manager = StateManager[State["Any"]]()
 
     return manager
@@ -24,9 +24,9 @@ def manager() -> StateManager[State["Any"]]:
 
 @pytest.fixture
 def states() -> Tuple[
-    Type[State["Any"]],
-    Type[State["Any"]],
-    Type[State["Any"]],
+    Type[State[Any]],
+    Type[State[Any]],
+    Type[State[Any]],
 ]:
     class StateOne(State["Any"]):
         def __init__(self, data_1: int) -> None:
@@ -54,11 +54,11 @@ def data() -> Tuple[StateArgs, StateArgs]:
 
 
 def test_state_args(
-    manager: StateManager["State[Any]"],
+    manager: StateManager[State[Any]],
     states: Tuple[
-        Type[State["Any"]],
-        Type[State["Any"]],
-        Type[State["Any"]],
+        Type[State[Any]],
+        Type[State[Any]],
+        Type[State[Any]],
     ],
     data: Tuple[StateArgs, StateArgs],
 ) -> None:
@@ -69,11 +69,11 @@ def test_state_args(
 
 
 def test_lazy_state_args(
-    manager: StateManager[State["Any"]],
+    manager: StateManager[State[Any]],
     states: Tuple[
-        Type[State["Any"]],
-        Type[State["Any"]],
-        Type[State["Any"]],
+        Type[State[Any]],
+        Type[State[Any]],
+        Type[State[Any]],
     ],
     data: Tuple[StateArgs, StateArgs],
 ) -> None:
@@ -85,13 +85,13 @@ def test_lazy_state_args(
 
 
 def test_remove_lazy_state_args(
-    manager: StateManager[State["Any"]],
-    states: Tuple[Type[State["Any"]], Type[State["Any"]], Type[State["Any"]]],
+    manager: StateManager[State[Any]],
+    states: Tuple[Type[State[Any]], Type[State[Any]], Type[State[Any]]],
     data: Tuple[StateArgs, StateArgs],
 ) -> None:
     manager.add_lazy_states(*states, state_args=data)
 
-    for state, resource in zip(states[:2], data):
+    for state, resource in zip(states[:2], data, strict=False):
         removed_resources = manager.remove_lazy_state(state.state_name)
 
         assert removed_resources is not None, (

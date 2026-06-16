@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 @pytest.fixture
 def scenario() -> Tuple[
-    StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
+    StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
 ]:
     class StateOne(State["Any"]): ...
 
@@ -26,7 +26,7 @@ def scenario() -> Tuple[
 
 def test_lazy_states(
     scenario: Tuple[
-        StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
+        StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
     ],
 ) -> None:
     manager, eager_state, lazy_state = scenario
@@ -55,7 +55,7 @@ def test_lazy_states(
 
 def test_remove_lazy_states(
     scenario: Tuple[
-        StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
+        StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
     ],
 ) -> None:
     manager, EagerState, LazyState = scenario
@@ -71,10 +71,10 @@ def test_remove_lazy_states(
         f"Removed resources obtained: `{removed_resouce=}`. Expected `None`."
     )
 
-    RemovedStateType = manager.unload_state(EagerState.state_name)
-    assert RemovedStateType is EagerState, (
+    removed_state_type = manager.unload_state(EagerState.state_name)
+    assert removed_state_type is EagerState, (
         "Unloaded state type was not the same as loaded state. "
-        f"Expected: {EagerState}, instead got {RemovedStateType}."
+        f"Expected: {EagerState}, instead got {removed_state_type}."
     )
 
     removed_resouce = manager.remove_lazy_state(LazyState.state_name)

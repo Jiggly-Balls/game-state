@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 
 @pytest.fixture
 def scenario() -> Tuple[
-    AsyncStateManager[AsyncState["Any"]],
-    Type[AsyncState["Any"]],
-    Type[AsyncState["Any"]],
+    AsyncStateManager[AsyncState[Any]],
+    Type[AsyncState[Any]],
+    Type[AsyncState[Any]],
 ]:
     class StateOne(AsyncState["Any"]): ...
 
@@ -29,9 +29,9 @@ def scenario() -> Tuple[
 @pytest.mark.asyncio
 async def test_lazy_states(
     scenario: Tuple[
-        AsyncStateManager[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
+        AsyncStateManager[AsyncState[Any]],
+        Type[AsyncState[Any]],
+        Type[AsyncState[Any]],
     ],
 ) -> None:
     manager, eager_state, lazy_state = scenario
@@ -61,9 +61,9 @@ async def test_lazy_states(
 @pytest.mark.asyncio
 async def test_remove_lazy_states(
     scenario: Tuple[
-        AsyncStateManager[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
+        AsyncStateManager[AsyncState[Any]],
+        Type[AsyncState[Any]],
+        Type[AsyncState[Any]],
     ],
 ) -> None:
     manager, EagerState, LazyState = scenario

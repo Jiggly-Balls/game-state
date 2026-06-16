@@ -5,8 +5,8 @@ import inspect
 import logging
 from typing import TYPE_CHECKING, Generic, TypeVar
 
-from ..errors import StateError, StateLoadError
-from .state import State
+from game_state.errors import StateError, StateLoadError
+from game_state.sync_machine.state import State
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
         Type,
     )
 
-    from ..utils import StateArgs
+    from game_state.utils import StateArgs
 
 
 __all__ = ("StateManager",)
@@ -38,7 +38,8 @@ _KW_CONSIDER: Tuple[str, str] = ("VAR_KEYWORD", "KEYWORD_ONLY")
 
 
 class StateManager(Generic[S]):
-    r"""The State Manager used for managing multiple State(s).
+    r"""
+    The State Manager used for managing multiple State(s).
 
     :param bound_state_type:
         | The base state class which all states inherits from.
@@ -97,7 +98,8 @@ class StateManager(Generic[S]):
 
     @property
     def current_state(self) -> Optional[S]:
-        r"""The current state if applied. Will be ``None`` otherwise.
+        r"""
+        The current state if applied. Will be ``None`` otherwise.
 
         :type: :class:`State` | :class:`None`
 
@@ -114,13 +116,13 @@ class StateManager(Generic[S]):
 
     @current_state.setter
     def current_state(self, _: Any) -> NoReturn:
-        raise ValueError(
-            "Cannot overwrite the current state. Use `StateManager.change_state` instead."
-        )
+        msg = "Cannot overwrite the current state. Use `StateManager.change_state` instead."
+        raise ValueError(msg)
 
     @property
     def last_state(self) -> Optional[S]:
-        r"""The last state object if any. Will be ``None`` otherwise
+        r"""
+        The last state object if any. Will be ``None`` otherwise.
 
         :type: State | None
 
@@ -136,13 +138,15 @@ class StateManager(Generic[S]):
 
     @last_state.setter
     def last_state(self, _: Any) -> NoReturn:
-        raise ValueError("Cannot overwrite the last state.")
+        msg = "Cannot overwrite the last state."
+        raise ValueError(msg)
 
     @property
     def lazy_state_map(
         self,
     ) -> Dict[str, Tuple[Type[S], Optional[List[StateArgs]]]]:
-        r"""A dictionary copy of all the added lazy state names mapped to their respective
+        r"""
+        A dictionary copy of all the added lazy state names mapped to their respective
         type and state args.
 
         :type: dict[str, tuple[type[State], None | list[StateArgs]]]
@@ -162,11 +166,13 @@ class StateManager(Generic[S]):
 
     @lazy_state_map.setter
     def lazy_state_map(self, _: Any) -> NoReturn:
-        raise ValueError("Cannot overwrite the lazy state map.")
+        msg = "Cannot overwrite the lazy state map."
+        raise ValueError(msg)
 
     @property
     def state_map(self) -> Dict[str, S]:
-        r"""A dictionary copy of all the state names mapped to their respective instance.
+        r"""
+        A dictionary copy of all the state names mapped to their respective instance.
 
         :type: dict[str, State]
 
@@ -184,13 +190,15 @@ class StateManager(Generic[S]):
 
     @state_map.setter
     def state_map(self, _: Any) -> NoReturn:
-        raise ValueError("Cannot overwrite the state map.")
+        msg = "Cannot overwrite the state map."
+        raise ValueError(msg)
 
     @property
     def global_on_enter(
         self,
     ) -> Optional[Callable[[S, Optional[S]], None]]:
-        r"""The global on_enter listener called right before a state's on_enter listener.
+        r"""
+        The global on_enter listener called right before a state's on_enter listener.
 
         :type: None | typing.Callable[[State, typing.Optional[State]], None]
 
@@ -222,7 +230,6 @@ class StateManager(Generic[S]):
 
             your_manager_instance.global_on_enter = global_on_enter
         """
-
         return self._global_on_enter
 
     @global_on_enter.setter
@@ -255,7 +262,8 @@ class StateManager(Generic[S]):
     def global_on_leave(
         self,
     ) -> Optional[Callable[[Optional[S], S], None]]:
-        r"""The global on_leave listener called right before a state's on_leave listener.
+        r"""
+        The global on_leave listener called right before a state's on_leave listener.
 
         :type: None | typing.Callable[[typing.Optional[State], State], None]
 
@@ -287,7 +295,6 @@ class StateManager(Generic[S]):
 
             your_manager_instance.global_on_leave = global_on_leave
         """
-
         return self._global_on_leave
 
     @global_on_leave.setter
@@ -318,7 +325,8 @@ class StateManager(Generic[S]):
 
     @property
     def global_on_load(self) -> Optional[Callable[[S, bool], None]]:
-        r"""The global :meth:`State.on_load` function for all states.
+        r"""
+        The global :meth:`State.on_load` function for all states.
 
         :type: None | typing.Callable[[State, bool], None]
 
@@ -345,7 +353,6 @@ class StateManager(Generic[S]):
 
             your_manager_instance.global_on_load = global_on_load
         """
-
         return self._global_on_load
 
     @global_on_load.setter
@@ -376,7 +383,8 @@ class StateManager(Generic[S]):
 
     @property
     def global_on_unload(self) -> Optional[Callable[[S, bool], None]]:
-        r"""The global :meth:`State.on_unload` function for all states.
+        r"""
+        The global :meth:`State.on_unload` function for all states.
 
         :type: None | typing.Callable[[State, bool], None]
 
@@ -403,7 +411,6 @@ class StateManager(Generic[S]):
 
             your_manager_instance.global_on_unload = global_on_unload
         """
-
         return self._global_on_load
 
     @global_on_unload.setter
@@ -433,9 +440,10 @@ class StateManager(Generic[S]):
         self._global_on_load = value
 
     def change_state(self, state_name: str) -> None:
-        r"""Changes the current state and updates the last state. This method executes
+        r"""
+        Changes the current state and updates the last state. This method executes
         the :meth:`State.on_leave` & :meth:`State.on_enter` state & global listeners
-        (:meth:`global_on_leave` & :meth:`global_on_enter`)
+        (:meth:`global_on_leave` & :meth:`global_on_enter`).
 
         .. versionadded:: 1.0
 
@@ -446,7 +454,6 @@ class StateManager(Generic[S]):
             :exc:`game_state.errors.StateError`
                 | Raised when the state name doesn't exist in the manager.
         """
-
         if state_name not in self._states:
             if state_name in self._lazy_states:
                 logger.debug("Loading lazy state: %s", state_name)
@@ -504,7 +511,8 @@ class StateManager(Generic[S]):
         self._current_state.on_enter(self._last_state)
 
     def connect_state_hook(self, path: str, **kwargs: Any) -> None:
-        r"""Calls the hook function of the state file.
+        r"""
+        Calls the hook function of the state file.
 
         .. versionadded:: 1.0
 
@@ -517,13 +525,15 @@ class StateManager(Generic[S]):
             :exc:`game_state.errors.StateError`
                 | Raised when the hook function was not found in the state file to be loaded.
         """
-
         state = importlib.import_module(path)
         if "hook" not in state.__dict__:
-            raise StateError(
+            msg = (
                 "\nAn error occurred in loading state path-\n"
                 f"`{path}`\n"
-                "`hook` function was not found in state file to load.\n",
+                "`hook` function was not found in state file to load.\n"
+            )
+            raise StateError(
+                msg,
                 last_state=self._last_state,
                 **kwargs,
             )
@@ -537,7 +547,8 @@ class StateManager(Generic[S]):
         force: bool = False,
         state_args: Optional[Iterable[StateArgs]] = None,
     ) -> None:
-        r"""Lazily adds the States into the StateManager.
+        r"""
+        Lazily adds the States into the StateManager.
         Unlike :meth:`load_states`, it only initializes the state when required
         i.e. when :meth:`change_state` switches to the lazy state.
 
@@ -564,7 +575,6 @@ class StateManager(Generic[S]):
                 | Raised when the state has already been loaded.
                 | Only raised when ``force`` is set to ``False``.
         """
-
         args_cache: Dict[str, Optional[StateArgs]] = {}
         all_states: List[Type[S]] = self.bound_state_type._lazy_states.copy()  # pyright: ignore[reportPrivateUsage, reportAssignmentType]
         all_states.extend(lazy_states)
@@ -580,8 +590,9 @@ class StateManager(Generic[S]):
                 and lazy_state.state_name in self._states
                 or lazy_state.state_name in self._lazy_states
             ):
+                msg = f"State: {lazy_state.state_name} has already been added."
                 raise StateLoadError(
-                    f"State: {lazy_state.state_name} has already been added.",
+                    msg,
                     last_state=self._last_state,
                 )
 
@@ -602,7 +613,8 @@ class StateManager(Generic[S]):
         force: bool = False,
         state_args: Optional[Iterable[StateArgs]] = None,
     ) -> None:
-        r"""Loads the States into the StateManager.
+        r"""
+        Loads the States into the StateManager.
 
         .. versionchanged:: 2.1
 
@@ -631,7 +643,6 @@ class StateManager(Generic[S]):
                 | Raised when the state has already been loaded.
                 | Only raised when ``force`` is set to ``False``.
         """
-
         args_cache: Dict[str, Dict[str, Any]] = {}
         all_states: List[Type[S]] = self.bound_state_type._eager_states.copy()  # pyright: ignore[reportPrivateUsage, reportAssignmentType]
         all_states.extend(states)
@@ -645,8 +656,9 @@ class StateManager(Generic[S]):
             final_state_args = args_cache.get(state.state_name, {})
 
             if not force and state.state_name in self._states:
+                msg = f"State: {state.state_name} has already been loaded."
                 raise StateLoadError(
-                    f"State: {state.state_name} has already been loaded.",
+                    msg,
                     last_state=self._last_state,
                     **final_state_args,
                 )
@@ -666,7 +678,8 @@ class StateManager(Generic[S]):
     def reload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> S:
-        r"""Reloads the specified state. A short hand to :meth:`unload_state` &
+        r"""
+        Reloads the specified state. A short hand to :meth:`unload_state` &
         :meth:`load_states`.
 
         .. versionadded:: 1.0
@@ -736,7 +749,8 @@ class StateManager(Generic[S]):
     def remove_lazy_state(
         self, state_name: str
     ) -> Optional[Tuple[Type[S], Optional[List[StateArgs]]]]:
-        r"""Removes the specified lazy state from the :class:`StateManager`. This will
+        r"""
+        Removes the specified lazy state from the :class:`StateManager`. This will
         silently fail if the lazy state has been loaded to the manager, which in case
         you will have to unload via :meth:`unload_state`.
 
@@ -752,20 +766,21 @@ class StateManager(Generic[S]):
             | tuple with the first element being the lazy state and the second being
             | the :class:`StateArgs` if any were passed.
         """
-
         try:
             cls_ref = self._lazy_states[state_name]
             del self._lazy_states[state_name]
             logger.debug("Successfully removed lazy state: %s", state_name)
-            return cls_ref
         except KeyError:
-            logger.error("Failed to remove lazy state: %s", state_name)
+            logger.exception("Failed to remove lazy state: %s", state_name)
             return None
+        else:
+            return cls_ref
 
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> Type[S]:
-        r"""Unloads the specified state from the :class:`StateManager`.
+        r"""
+        Unloads the specified state from the :class:`StateManager`.
 
         .. versionadded:: 1.0
 
@@ -797,7 +812,6 @@ class StateManager(Generic[S]):
                 | Raised when trying to unload an actively running state.
                 | Only raised when ``force`` is set to ``False``.
         """
-
         if state_name not in self._states:
             state_keys = self.state_map.keys()
             lazy_state_keys = self.lazy_state_map.keys()
@@ -824,13 +838,14 @@ class StateManager(Generic[S]):
                 **kwargs,
             )
 
-        elif (
+        if (
             not force
             and self._current_state is not None
             and state_name == self._current_state.state_name
         ):
+            msg = "Cannot unload an actively running state."
             raise StateError(
-                "Cannot unload an actively running state.",
+                msg,
                 last_state=self._last_state,
                 **kwargs,
             )

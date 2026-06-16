@@ -16,7 +16,7 @@ DATA_2: str = "Guten Morgen"
 
 
 @pytest.fixture
-def manager() -> AsyncStateManager[AsyncState["Any"]]:
+def manager() -> AsyncStateManager[AsyncState[Any]]:
     manager = AsyncStateManager[AsyncState["Any"]]()
 
     return manager
@@ -24,9 +24,9 @@ def manager() -> AsyncStateManager[AsyncState["Any"]]:
 
 @pytest.fixture
 def states() -> Tuple[
-    Type[AsyncState["Any"]],
-    Type[AsyncState["Any"]],
-    Type[AsyncState["Any"]],
+    Type[AsyncState[Any]],
+    Type[AsyncState[Any]],
+    Type[AsyncState[Any]],
 ]:
     class StateOne(AsyncState["Any"]):
         def __init__(self, data_1: int) -> None:
@@ -55,11 +55,11 @@ def data() -> Tuple[StateArgs, StateArgs]:
 
 @pytest.mark.asyncio
 async def test_state_args(
-    manager: AsyncStateManager["AsyncState[Any]"],
+    manager: AsyncStateManager[AsyncState[Any]],
     states: Tuple[
-        Type[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
+        Type[AsyncState[Any]],
+        Type[AsyncState[Any]],
+        Type[AsyncState[Any]],
     ],
     data: Tuple[StateArgs, StateArgs],
 ) -> None:
@@ -71,11 +71,11 @@ async def test_state_args(
 
 @pytest.mark.asyncio
 async def test_lazy_state_args(
-    manager: AsyncStateManager[AsyncState["Any"]],
+    manager: AsyncStateManager[AsyncState[Any]],
     states: Tuple[
-        Type[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
+        Type[AsyncState[Any]],
+        Type[AsyncState[Any]],
+        Type[AsyncState[Any]],
     ],
     data: Tuple[StateArgs, StateArgs],
 ) -> None:
@@ -88,17 +88,17 @@ async def test_lazy_state_args(
 
 @pytest.mark.asyncio
 async def test_remove_lazy_state_args(
-    manager: AsyncStateManager[AsyncState["Any"]],
+    manager: AsyncStateManager[AsyncState[Any]],
     states: Tuple[
-        Type[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
+        Type[AsyncState[Any]],
+        Type[AsyncState[Any]],
+        Type[AsyncState[Any]],
     ],
     data: Tuple[StateArgs, StateArgs],
 ) -> None:
     manager.add_lazy_states(*states, state_args=data)
 
-    for state, resource in zip(states[:2], data):
+    for state, resource in zip(states[:2], data, strict=False):
         removed_resources = manager.remove_lazy_state(state.state_name)
 
         assert removed_resources is not None, (

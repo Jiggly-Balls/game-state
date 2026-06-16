@@ -12,7 +12,8 @@ __all__ = ("BaseError", "StateError", "StateLoadError")
 
 
 class BaseError(Exception):
-    r"""The base class to all game-state errors.
+    r"""
+    The base class to all game-state errors.
 
     .. versionadded:: 1.0
     """
@@ -20,12 +21,12 @@ class BaseError(Exception):
     def __init__(
         self,
         *args: Any,
-        last_state: Optional[Union[State["Any"], AsyncState["Any"]]] = None,
+        last_state: Optional[Union[State[Any], AsyncState[Any]]] = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args)
 
-        self.last_state: Optional[Union[State["Any"], AsyncState["Any"]]] = (
+        self.last_state: Optional[Union[State[Any], AsyncState[Any]]] = (
             last_state
         )
         for key, value in kwargs.items():
@@ -33,14 +34,16 @@ class BaseError(Exception):
 
 
 class StateError(BaseError):
-    r"""Raised when an operation is done over an invalid state.
+    r"""
+    Raised when an operation is done over an invalid state.
 
     .. versionadded:: 1.0
     """
 
 
 class StateLoadError(BaseError):
-    r"""Raised when an error occurs in loading / unloading a state.
+    r"""
+    Raised when an error occurs in loading / unloading a state.
 
     .. versionadded:: 1.0
     """

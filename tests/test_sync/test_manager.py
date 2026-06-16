@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 @pytest.fixture
 def scenario() -> Tuple[
-    StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
+    StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
 ]:
     class StateOne(State["Any"], state_name="Test 1"): ...
 
@@ -26,7 +26,7 @@ def scenario() -> Tuple[
 
 def test_load_unload_states(
     scenario: Tuple[
-        StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
+        StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
     ],
 ) -> None:
     manager = scenario[0]
@@ -84,7 +84,7 @@ def test_relaod_states() -> None:
 
 def test_change_states(
     scenario: Tuple[
-        StateManager[State["Any"]], Type[State["Any"]], Type[State["Any"]]
+        StateManager[State[Any]], Type[State[Any]], Type[State[Any]]
     ],
 ) -> None:
     manager = scenario[0]

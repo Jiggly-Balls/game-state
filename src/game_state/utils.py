@@ -10,12 +10,13 @@ if TYPE_CHECKING:
     from typing import Any, Dict, Tuple
 
 
-__all__ = ("StateArgs", "MISSING", "setup_logging")
+__all__ = ("MISSING", "StateArgs", "setup_logging")
 
 
 @dataclass()
 class StateArgs:
-    r"""A dataclass to send data to states while loading them in the manager.
+    r"""
+    A dataclass to send data to states while loading them in the manager.
 
     .. versionadded:: 2.1
 
@@ -38,7 +39,9 @@ class StateArgs:
                 (
                     f"{key}={value}"
                     for key, value in zip(
-                        self.__dict__.keys(), self.__dict__.values()
+                        self.__dict__.keys(),
+                        self.__dict__.values(),
+                        strict=False,
                     )
                 )
             )
@@ -46,7 +49,8 @@ class StateArgs:
         )
 
     def get_data(self) -> Dict[str, Any]:
-        r"""Returns the data to be passed on to the state.
+        r"""
+        Returns the data to be passed on to the state.
         The data returned does not contain ``state_name`` in it.
 
         .. versionadded:: 2.1
@@ -54,7 +58,6 @@ class StateArgs:
         :returns:
             | The data of the state arg. Does not include ``state_name`` in it.
         """
-
         attributes = self.__dict__.copy()
         del attributes["state_name"]
         return attributes
@@ -63,7 +66,7 @@ class StateArgs:
 class _MissingSentinel:
     __slots__: Tuple[str, ...] = ()
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: Any) -> bool:  # noqa: PYI032
         return False
 
     def __bool__(self) -> bool:
@@ -165,7 +168,8 @@ def setup_logging(
     level: Optional[int] = None,
     root: bool = True,
 ) -> None:
-    r"""A helper function to setup logging.
+    r"""
+    A helper function to setup logging.
 
     This is superficially similar to :func:`logging.basicConfig` but
     uses different defaults and a colour formatter if the stream can
@@ -186,7 +190,6 @@ def setup_logging(
     :param root:
         | Whether to set up the root logger rather than the library logger.
     """
-
     if level is None:
         level = logging.DEBUG
 

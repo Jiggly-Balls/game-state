@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.abspath("../../src/"))
 
 # -- Project information
 project = "Game-State"
-copyright = "2024-present, Krish Mohan M."
+copyright = "2024-present, Krish Mohan M."  # noqa: A001
 author = "Krish Mohan M."
 
 # version = f"{version_info.major}.{version_info.minor}"

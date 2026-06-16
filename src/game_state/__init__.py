@@ -7,7 +7,7 @@ A utility package for pygame to manage multiple screens.
 :copyright: (c) 2024-present Krish Mohan M.
 :license: MIT, see LICENSE for more details.
 
-"""
+"""  # noqa: D415, D400
 
 __version__ = "2.4.1"
 __title__ = "game-state"

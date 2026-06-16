@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC
 from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
-from ..utils import MISSING
+from game_state.utils import MISSING
 
 if TYPE_CHECKING:
     from typing import Any, List, Literal, Optional, Type
@@ -16,8 +16,9 @@ __all__ = ("AsyncState",)
 S = TypeVar("S", bound="AsyncState[Any]")
 
 
-class AsyncState(Generic[S], ABC):
-    """The State class which works as an individual screen.
+class AsyncState(ABC, Generic[S]):
+    """
+    The State class which works as an individual screen.
 
     :attributes:
         state_name: :class:`str`
@@ -69,7 +70,8 @@ class AsyncState(Generic[S], ABC):
         eager_load: bool = False,
         lazy_load: bool = False,
     ) -> None:
-        """Arguments you can pass while subclassing the State.
+        """
+        Arguments you can pass while subclassing the State.
 
         :param state_name:
             | The name of the state. If no `state_name` is passed, it uses the identifier's name.
@@ -103,14 +105,14 @@ class AsyncState(Generic[S], ABC):
             You cannot set ``eager_load`` and ``lazy_load`` both to ``True``. You can only
             enable one (or none) of them.
         """
-
         cls.state_name = state_name or cls.__name__
 
         if lazy_load and eager_load:
-            raise TypeError(
+            msg = (
                 "Cannot have both `lazy_load` and `eager_load` set to `True`."
                 " The state must either load lazy or eager."
             )
+            raise TypeError(msg)
 
         if eager_load:
             cls._eager_states.append(cls)
@@ -119,7 +121,8 @@ class AsyncState(Generic[S], ABC):
             cls._lazy_states.append(cls)
 
     async def on_load(self, reload: bool) -> None:
-        r"""Called when the state is loaded into the :class:`AsyncStateManager`.
+        r"""
+        Called when the state is loaded into the :class:`AsyncStateManager`.
 
         This listener is invoked both during the initial load of the state and
         when the state is reloaded.
@@ -134,10 +137,10 @@ class AsyncState(Generic[S], ABC):
             | A :class:`bool` indicating whether the state is being loaded for
               the first time (``False``) or reloaded (``True``).
         """
-        pass
 
     async def on_unload(self, reload: bool) -> None:
-        r"""Called when the state is being unloaded from the
+        r"""
+        Called when the state is being unloaded from the
         :class:`AsyncStateManager`.
 
         This listener is invoked both during the initial load of the state and
@@ -153,10 +156,10 @@ class AsyncState(Generic[S], ABC):
             | A :class:`bool` indicating whether the state is being unloaded for
               the first time (``False``) or reloaded (``True``).
         """
-        pass
 
     async def on_enter(self, previous_state: Optional[S]) -> None:
-        r"""This listener is called once when a state has been switched and is
+        r"""
+        This listener is called once when a state has been switched and is
         entering the current state.
 
         .. versionadded:: 2.4
@@ -170,10 +173,10 @@ class AsyncState(Generic[S], ABC):
               ``None`` is passed
         :type previous_state: typing.Optional[State]
         """
-        pass
 
     async def on_leave(self, next_state: S) -> None:
-        r"""This listener is called once when the state has been switched and is exiting
+        r"""
+        This listener is called once when the state has been switched and is exiting
         the current one.
 
         .. versionadded:: 2.4
@@ -186,4 +189,3 @@ class AsyncState(Generic[S], ABC):
             | The next state that is going to be applied.
         :type next_state: State
         """
-        pass

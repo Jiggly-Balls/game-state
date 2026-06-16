@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 
 @pytest.fixture
 def scenario() -> Tuple[
-    AsyncStateManager[AsyncState["Any"]],
-    Type[AsyncState["Any"]],
-    Type[AsyncState["Any"]],
+    AsyncStateManager[AsyncState[Any]],
+    Type[AsyncState[Any]],
+    Type[AsyncState[Any]],
 ]:
     class StateOne(AsyncState["Any"], state_name="Test 1"): ...
 
@@ -29,9 +29,9 @@ def scenario() -> Tuple[
 @pytest.mark.asyncio
 async def test_load_unload_states(
     scenario: Tuple[
-        AsyncStateManager[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
+        AsyncStateManager[AsyncState[Any]],
+        Type[AsyncState[Any]],
+        Type[AsyncState[Any]],
     ],
 ) -> None:
     manager = scenario[0]
@@ -91,9 +91,9 @@ async def test_relaod_states() -> None:
 @pytest.mark.asyncio
 async def test_change_states(
     scenario: Tuple[
-        AsyncStateManager[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
-        Type[AsyncState["Any"]],
+        AsyncStateManager[AsyncState[Any]],
+        Type[AsyncState[Any]],
+        Type[AsyncState[Any]],
     ],
 ) -> None:
     manager = scenario[0]
