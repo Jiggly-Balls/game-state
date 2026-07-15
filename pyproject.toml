@@ -68,16 +68,11 @@ members = ["examples"]
 
 [dependency-groups]
 dev = [
-    "basedpyright>=1.31.7",
-    "coverage>=7.13.0",
-    "furo>=2025.9.25",
-    "numpydoc>=1.9.0",
+    "basedpyright>=1.39.9",
+    "coverage>=7.15.2",
     "pre-commit>=3.5.0",
     "pygame-ce>=2.5.5",
-    "pytest>=8.4.0",
+    "pytest>=9.1.1",
     "pytest-asyncio>=1.3.0",
-    "ruff>=0.14.1",
-    "sphinx>=8.2.3",
-    "sphinx-autobuild>=2025.8.25",
-    "sphinx-autodoc-typehints>=3.5.2",
+    "ruff>=0.15.21",
 ]
