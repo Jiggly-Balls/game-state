@@ -5,8 +5,8 @@ import inspect
 import logging
 from typing import TYPE_CHECKING, Generic, TypeVar
 
-from src.game_state.async_machine.state import AsyncState
-from src.game_state.errors import StateError, StateLoadError
+from ..errors import StateError, StateLoadError
+from .state import AsyncState
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable

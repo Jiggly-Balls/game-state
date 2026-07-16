@@ -3,12 +3,12 @@ from __future__ import annotations
 from abc import ABC
 from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
-from src.game_state.utils import MISSING
+from ..utils import MISSING
 
 if TYPE_CHECKING:
     from typing import Any, List, Literal, Optional, Type
 
-    from src.game_state.async_machine.manager import AsyncStateManager
+    from .manager import AsyncStateManager
 
 
 __all__ = ("AsyncState",)
