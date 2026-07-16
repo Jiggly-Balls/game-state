@@ -3,12 +3,12 @@ from __future__ import annotations
 from abc import ABC
 from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
-from game_state.utils import MISSING
+from src.game_state.utils import MISSING
 
 if TYPE_CHECKING:
     from typing import Any, List, Literal, Optional, Type
 
-    from .manager import AsyncStateManager
+    from src.game_state.async_machine.manager import AsyncStateManager
 
 
 __all__ = ("AsyncState",)
@@ -27,7 +27,7 @@ class AsyncState(ABC, Generic[S]):
             .. versionadded:: 2.4
 
         manager: :class:`AsyncStateManager`
-            The manager to which the state is binded to.
+            The manager to which the state is bound to.
 
             .. versionadded:: 2.4
     """

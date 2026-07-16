@@ -5,8 +5,8 @@ import inspect
 import logging
 from typing import TYPE_CHECKING, Generic, TypeVar
 
-from game_state.async_machine.state import AsyncState
-from game_state.errors import StateError, StateLoadError
+from src.game_state.async_machine.state import AsyncState
+from src.game_state.errors import StateError, StateLoadError
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
         Type,
     )
 
-    from game_state.utils import StateArgs
+    from src.game_state.utils import StateArgs
 
 
 __all__ = ("AsyncStateManager",)
