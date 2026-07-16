@@ -858,3 +858,7 @@ class StateManager(Generic[S]):
         logger.debug("Successfully unloaded state: %s", state_name)
 
         return cls_ref
+
+    def close_overlay(self, state_name: str) -> None: ...
+
+    def open_overlay(self, state_name: str) -> None: ...
