@@ -3,9 +3,9 @@ from __future__ import annotations
 import importlib
 import inspect
 import logging
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
-from src.game_state.errors import StateError, StateLoadError
+from src.game_state.errors import OverlayError, StateError, StateLoadError
 from src.game_state.sync_machine.state import State
 
 if TYPE_CHECKING:
@@ -19,6 +19,7 @@ if TYPE_CHECKING:
         Optional,
         Tuple,
         Type,
+        Union,
     )
 
     from src.game_state.utils import StateArgs
@@ -78,9 +79,12 @@ class StateManager(Generic[S]):
             str, Tuple[Type[S], Optional[List[StateArgs]]]
         ] = {}
         self._states: Dict[str, S] = {}
-        self._current_state: Optional[S] = None
         self._last_state: Optional[S] = None
         self._is_reloading: bool = False
+
+        self._state_stack: List[S] = []
+        self._overlay_pos: Dict[str | int, int] = {}
+        self._last_id: int = 0
 
     def _get_kw_args(self, signature: Signature) -> int:
         amount = 0
@@ -112,7 +116,7 @@ class StateManager(Generic[S]):
             This is a read-only attribute. To change states use
             :meth:`change_state` instead.
         """
-        return self._current_state
+        return self._state_stack[-1] if self._state_stack else None
 
     @current_state.setter
     def current_state(self, _: Any) -> NoReturn:
@@ -439,21 +443,7 @@ class StateManager(Generic[S]):
 
         self._global_on_load = value
 
-    def change_state(self, state_name: str) -> None:
-        r"""
-        Changes the current state and updates the last state. This method executes
-        the :meth:`State.on_leave` & :meth:`State.on_enter` state & global listeners
-        (:meth:`global_on_leave` & :meth:`global_on_enter`).
-
-        .. versionadded:: 1.0
-
-        :param state_name:
-            | The name of the state you want to switch to.
-
-        :raises:
-            :exc:`game_state.errors.StateError`
-                | Raised when the state name doesn't exist in the manager.
-        """
+    def _validate_states(self, state_name: str) -> None:
         if state_name not in self._states:
             if state_name in self._lazy_states:
                 logger.debug("Loading lazy state: %s", state_name)
@@ -473,14 +463,14 @@ class StateManager(Generic[S]):
                     f"State `{state_name}` isn't present from the available"
                 )
 
-                if len(state_keys) == 0 and len(lazy_state_keys) == 0:
+                if len(state_keys) == -1 and len(lazy_state_keys) == 0:
                     message = "No states have been loaded to change to."
 
-                if len(state_keys) > 0:
+                if len(state_keys) > -1:
                     message += f" states: `{', '.join(self.state_map.keys())}`"
 
-                if len(lazy_state_keys) > 0:
-                    if len(state_keys) > 0:
+                if len(lazy_state_keys) > -1:
+                    if len(state_keys) > -1:
                         message += " and "
                     message += f"from the available lazy states: `{', '.join(self.lazy_state_map.keys())}`"
 
@@ -489,26 +479,47 @@ class StateManager(Generic[S]):
                     last_state=self._last_state,
                 )
 
+    def change_state(self, state_name: str) -> None:
+        r"""
+        Changes the current state and updates the last state. This method executes
+        the :meth:`State.on_leave` & :meth:`State.on_enter` state & global listeners
+        (:meth:`global_on_leave` & :meth:`global_on_enter`).
+
+        .. versionadded:: 1.0
+
+        :param state_name:
+            | The name of the state you want to switch to.
+
+        :raises:
+            :exc:`game_state.errors.StateError`
+                | Raised when the state name doesn't exist in the manager.
+        """
+        self._validate_states(state_name)
+
         logger.debug(
             "Changing from state %s to %s",
             getattr(self.current_state, "state_name", "None"),
             state_name,
         )
 
-        self._last_state = self._current_state
-        self._current_state = self._states[state_name]
+        self._last_state = self.current_state
+        if self._state_stack:
+            self._state_stack[0] = self._states[state_name]
+        else:
+            self._state_stack.append(self._states[state_name])
+
         if self._global_on_leave:
             logger.debug("Calling global_on_leave")
-            self._global_on_leave(self._last_state, self._current_state)
+            self._global_on_leave(self._last_state, self.current_state)  # pyright: ignore[reportArgumentType]
 
         if self._last_state:
             logger.debug("Calling %s.on_leave", self._last_state.state_name)
-            self._last_state.on_leave(self._current_state)
+            self._last_state.on_leave(self.current_state)
 
         if self._global_on_enter:
             logger.debug("Calling global_on_enter")
-            self._global_on_enter(self._current_state, self._last_state)
-        self._current_state.on_enter(self._last_state)
+            self._global_on_enter(self.current_state, self._last_state)  # pyright: ignore[reportArgumentType]
+        self.current_state.on_enter(self._last_state)  # pyright: ignore[reportOptionalMemberAccess]
 
     def connect_state_hook(self, path: str, **kwargs: Any) -> None:
         r"""
@@ -840,8 +851,8 @@ class StateManager(Generic[S]):
 
         if (
             not force
-            and self._current_state is not None
-            and state_name == self._current_state.state_name
+            and self.current_state is not None
+            and state_name == self.current_state.state_name
         ):
             msg = "Cannot unload an actively running state."
             raise StateError(
@@ -859,6 +870,32 @@ class StateManager(Generic[S]):
 
         return cls_ref
 
-    def close_overlay(self, state_name: str) -> None: ...
+    def close_overlay(self, id: Union[int, str]) -> None: ...
 
-    def open_overlay(self, state_name: str) -> None: ...
+    @overload
+    def open_overlay(self, state_name: str, id_: int) -> int: ...
+
+    @overload
+    def open_overlay(self, state_name: str, id_: str) -> str: ...
+
+    @overload
+    def open_overlay(self, state_name: str, id_: None = ...) -> int: ...
+
+    def open_overlay(
+        self, state_name: str, id_: Optional[Union[int, str]] = None
+    ) -> Union[int, str]:
+        self._validate_states(state_name)
+
+        if id_ is None:
+            id_ = self._last_id
+            self._last_id += 1
+
+        if id_ in self._overlay_pos:
+            msg = "Duplicate ID for overlay state found."
+            raise OverlayError(msg)
+
+        state = self._states[state_name]
+        self._state_stack.append(state)
+        self._overlay_pos[id_] = len(self._state_stack) - 1
+
+        return id_
