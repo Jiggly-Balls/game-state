@@ -8,7 +8,12 @@ if TYPE_CHECKING:
     from src.game_state.async_machine import AsyncState
     from src.game_state.sync_machine import State
 
-__all__ = ("BaseError", "StateError", "StateLoadError")
+__all__ = (
+    "BaseError",
+    "OverlayError",
+    "StateError",
+    "StateLoadError",
+)
 
 
 class BaseError(Exception):
@@ -46,4 +51,12 @@ class StateLoadError(BaseError):
     Raised when an error occurs in loading / unloading a state.
 
     .. versionadded:: 1.0
+    """
+
+
+class OverlayError(BaseError):
+    r"""
+    Raised when an invalid action is done over an overlay state.
+
+    .. versionadded:: 2.5
     """
