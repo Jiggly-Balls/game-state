@@ -42,7 +42,7 @@ class StateManager(Generic[S]):
     The State Manager used for managing multiple State(s).
 
     :param bound_state_type:
-        | The base state class which all states inherits from.
+        | The base state class which all states inherit from.
     :type bound_state_type: type[State]
     :param \**kwargs:
         | The keyword arguments to bind to ``bound_state_type``.
@@ -337,7 +337,7 @@ class StateManager(Generic[S]):
             This has to be assigned before loading the states into the manager.
 
         The first argument passed to the function is the current state which has been
-        setup.
+        set up.
 
         Example for a ``global_on_load`` function-
 
@@ -395,7 +395,7 @@ class StateManager(Generic[S]):
             This has to be assigned before loading the states into the manager.
 
         The first argument passed to the function is the current state which has been
-        setup.
+        set up.
 
         Example for a ``global_on_unload`` function-
 
@@ -679,7 +679,7 @@ class StateManager(Generic[S]):
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> S:
         r"""
-        Reloads the specified state. A short hand to :meth:`unload_state` &
+        Reloads the specified state. A shorthand to :meth:`unload_state` &
         :meth:`load_states`.
 
         .. versionadded:: 1.0
@@ -762,7 +762,7 @@ class StateManager(Generic[S]):
         :rtype: None | typing.Tuple[typing.Type[State], typing.Optional[typing.List[StateArgs]]]
 
         :returns:
-            | Either returns :class:`None` if the lazy state was not found or it returns a
+            | Either returns :class:`None` if the lazy state was not found, or it returns a
             | tuple with the first element being the lazy state and the second being
             | the :class:`StateArgs` if any were passed.
         """

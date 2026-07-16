@@ -27,7 +27,7 @@ class State(ABC, Generic[S]):
             .. versionadded:: 1.1
 
         manager: :class:`StateManager`
-            The manager to which the state is binded to.
+            The manager to which the state is bound to.
 
             .. versionadded:: 1.0
     """
