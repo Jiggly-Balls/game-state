@@ -83,7 +83,7 @@ class StateManager(Generic[S]):
         self._is_reloading: bool = False
 
         self._state_stack: List[S] = []
-        self._overlay_pos: Dict[str | int, int] = {}
+        self._overlay_pos: Dict[str | int, S] = {}
         self._last_id: int = 0
 
     def _get_kw_args(self, signature: Signature) -> int:
@@ -875,7 +875,15 @@ class StateManager(Generic[S]):
 
         return cls_ref
 
-    def close_overlay(self, state_id: Union[int, str]) -> None: ...
+    def close_overlay(self, state_id: Union[int, str]) -> None:
+        if state_id not in self._overlay_pos:
+            msg = f"Could not find overlay state of ID `{state_id}` ({type(state_id)})"
+            raise OverlayError(msg)
+
+        overlay_ref = self._overlay_pos[state_id]
+        self._state_stack.remove(overlay_ref)
+
+        self._handle_events()
 
     @overload
     def open_overlay(self, state_name: str, state_id: int) -> int: ...
@@ -902,7 +910,7 @@ class StateManager(Generic[S]):
         state = self._states[state_name]
         state.state_id = state_id
         self._state_stack.append(state)
-        self._overlay_pos[state_id] = len(self._state_stack) - 1
+        self._overlay_pos[state_id] = state
 
         self._handle_events()
 
