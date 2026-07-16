@@ -98,7 +98,7 @@ async def test_remove_lazy_state_args(
 ) -> None:
     manager.add_lazy_states(*states, state_args=data)
 
-    for state, resource in zip(states[:2], data, strict=False):
+    for state, resource in zip(states[:2], data):
         removed_resources = manager.remove_lazy_state(state.state_name)
 
         assert removed_resources is not None, (
