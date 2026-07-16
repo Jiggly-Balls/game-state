@@ -5,8 +5,8 @@ import inspect
 import logging
 from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
-from src.game_state.errors import OverlayError, StateError, StateLoadError
-from src.game_state.sync_machine.state import State
+from ..errors import OverlayError, StateError, StateLoadError
+from .state import State
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
         Union,
     )
 
-    from src.game_state.utils import StateArgs
+    from ..utils import StateArgs
 
 
 __all__ = ("StateManager",)
@@ -479,6 +479,22 @@ class StateManager(Generic[S]):
                     last_state=self._last_state,
                 )
 
+    def _handle_events(self) -> None:
+        if self._global_on_leave:
+            logger.debug("Calling global_on_leave")
+            self._global_on_leave(self._last_state, self.current_state)  # pyright: ignore[reportArgumentType]
+
+        if self._last_state:
+            logger.debug("Calling %s.on_leave", self._last_state.state_name)
+            self._last_state.on_leave(self.current_state)
+
+        if self._global_on_enter:
+            logger.debug("Calling global_on_enter")
+            self._global_on_enter(self.current_state, self._last_state)  # pyright: ignore[reportArgumentType]
+
+        logger.debug("Calling %s.on_enter", self.current_state.state_name)  # pyright: ignore[reportOptionalMemberAccess]
+        self.current_state.on_enter(self._last_state)  # pyright: ignore[reportOptionalMemberAccess]
+
     def change_state(self, state_name: str) -> None:
         r"""
         Changes the current state and updates the last state. This method executes
@@ -508,18 +524,7 @@ class StateManager(Generic[S]):
         else:
             self._state_stack.append(self._states[state_name])
 
-        if self._global_on_leave:
-            logger.debug("Calling global_on_leave")
-            self._global_on_leave(self._last_state, self.current_state)  # pyright: ignore[reportArgumentType]
-
-        if self._last_state:
-            logger.debug("Calling %s.on_leave", self._last_state.state_name)
-            self._last_state.on_leave(self.current_state)
-
-        if self._global_on_enter:
-            logger.debug("Calling global_on_enter")
-            self._global_on_enter(self.current_state, self._last_state)  # pyright: ignore[reportArgumentType]
-        self.current_state.on_enter(self._last_state)  # pyright: ignore[reportOptionalMemberAccess]
+        self._handle_events()
 
     def connect_state_hook(self, path: str, **kwargs: Any) -> None:
         r"""
@@ -870,32 +875,35 @@ class StateManager(Generic[S]):
 
         return cls_ref
 
-    def close_overlay(self, id: Union[int, str]) -> None: ...
+    def close_overlay(self, state_id: Union[int, str]) -> None: ...
 
     @overload
-    def open_overlay(self, state_name: str, id_: int) -> int: ...
+    def open_overlay(self, state_name: str, state_id: int) -> int: ...
 
     @overload
-    def open_overlay(self, state_name: str, id_: str) -> str: ...
+    def open_overlay(self, state_name: str, state_id: str) -> str: ...
 
     @overload
-    def open_overlay(self, state_name: str, id_: None = ...) -> int: ...
+    def open_overlay(self, state_name: str, state_id: None = ...) -> int: ...
 
     def open_overlay(
-        self, state_name: str, id_: Optional[Union[int, str]] = None
+        self, state_name: str, state_id: Optional[Union[int, str]] = None
     ) -> Union[int, str]:
         self._validate_states(state_name)
 
-        if id_ is None:
-            id_ = self._last_id
+        if state_id is None:
+            state_id = self._last_id
             self._last_id += 1
 
-        if id_ in self._overlay_pos:
+        if state_id in self._overlay_pos:
             msg = "Duplicate ID for overlay state found."
             raise OverlayError(msg)
 
         state = self._states[state_name]
+        state.state_id = state_id
         self._state_stack.append(state)
-        self._overlay_pos[id_] = len(self._state_stack) - 1
+        self._overlay_pos[state_id] = len(self._state_stack) - 1
 
-        return id_
+        self._handle_events()
+
+        return state_id
