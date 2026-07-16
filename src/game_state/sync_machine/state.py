@@ -3,12 +3,12 @@ from __future__ import annotations
 from abc import ABC
 from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
-from src.game_state.utils import MISSING
+from ..utils import MISSING
 
 if TYPE_CHECKING:
-    from typing import Any, List, Literal, Optional, Type
+    from typing import Any, List, Literal, Optional, Type, Union
 
-    from src.game_state.sync_machine.manager import StateManager
+    from .manager import StateManager
 
 
 __all__ = ("State",)
@@ -33,6 +33,7 @@ class State(ABC, Generic[S]):
     """
 
     state_name: str = MISSING
+    state_id: Optional[Union[str, int]] = None
     manager: StateManager[State[S]] = MISSING
 
     _eager_states: List[Type[State[S]]] = []
