@@ -680,6 +680,8 @@ class StateManager(Generic[S]):
                 )
 
             self._states[state.state_name] = state(**final_state_args)
+            if final_state_args:
+                self._states[state.state_name].state_args = final_state_args
             logger.debug("Loaded state: %s", state.state_name)
 
             if self._global_on_load:
@@ -881,21 +883,48 @@ class StateManager(Generic[S]):
             raise OverlayError(msg)
 
         overlay_ref = self._overlay_pos[state_id]
+        overlay_ref.state_id = None
         self._state_stack.remove(overlay_ref)
 
         self._handle_events()
 
-    @overload
-    def open_overlay(self, state_name: str, state_id: int) -> int: ...
+    def close_all_overlays(self) -> None:
+        if len(self._state_stack) > 1:
+            original_state = self._state_stack.pop(0)
+            for state in self._state_stack:
+                state.state_id = None
+            self._state_stack.clear()
+            self._state_stack.append(original_state)
 
     @overload
-    def open_overlay(self, state_name: str, state_id: str) -> str: ...
+    def open_overlay(
+        self,
+        state_name: str,
+        state_id: int,
+        make_copy: bool,
+    ) -> int: ...
 
     @overload
-    def open_overlay(self, state_name: str, state_id: None = ...) -> int: ...
+    def open_overlay(
+        self,
+        state_name: str,
+        state_id: str,
+        make_copy: bool,
+    ) -> str: ...
+
+    @overload
+    def open_overlay(
+        self,
+        state_name: str,
+        state_id: None = ...,
+        make_copy: bool = ...,
+    ) -> int: ...
 
     def open_overlay(
-        self, state_name: str, state_id: Optional[Union[int, str]] = None
+        self,
+        state_name: str,
+        state_id: Optional[Union[int, str]] = None,
+        make_copy: bool = False,
     ) -> Union[int, str]:
         self._validate_states(state_name)
 
@@ -908,9 +937,14 @@ class StateManager(Generic[S]):
             raise OverlayError(msg)
 
         state = self._states[state_name]
-        state.state_id = state_id
-        self._state_stack.append(state)
-        self._overlay_pos[state_id] = state
+        if state in self._state_stack:
+            final_state = state.__class__(**(state.state_args or {}))
+        else:
+            final_state = state
+
+        final_state.state_id = state_id
+        self._state_stack.append(final_state)
+        self._overlay_pos[state_id] = final_state
 
         self._handle_events()
 
