@@ -83,7 +83,8 @@ class StateManager(Generic[S]):
         self._is_reloading: bool = False
 
         self._state_stack: List[S] = []
-        self._overlay_pos: Dict[str | int, S] = {}
+        self._is_temp: Dict[S, bool] = {}
+        self._overlay_map: Dict[str | int, S] = {}
         self._last_id: int = 0
 
     def _get_kw_args(self, signature: Signature) -> int:
@@ -492,8 +493,9 @@ class StateManager(Generic[S]):
             logger.debug("Calling global_on_enter")
             self._global_on_enter(self.current_state, self._last_state)  # pyright: ignore[reportArgumentType]
 
-        logger.debug("Calling %s.on_enter", self.current_state.state_name)  # pyright: ignore[reportOptionalMemberAccess]
-        self.current_state.on_enter(self._last_state)  # pyright: ignore[reportOptionalMemberAccess]
+        if self.current_state:
+            logger.debug("Calling %s.on_enter", self.current_state.state_name)
+            self.current_state.on_enter(self._last_state)
 
     def change_state(self, state_name: str) -> None:
         r"""
@@ -878,22 +880,26 @@ class StateManager(Generic[S]):
         return cls_ref
 
     def close_overlay(self, state_id: Union[int, str]) -> None:
-        if state_id not in self._overlay_pos:
+        if state_id not in self._overlay_map:
             msg = f"Could not find overlay state of ID `{state_id}` ({type(state_id)})"
             raise OverlayError(msg)
 
-        overlay_ref = self._overlay_pos[state_id]
+        overlay_ref = self._overlay_map[state_id]
         overlay_ref.state_id = None
-        self._state_stack.remove(overlay_ref)
+        overlay_ref.on_overlay_leave(self._is_temp[overlay_ref])
 
-        self._handle_events()
+        del self._overlay_map[state_id]
+        self._state_stack.remove(overlay_ref)
 
     def close_all_overlays(self) -> None:
         if len(self._state_stack) > 1:
             original_state = self._state_stack.pop(0)
             for state in self._state_stack:
+                state.on_overlay_leave(self._is_temp[state])
                 state.state_id = None
             self._state_stack.clear()
+            self._is_temp.clear()
+            self._overlay_map.clear()
             self._state_stack.append(original_state)
 
     @overload
@@ -928,20 +934,23 @@ class StateManager(Generic[S]):
             state_id = self._last_id
             self._last_id += 1
 
-        if state_id in self._overlay_pos:
+        if state_id in self._overlay_map:
             msg = "Duplicate ID for overlay state found."
             raise OverlayError(msg)
 
         state = self._states[state_name]
         if state in self._state_stack:
+            temporary = True
             final_state = state.__class__(**(state.state_args or {}))
         else:
+            temporary = False
             final_state = state
 
         final_state.state_id = state_id
         self._state_stack.append(final_state)
-        self._overlay_pos[state_id] = final_state
+        self._overlay_map[state_id] = final_state
+        self._is_temp[final_state] = temporary
 
-        self._handle_events()
+        final_state.on_overlay_enter(temporary)
 
         return state_id
