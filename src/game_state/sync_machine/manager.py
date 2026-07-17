@@ -901,7 +901,6 @@ class StateManager(Generic[S]):
         self,
         state_name: str,
         state_id: int,
-        make_copy: bool,
     ) -> int: ...
 
     @overload
@@ -909,7 +908,6 @@ class StateManager(Generic[S]):
         self,
         state_name: str,
         state_id: str,
-        make_copy: bool,
     ) -> str: ...
 
     @overload
@@ -917,14 +915,12 @@ class StateManager(Generic[S]):
         self,
         state_name: str,
         state_id: None = ...,
-        make_copy: bool = ...,
     ) -> int: ...
 
     def open_overlay(
         self,
         state_name: str,
         state_id: Optional[Union[int, str]] = None,
-        make_copy: bool = False,
     ) -> Union[int, str]:
         self._validate_states(state_name)
 
