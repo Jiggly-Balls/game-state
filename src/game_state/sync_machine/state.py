@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Generic, TypeVar, overload
 from ..utils import MISSING
 
 if TYPE_CHECKING:
-    from typing import Any, List, Literal, Optional, Type, Union
+    from typing import Any, Dict, List, Literal, Optional, Type, Union
 
     from .manager import StateManager
 
@@ -34,10 +34,14 @@ class State(ABC, Generic[S]):
 
     state_name: str = MISSING
     state_id: Optional[Union[str, int]] = None
+    state_args: Optional[Dict[str, Any]] = None
     manager: StateManager[State[S]] = MISSING
 
     _eager_states: List[Type[State[S]]] = []
     _lazy_states: List[Type[State[S]]] = []
+
+    def __repr__(self) -> str:
+        return f"<{self.state_name}(state_id={self.state_id})>"
 
     @overload
     def __init_subclass__(
