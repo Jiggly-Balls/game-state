@@ -194,3 +194,7 @@ class State(ABC, Generic[S]):
             | The next state that is going to be applied.
         :type next_state: State
         """
+
+    def on_overlay_enter(self, temporary: bool) -> None: ...
+
+    def on_overlay_leave(self, temporary: bool) -> None: ...
