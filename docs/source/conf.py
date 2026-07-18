@@ -32,7 +32,6 @@ extensions = [
 # extensions = ["sphinx.ext.autodoc", "sphinx.ext.napolean"]
 source_encoding = "utf-8"
 exclude_patterns = ["_build", ".DS_Store"]
-html_theme = "furo"
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
