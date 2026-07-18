@@ -9,7 +9,7 @@ A utility package for pygame to manage multiple screens.
 
 """  # noqa: D415, D400
 
-__version__ = "2.4.1"
+__version__ = "2.5.0b"
 __title__ = "game-state"
 __author__ = "Krish Mohan M."
 __license__ = "MIT"
