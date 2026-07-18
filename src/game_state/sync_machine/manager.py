@@ -889,6 +889,7 @@ class StateManager(Generic[S]):
         overlay_ref.on_overlay_leave(self._is_temp[overlay_ref])
 
         del self._overlay_map[state_id]
+        del self._is_temp[overlay_ref]
         self._state_stack.remove(overlay_ref)
 
     def close_all_overlays(self) -> None:
