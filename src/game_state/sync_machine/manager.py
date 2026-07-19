@@ -574,6 +574,7 @@ class StateManager(Generic[S]):
 
         :param lazy_states:
             | The states to be loaded into the manager as lazy states.
+        :type lazy_states: typing.Type[State]
         :type lazy_states: State
 
         :param force:
@@ -642,7 +643,7 @@ class StateManager(Generic[S]):
 
         :param states:
             | The States to be loaded into the manager.
-        :type states: State
+        :type states: typing.Type[State]
 
         :param force:
             | Default ``False``.
