@@ -879,7 +879,35 @@ class StateManager(Generic[S]):
 
         return cls_ref
 
-    def close_overlay(self, state_id: Union[int, str]) -> None:
+    def close_overlay(self, state_id: Union[int, str], **kwargs: Any) -> None:
+        r"""
+        Closes an overlay state. You can close any of the opened overlay state
+        and not just the active overlay state.
+
+        .. versionadded:: 2.5
+
+        :param state_id:
+            | The state ID with which it was opened with. This is **not** the state name.
+
+            .. note::
+              It's recommended to use a string rather than an integer when assigning
+              a custom ID. When no ID is supplied, the manager defaults to an
+              incremental integer counter for its overlay elements, which can conflict
+              with custom integer IDs.
+
+            .. note::
+              Only the following state listeners will execute upon calling this method:
+
+              - :meth:`State.on_overlay_leave` on the current active overlay.
+              - :meth:`State.on_overlay_enter` for the previous active overlay, if any.
+
+        :param \**kwargs:
+            | The keyword arguments to be passed on to the raised errors.
+
+        :raises:
+            :exc:`game_state.errors.OverlayError`
+                | Raised when no state of ``state_id`` was found to close.
+        """
         if state_id not in self._overlay_map:
             msg = f"Could not find overlay state of ID `{state_id}` ({type(state_id)})"
             raise OverlayError(msg)
@@ -893,6 +921,23 @@ class StateManager(Generic[S]):
         self._state_stack.remove(overlay_ref)
 
     def close_all_overlays(self) -> None:
+        r"""
+        Closes all opened overlay states.
+
+        .. versionadded:: 2.5
+
+        .. note::
+          Only the following state listener executes upon calling this method:
+
+          - :meth:`State.on_overlay_leave` on the current active overlay.
+
+          For all overlay states, this is called in order from most recently opened to
+          first opened.
+
+        :param \**kwargs:
+            | The keyword arguments to be passed on to the raised errors.
+
+        """
         if len(self._state_stack) > 1:
             original_state = self._state_stack.pop(0)
             for state in self._state_stack:
