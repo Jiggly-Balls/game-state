@@ -910,7 +910,7 @@ class StateManager(Generic[S]):
         """
         if state_id not in self._overlay_map:
             msg = f"Could not find overlay state of ID `{state_id}` ({type(state_id)})"
-            raise OverlayError(msg)
+            raise OverlayError(msg, **kwargs)
 
         overlay_ref = self._overlay_map[state_id]
         overlay_ref.state_id = None
