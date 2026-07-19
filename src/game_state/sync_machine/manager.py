@@ -920,6 +920,10 @@ class StateManager(Generic[S]):
         del self._is_temp[overlay_ref]
         self._state_stack.remove(overlay_ref)
 
+        if len(self._state_stack) > 1:
+            last_overlay_state = self._state_stack[-1]
+            last_overlay_state.on_enter(self._is_temp[last_overlay_state])
+
     def close_all_overlays(self) -> None:
         r"""
         Closes all opened overlay states.
@@ -974,6 +978,7 @@ class StateManager(Generic[S]):
         state_name: str,
         state_id: Optional[Union[int, str]] = None,
     ) -> Union[int, str]:
+
         self._validate_states(state_name)
 
         if state_id is None:
