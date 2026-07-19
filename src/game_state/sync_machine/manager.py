@@ -940,7 +940,7 @@ class StateManager(Generic[S]):
         """
         if len(self._state_stack) > 1:
             original_state = self._state_stack.pop(0)
-            for state in self._state_stack:
+            for state in reversed(self._state_stack):
                 state.on_overlay_leave(self._is_temp[state])
                 state.state_id = None
             self._state_stack.clear()
