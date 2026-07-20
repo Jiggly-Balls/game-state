@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib
 import inspect
 import logging
+import types
 from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
 from ..errors import OverlayError, StateError, StateLoadError
@@ -683,7 +684,9 @@ class StateManager(Generic[S]):
 
             self._states[state.state_name] = state(**final_state_args)
             if final_state_args:
-                self._states[state.state_name].state_args = final_state_args
+                self._states[
+                    state.state_name
+                ].state_args = types.MappingProxyType(final_state_args)
             logger.debug("Loaded state: %s", state.state_name)
 
             if self._global_on_load:
