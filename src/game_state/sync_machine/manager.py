@@ -892,17 +892,13 @@ class StateManager(Generic[S]):
         :param state_id:
             | The state ID with which it was opened with. This is **not** the state name.
 
-            .. note::
-              It's recommended to use a string rather than an integer when assigning
-              a custom ID. When no ID is supplied, the manager defaults to an
-              incremental integer counter for its overlay elements, which can conflict
-              with custom integer IDs.
 
             .. note::
-              Only the following state listeners will execute upon calling this method:
+              Only the following state listener will execute upon calling this method:
 
-              - :meth:`State.on_overlay_leave` on the current active overlay.
-              - :meth:`State.on_overlay_enter` for the previous active overlay, if any.
+              - :meth:`State.on_overlay_close` on the current active overlay.
+
+              No other global or state listeners are called.
 
         :param \**kwargs:
             | The keyword arguments to be passed on to the raised errors.
@@ -917,15 +913,11 @@ class StateManager(Generic[S]):
 
         overlay_ref = self._overlay_map[state_id]
         overlay_ref.state_id = None
-        overlay_ref.on_overlay_leave(self._is_temp[overlay_ref])
+        overlay_ref.on_overlay_close(self._is_temp[overlay_ref])
 
         del self._overlay_map[state_id]
         del self._is_temp[overlay_ref]
         self._state_stack.remove(overlay_ref)
-
-        if len(self._state_stack) > 1:
-            last_overlay_state = self._state_stack[-1]
-            last_overlay_state.on_enter(self._is_temp[last_overlay_state])
 
     def close_all_overlays(self) -> None:
         r"""
@@ -936,10 +928,12 @@ class StateManager(Generic[S]):
         .. note::
           Only the following state listener executes upon calling this method:
 
-          - :meth:`State.on_overlay_leave` on the current active overlay.
+          - :meth:`State.on_overlay_close` on every opened overlay state.
 
           For all overlay states, this is called in order from most recently opened to
           first opened.
+
+          No other global or state listeners are called.
 
         :param \**kwargs:
             | The keyword arguments to be passed on to the raised errors.
@@ -948,7 +942,7 @@ class StateManager(Generic[S]):
         if len(self._state_stack) > 1:
             original_state = self._state_stack.pop(0)
             for state in reversed(self._state_stack):
-                state.on_overlay_leave(self._is_temp[state])
+                state.on_overlay_close(self._is_temp[state])
                 state.state_id = None
             self._state_stack.clear()
             self._is_temp.clear()
@@ -981,7 +975,31 @@ class StateManager(Generic[S]):
         state_name: str,
         state_id: Optional[Union[int, str]] = None,
     ) -> Union[int, str]:
+        r"""
+        Opens a new overlay state without losing the context of the original state.
 
+        .. versionadded:: 2.5
+
+        .. note::
+          Only the following state listener executes upon calling this method:
+
+          - :meth:`State.on_overlay_open` on the newly opened overlay state.
+
+        :param state_name:
+            | The name of the state to use as an overlay.
+
+        :param state_id:
+            | The ID bound to this overlay. As the overlay system allows you to open
+            | multiple overlay states of the same type, the manager needs to differentiate
+            | between them by using a unique ID.
+
+            .. note::
+              It's recommended to use a string rather than an integer when assigning
+              a custom ID. When no ID is supplied, the manager defaults to an
+              incremental integer counter for its overlay elements, which can conflict
+              with custom integer IDs.
+
+        """
         self._validate_states(state_name)
 
         if state_id is None:
@@ -1005,6 +1023,6 @@ class StateManager(Generic[S]):
         self._overlay_map[state_id] = final_state
         self._is_temp[final_state] = temporary
 
-        final_state.on_overlay_enter(temporary)
+        final_state.on_overlay_open(temporary)
 
         return state_id
