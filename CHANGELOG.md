@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) when possible.
 
+## [2.5.0b] - Unreleased
+
+### Added
+
+- `game_state.StateManager.open_overlay` method.
+- `game_state.StateManager.close_overlay` method.
+- `game_state.StateManager.close_all_overlays` method.
+- `game_state.State.state_args` attribute.
+- `game_state.errors.Overlay` error.
+
 ## [2.4.1] - 2026-04-29
 
 ### Added
