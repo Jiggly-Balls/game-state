@@ -196,6 +196,37 @@ class State(ABC, Generic[S]):
         :type next_state: State
         """
 
-    def on_overlay_open(self, temporary: bool) -> None: ...
+    def on_overlay_open(self, temporary: bool) -> None:
+        r"""
+        When an overlay state is opened, via :meth:`StateManager.open_overlay`, the respective
+        state gets this method called.
 
-    def on_overlay_close(self, temporary: bool) -> None: ...
+        .. versionadded:: 2.5
+
+        .. note::
+
+            This method need not be called manually.
+
+        :param temporary:
+            | A bool representing if the state is temporary or not. An overlay state
+            | is considered to be temporary when more than one instance of the same
+            | state is opened. All instances after the first are considered temporary.
+        """
+
+    def on_overlay_close(self, temporary: bool) -> None:
+        r"""
+        When an overlay state is closed, via :meth:`StateManager.close_overlay` or
+        :meth:`StateManager.close_all_overlays`, the respective state(s) gets this
+        method called.
+
+        .. versionadded:: 2.5
+
+        .. note::
+
+            This method need not be called manually.
+
+        :param temporary:
+            | A bool representing if the state is temporary or not. An overlay state
+            | is considered to be temporary when more than one instance of the same
+            | state is opened. All instances after the first are considered temporary.
+        """
