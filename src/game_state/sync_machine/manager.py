@@ -985,6 +985,11 @@ class StateManager(Generic[S]):
 
           - :meth:`State.on_overlay_open` on the newly opened overlay state.
 
+        .. warning::
+          Although it is possible to use this method as a replacement to
+          :meth:`StateManager.change_state`, it is discouraged to do so as it
+          progressively uses more memory if the overlay states are never cleared.
+
         :param state_name:
             | The name of the state to use as an overlay.
 
