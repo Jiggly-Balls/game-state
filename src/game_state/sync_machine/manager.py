@@ -584,6 +584,7 @@ class StateManager(Generic[S]):
             | without raising any internal error.
 
             .. warning::
+
               If set to ``True`` it may lead to unexpected behavior.
 
         :param state_args:
@@ -652,6 +653,7 @@ class StateManager(Generic[S]):
             | without raising any internal error.
 
             .. warning::
+
               If set to ``True`` it may lead to unexpected behavior.
 
         :param state_args:
@@ -717,6 +719,7 @@ class StateManager(Generic[S]):
             | raising any internal error.
 
             .. warning::
+
               If set to ``True`` it may lead to unexpected behavior.
 
         :param \**kwargs:
@@ -817,6 +820,7 @@ class StateManager(Generic[S]):
               internal error.
 
             .. warning::
+
               If set to ``True`` it may lead to unexpected behavior.
 
         :param \**kwargs:
@@ -892,8 +896,8 @@ class StateManager(Generic[S]):
         :param state_id:
             | The state ID with which it was opened with. This is **not** the state name.
 
-
             .. note::
+
               Only the following state listener will execute upon calling this method:
 
               - :meth:`State.on_overlay_close` on the current active overlay.
@@ -926,6 +930,7 @@ class StateManager(Generic[S]):
         .. versionadded:: 2.5
 
         .. note::
+
           Only the following state listener executes upon calling this method:
 
           - :meth:`State.on_overlay_close` on every opened overlay state.
@@ -981,11 +986,13 @@ class StateManager(Generic[S]):
         .. versionadded:: 2.5
 
         .. note::
+
           Only the following state listener executes upon calling this method:
 
           - :meth:`State.on_overlay_open` on the newly opened overlay state.
 
         .. warning::
+
           Although it is possible to use this method as a replacement to
           :meth:`StateManager.change_state`, it is discouraged to do so as it
           progressively uses more memory if the overlay states are never cleared.
@@ -999,6 +1006,7 @@ class StateManager(Generic[S]):
             | between them by using a unique ID.
 
             .. note::
+
               It's recommended to use a string rather than an integer when assigning
               a custom ID. When no ID is supplied, the manager defaults to an
               incremental integer counter for its overlay elements, which can conflict
