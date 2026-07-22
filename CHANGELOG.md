@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `game_state.StateManager.close_all_overlays` method.
 - `game_state.State.state_args` attribute.
 - `game_state.errors.Overlay` error.
+- Added `clear_overlays` parameter to `StateManager.change_state`.
 
 ## [2.4.1] - 2026-04-29
 

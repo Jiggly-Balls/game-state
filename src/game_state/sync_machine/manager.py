@@ -498,16 +498,22 @@ class StateManager(Generic[S]):
             logger.debug("Calling %s.on_enter", self.current_state.state_name)
             self.current_state.on_enter(self._last_state)
 
-    def change_state(self, state_name: str) -> None:
+    def change_state(
+        self, state_name: str, clear_overlays: bool = False
+    ) -> None:
         r"""
         Changes the current state and updates the last state. This method executes
         the :meth:`State.on_leave` & :meth:`State.on_enter` state & global listeners
         (:meth:`global_on_leave` & :meth:`global_on_enter`).
 
+        .. versionchanged:: 2.5
+
         .. versionadded:: 1.0
 
         :param state_name:
             | The name of the state you want to switch to.
+        :param clear_overlays:
+            | Whether to clear all the overlays before switching states or not.
 
         :raises:
             :exc:`game_state.errors.StateError`
@@ -520,6 +526,9 @@ class StateManager(Generic[S]):
             getattr(self.current_state, "state_name", "None"),
             state_name,
         )
+
+        if clear_overlays:
+            self.close_all_overlays()
 
         self._last_state = self.current_state
         if self._state_stack:
