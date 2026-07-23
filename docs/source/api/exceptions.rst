@@ -11,3 +11,6 @@ Exceptions
 
 .. autoclass:: StateLoadError
   :members:
+
+.. autoclass:: OverlayError
+  :members:

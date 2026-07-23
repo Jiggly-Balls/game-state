@@ -3,12 +3,12 @@ from __future__ import annotations
 from abc import ABC
 from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
-from src.game_state.utils import MISSING
+from ..utils import MISSING
 
 if TYPE_CHECKING:
     from typing import Any, List, Literal, Optional, Type
 
-    from src.game_state.async_machine.manager import AsyncStateManager
+    from .manager import AsyncStateManager
 
 
 __all__ = ("AsyncState",)
@@ -20,16 +20,17 @@ class AsyncState(ABC, Generic[S]):
     """
     The State class which works as an individual screen.
 
-    :attributes:
-        state_name: :class:`str`
-            The name of the state. Has to be unique among other states.
+    :cvar state_name:
+        The name of the state. Has to be unique among other states.
 
-            .. versionadded:: 2.4
+        .. versionadded:: 2.4
+    :vartype state_name: str
 
-        manager: :class:`AsyncStateManager`
-            The manager to which the state is bound to.
+    :cvar manager:
+        The manager to which the state is bound to.
 
-            .. versionadded:: 2.4
+        .. versionadded:: 2.4
+    :vartype manager: StateManager
     """
 
     state_name: str = MISSING

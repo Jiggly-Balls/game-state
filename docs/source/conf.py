@@ -14,8 +14,8 @@ author = "Krish Mohan M."
 # release = f"{version_info.major}.{version_info.minor}.{version_info.patch} - {version_info.releaselevel}"
 
 
-version = "2.4"
-release = "2.4.1 - final"
+version = "2.5"
+release = "2.5.0 - beta"
 
 # -- General configuration
 extensions = [
@@ -32,7 +32,6 @@ extensions = [
 # extensions = ["sphinx.ext.autodoc", "sphinx.ext.napolean"]
 source_encoding = "utf-8"
 exclude_patterns = ["_build", ".DS_Store"]
-html_theme = "furo"
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),

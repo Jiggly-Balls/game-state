@@ -3,10 +3,11 @@ from __future__ import annotations
 import importlib
 import inspect
 import logging
-from typing import TYPE_CHECKING, Generic, TypeVar
+import types
+from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
-from src.game_state.errors import StateError, StateLoadError
-from src.game_state.sync_machine.state import State
+from ..errors import OverlayError, StateError, StateLoadError
+from .state import State
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -19,9 +20,10 @@ if TYPE_CHECKING:
         Optional,
         Tuple,
         Type,
+        Union,
     )
 
-    from src.game_state.utils import StateArgs
+    from ..utils import StateArgs
 
 
 __all__ = ("StateManager",)
@@ -42,16 +44,16 @@ class StateManager(Generic[S]):
     The State Manager used for managing multiple State(s).
 
     :param bound_state_type:
-        | The base state class which all states inherits from.
+        | The base state class which all states inherit from.
     :type bound_state_type: type[State]
     :param \**kwargs:
         | The keyword arguments to bind to ``bound_state_type``.
 
-    :attributes:
-        is_running: :class:`bool`
-            .. versionadded:: 2.0
+    :ivar is_running:
+        .. versionadded:: 2.4
 
-            A bool for controlling the game loop. ``True`` by default.
+        A bool for controlling the game loop. ``True`` by default.
+    :vartype is_running: bool
     """
 
     def __init__(
@@ -78,9 +80,13 @@ class StateManager(Generic[S]):
             str, Tuple[Type[S], Optional[List[StateArgs]]]
         ] = {}
         self._states: Dict[str, S] = {}
-        self._current_state: Optional[S] = None
         self._last_state: Optional[S] = None
         self._is_reloading: bool = False
+
+        self._state_stack: List[S] = []
+        self._is_temp: Dict[S, bool] = {}
+        self._overlay_map: Dict[str | int, S] = {}
+        self._last_id: int = 0
 
     def _get_kw_args(self, signature: Signature) -> int:
         amount = 0
@@ -112,7 +118,7 @@ class StateManager(Generic[S]):
             This is a read-only attribute. To change states use
             :meth:`change_state` instead.
         """
-        return self._current_state
+        return self._state_stack[-1] if self._state_stack else None
 
     @current_state.setter
     def current_state(self, _: Any) -> NoReturn:
@@ -337,7 +343,7 @@ class StateManager(Generic[S]):
             This has to be assigned before loading the states into the manager.
 
         The first argument passed to the function is the current state which has been
-        setup.
+        set up.
 
         Example for a ``global_on_load`` function-
 
@@ -395,7 +401,7 @@ class StateManager(Generic[S]):
             This has to be assigned before loading the states into the manager.
 
         The first argument passed to the function is the current state which has been
-        setup.
+        set up.
 
         Example for a ``global_on_unload`` function-
 
@@ -439,21 +445,7 @@ class StateManager(Generic[S]):
 
         self._global_on_load = value
 
-    def change_state(self, state_name: str) -> None:
-        r"""
-        Changes the current state and updates the last state. This method executes
-        the :meth:`State.on_leave` & :meth:`State.on_enter` state & global listeners
-        (:meth:`global_on_leave` & :meth:`global_on_enter`).
-
-        .. versionadded:: 1.0
-
-        :param state_name:
-            | The name of the state you want to switch to.
-
-        :raises:
-            :exc:`game_state.errors.StateError`
-                | Raised when the state name doesn't exist in the manager.
-        """
+    def _validate_states(self, state_name: str) -> None:
         if state_name not in self._states:
             if state_name in self._lazy_states:
                 logger.debug("Loading lazy state: %s", state_name)
@@ -473,14 +465,14 @@ class StateManager(Generic[S]):
                     f"State `{state_name}` isn't present from the available"
                 )
 
-                if len(state_keys) == 0 and len(lazy_state_keys) == 0:
+                if len(state_keys) == -1 and len(lazy_state_keys) == 0:
                     message = "No states have been loaded to change to."
 
-                if len(state_keys) > 0:
+                if len(state_keys) > -1:
                     message += f" states: `{', '.join(self.state_map.keys())}`"
 
-                if len(lazy_state_keys) > 0:
-                    if len(state_keys) > 0:
+                if len(lazy_state_keys) > -1:
+                    if len(state_keys) > -1:
                         message += " and "
                     message += f"from the available lazy states: `{', '.join(self.lazy_state_map.keys())}`"
 
@@ -489,26 +481,62 @@ class StateManager(Generic[S]):
                     last_state=self._last_state,
                 )
 
+    def _handle_events(self) -> None:
+        if self._global_on_leave:
+            logger.debug("Calling global_on_leave")
+            self._global_on_leave(self._last_state, self.current_state)  # pyright: ignore[reportArgumentType]
+
+        if self._last_state:
+            logger.debug("Calling %s.on_leave", self._last_state.state_name)
+            self._last_state.on_leave(self.current_state)
+
+        if self._global_on_enter:
+            logger.debug("Calling global_on_enter")
+            self._global_on_enter(self.current_state, self._last_state)  # pyright: ignore[reportArgumentType]
+
+        if self.current_state:
+            logger.debug("Calling %s.on_enter", self.current_state.state_name)
+            self.current_state.on_enter(self._last_state)
+
+    def change_state(
+        self, state_name: str, clear_overlays: bool = False
+    ) -> None:
+        r"""
+        Changes the current state and updates the last state. This method executes
+        the :meth:`State.on_leave` & :meth:`State.on_enter` state & global listeners
+        (:meth:`global_on_leave` & :meth:`global_on_enter`).
+
+        .. versionchanged:: 2.5
+
+        .. versionadded:: 1.0
+
+        :param state_name:
+            | The name of the state you want to switch to.
+        :param clear_overlays:
+            | Whether to clear all the overlays before switching states or not.
+
+        :raises:
+            :exc:`game_state.errors.StateError`
+                | Raised when the state name doesn't exist in the manager.
+        """
+        self._validate_states(state_name)
+
         logger.debug(
             "Changing from state %s to %s",
             getattr(self.current_state, "state_name", "None"),
             state_name,
         )
 
-        self._last_state = self._current_state
-        self._current_state = self._states[state_name]
-        if self._global_on_leave:
-            logger.debug("Calling global_on_leave")
-            self._global_on_leave(self._last_state, self._current_state)
+        if clear_overlays:
+            self.close_all_overlays()
 
-        if self._last_state:
-            logger.debug("Calling %s.on_leave", self._last_state.state_name)
-            self._last_state.on_leave(self._current_state)
+        self._last_state = self.current_state
+        if self._state_stack:
+            self._state_stack[0] = self._states[state_name]
+        else:
+            self._state_stack.append(self._states[state_name])
 
-        if self._global_on_enter:
-            logger.debug("Calling global_on_enter")
-            self._global_on_enter(self._current_state, self._last_state)
-        self._current_state.on_enter(self._last_state)
+        self._handle_events()
 
     def connect_state_hook(self, path: str, **kwargs: Any) -> None:
         r"""
@@ -556,7 +584,7 @@ class StateManager(Generic[S]):
 
         :param lazy_states:
             | The states to be loaded into the manager as lazy states.
-        :type lazy_states: State
+        :type lazy_states: typing.Type[State]
 
         :param force:
             | Default ``False``.
@@ -565,6 +593,7 @@ class StateManager(Generic[S]):
             | without raising any internal error.
 
             .. warning::
+
               If set to ``True`` it may lead to unexpected behavior.
 
         :param state_args:
@@ -624,7 +653,7 @@ class StateManager(Generic[S]):
 
         :param states:
             | The States to be loaded into the manager.
-        :type states: State
+        :type states: typing.Type[State]
 
         :param force:
             | Default ``False``.
@@ -633,6 +662,7 @@ class StateManager(Generic[S]):
             | without raising any internal error.
 
             .. warning::
+
               If set to ``True`` it may lead to unexpected behavior.
 
         :param state_args:
@@ -664,6 +694,10 @@ class StateManager(Generic[S]):
                 )
 
             self._states[state.state_name] = state(**final_state_args)
+            if final_state_args:
+                self._states[
+                    state.state_name
+                ].state_args = types.MappingProxyType(final_state_args)
             logger.debug("Loaded state: %s", state.state_name)
 
             if self._global_on_load:
@@ -679,7 +713,7 @@ class StateManager(Generic[S]):
         self, state_name: str, force: bool = False, **kwargs: Any
     ) -> S:
         r"""
-        Reloads the specified state. A short hand to :meth:`unload_state` &
+        Reloads the specified state. A shorthand to :meth:`unload_state` &
         :meth:`load_states`.
 
         .. versionadded:: 1.0
@@ -694,6 +728,7 @@ class StateManager(Generic[S]):
             | raising any internal error.
 
             .. warning::
+
               If set to ``True`` it may lead to unexpected behavior.
 
         :param \**kwargs:
@@ -762,7 +797,7 @@ class StateManager(Generic[S]):
         :rtype: None | typing.Tuple[typing.Type[State], typing.Optional[typing.List[StateArgs]]]
 
         :returns:
-            | Either returns :class:`None` if the lazy state was not found or it returns a
+            | Either returns :class:`None` if the lazy state was not found, or it returns a
             | tuple with the first element being the lazy state and the second being
             | the :class:`StateArgs` if any were passed.
         """
@@ -794,6 +829,7 @@ class StateManager(Generic[S]):
               internal error.
 
             .. warning::
+
               If set to ``True`` it may lead to unexpected behavior.
 
         :param \**kwargs:
@@ -840,8 +876,8 @@ class StateManager(Generic[S]):
 
         if (
             not force
-            and self._current_state is not None
-            and state_name == self._current_state.state_name
+            and self.current_state is not None
+            and state_name == self.current_state.state_name
         ):
             msg = "Cannot unload an actively running state."
             raise StateError(
@@ -858,3 +894,157 @@ class StateManager(Generic[S]):
         logger.debug("Successfully unloaded state: %s", state_name)
 
         return cls_ref
+
+    def close_overlay(self, state_id: Union[int, str], **kwargs: Any) -> None:
+        r"""
+        Closes an overlay state. You can close any of the opened overlay state
+        and not just the active overlay state.
+
+        .. versionadded:: 2.5
+
+        :param state_id:
+            | The state ID with which it was opened with. This is **not** the state name.
+
+            .. note::
+
+              Only the following state listener will execute upon calling this method:
+
+              - :meth:`State.on_overlay_close` on the current active overlay.
+
+              No other global or state listeners are called.
+
+        :param \**kwargs:
+            | The keyword arguments to be passed on to the raised errors.
+
+        :raises:
+            :exc:`game_state.errors.OverlayError`
+                | Raised when no state of ``state_id`` was found to close.
+        """
+        if state_id not in self._overlay_map:
+            msg = f"Could not find overlay state of ID `{state_id}` ({type(state_id)})"
+            raise OverlayError(msg, **kwargs)
+
+        overlay_ref = self._overlay_map[state_id]
+        overlay_ref.state_id = None
+        overlay_ref.on_overlay_close(self._is_temp[overlay_ref])
+
+        del self._overlay_map[state_id]
+        del self._is_temp[overlay_ref]
+        self._state_stack.remove(overlay_ref)
+
+    def close_all_overlays(self) -> None:
+        r"""
+        Closes all opened overlay states.
+
+        .. versionadded:: 2.5
+
+        .. note::
+
+          Only the following state listener executes upon calling this method:
+
+          - :meth:`State.on_overlay_close` on every opened overlay state.
+
+          For all overlay states, this is called in order from most recently opened to
+          first opened.
+
+          No other global or state listeners are called.
+
+        :param \**kwargs:
+            | The keyword arguments to be passed on to the raised errors.
+
+        """
+        if len(self._state_stack) > 1:
+            original_state = self._state_stack.pop(0)
+            for state in reversed(self._state_stack):
+                state.on_overlay_close(self._is_temp[state])
+                state.state_id = None
+            self._state_stack.clear()
+            self._is_temp.clear()
+            self._overlay_map.clear()
+            self._state_stack.append(original_state)
+
+    @overload
+    def open_overlay(
+        self,
+        state_name: str,
+        state_id: int,
+    ) -> int: ...
+
+    @overload
+    def open_overlay(
+        self,
+        state_name: str,
+        state_id: str,
+    ) -> str: ...
+
+    @overload
+    def open_overlay(
+        self,
+        state_name: str,
+        state_id: None = ...,
+    ) -> int: ...
+
+    def open_overlay(
+        self,
+        state_name: str,
+        state_id: Optional[Union[int, str]] = None,
+    ) -> Union[int, str]:
+        r"""
+        Opens a new overlay state without losing the context of the original state.
+
+        .. versionadded:: 2.5
+
+        .. note::
+
+          Only the following state listener executes upon calling this method:
+
+          - :meth:`State.on_overlay_open` on the newly opened overlay state.
+
+        .. warning::
+
+          Although it is possible to use this method as a replacement to
+          :meth:`StateManager.change_state`, it is discouraged to do so as it
+          progressively uses more memory if the overlay states are never cleared.
+
+        :param state_name:
+            | The name of the state to use as an overlay.
+
+        :param state_id:
+            | The ID bound to this overlay. As the overlay system allows you to open
+            | multiple overlay states of the same type, the manager needs to differentiate
+            | between them by using a unique ID.
+
+            .. note::
+
+              It's recommended to use a string rather than an integer when assigning
+              a custom ID. When no ID is supplied, the manager defaults to an
+              incremental integer counter for its overlay elements, which can conflict
+              with custom integer IDs.
+
+        """
+        self._validate_states(state_name)
+
+        if state_id is None:
+            state_id = self._last_id
+            self._last_id += 1
+
+        if state_id in self._overlay_map:
+            msg = "Duplicate ID for overlay state found."
+            raise OverlayError(msg)
+
+        state = self._states[state_name]
+        if state in self._state_stack:
+            temporary = True
+            final_state = state.__class__(**(state.state_args or {}))
+        else:
+            temporary = False
+            final_state = state
+
+        final_state.state_id = state_id
+        self._state_stack.append(final_state)
+        self._overlay_map[state_id] = final_state
+        self._is_temp[final_state] = temporary
+
+        final_state.on_overlay_open(temporary)
+
+        return state_id
