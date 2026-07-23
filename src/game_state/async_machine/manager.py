@@ -48,11 +48,11 @@ class AsyncStateManager(Generic[S]):
     :param \**kwargs:
         | The keyword arguments to bind to ``bound_state_type``.
 
-    :attributes:
-        is_running: :class:`bool`
-            .. versionadded:: 2.4
+    :ivar is_running:
+        .. versionadded:: 2.4
 
-            A bool for controlling the game loop. ``True`` by default.
+        A bool for controlling the game loop. ``True`` by default.
+    :vartype is_running: bool
     """
 
     def __init__(

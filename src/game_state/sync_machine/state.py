@@ -21,16 +21,31 @@ class State(ABC, Generic[S]):
     """
     The State class which works as an individual screen.
 
-    :attributes:
-        state_name: :class:`str`
-            The name of the state. Has to be unique among other states.
+    :cvar state_name:
+        The name of the state. Has to be unique among other states.
 
-            .. versionadded:: 1.1
+        .. versionadded:: 1.1
+    :vartype state_name: str
 
-        manager: :class:`StateManager`
-            The manager to which the state is bound to.
+    :cvar manager:
+        The manager to which the state is bound to.
 
-            .. versionadded:: 1.0
+        .. versionadded:: 1.0
+    :vartype manager: StateManager
+
+    :cvar state_args:
+        A frozen dict-like snapshot of the arguments passed to the state during initialization.
+
+        .. versionadded:: 2.5
+    :vartype state_args: typing.Optional[types.MappingProxyType]
+
+    :ivar state_id:
+        The ID attached to the state when it is used as an overlay state.
+        This attribute remains ``None`` if it's used as a regular state.
+
+        .. versionadded:: 2.5
+    :vartype state_id: typing.Optional[typing.Union[str, int]]
+
     """
 
     state_name: str = MISSING
