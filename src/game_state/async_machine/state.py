@@ -6,7 +6,8 @@ from typing import TYPE_CHECKING, Generic, TypeVar, overload
 from ..utils import MISSING
 
 if TYPE_CHECKING:
-    from typing import Any, List, Literal, Optional, Type
+    from types import MappingProxyType
+    from typing import Any, List, Literal, Optional, Type, Union
 
     from .manager import AsyncStateManager
 
@@ -31,13 +32,32 @@ class AsyncState(ABC, Generic[S]):
 
         .. versionadded:: 2.4
     :vartype manager: StateManager
+
+    :cvar state_args:
+        A frozen dict-like snapshot of the arguments passed to the state during initialization.
+
+        .. versionadded:: 2.5
+    :vartype state_args: typing.Optional[types.MappingProxyType]
+
+    :ivar state_id:
+        The ID attached to the state when it is used as an overlay state.
+        This attribute remains ``None`` if it's used as a regular state.
+
+        .. versionadded:: 2.5
+    :vartype state_id: typing.Optional[typing.Union[str, int]]
+
     """
 
     state_name: str = MISSING
+    state_id: Optional[Union[str, int]] = None
+    state_args: Optional[MappingProxyType[str, Any]] = None
     manager: AsyncStateManager[AsyncState[S]] = MISSING
 
     _eager_states: List[Type[AsyncState[S]]] = []
     _lazy_states: List[Type[AsyncState[S]]] = []
+
+    def __repr__(self) -> str:
+        return f"<{self.state_name}(state_id={self.state_id})>"
 
     @overload
     def __init_subclass__(
@@ -189,4 +209,39 @@ class AsyncState(ABC, Generic[S]):
         :param next_state:
             | The next state that is going to be applied.
         :type next_state: State
+        """
+
+    async def on_overlay_open(self, temporary: bool) -> None:
+        r"""
+        When an overlay state is opened, via :meth:`AsyncStateManager.open_overlay`, the
+        respective state gets this method called.
+
+        .. versionadded:: 2.5
+
+        .. note::
+
+            This method need not be called manually.
+
+        :param temporary:
+            | A bool representing if the state is temporary or not. An overlay state
+            | is considered to be temporary when more than one instance of the same
+            | state is opened. All instances after the first are considered temporary.
+        """
+
+    async def on_overlay_close(self, temporary: bool) -> None:
+        r"""
+        When an overlay state is closed, via :meth:`AsyncStateManager.close_overlay` or
+        :meth:`AsyncStateManager.close_all_overlays`, the respective state(s) gets this
+        method called.
+
+        .. versionadded:: 2.5
+
+        .. note::
+
+            This method need not be called manually.
+
+        :param temporary:
+            | A bool representing if the state is temporary or not. An overlay state
+            | is considered to be temporary when more than one instance of the same
+            | state is opened. All instances after the first are considered temporary.
         """
