@@ -1,6 +1,6 @@
 [project]
 name = "game_state"
-version = "2.4.1"
+version = "2.5.0b"
 authors = [{ name = "Krish Mohan M.", email = "jigglyballs9000@gmail.com" }]
 description = "A pygame utility package that allows you to handle different screens in an organized manner."
 readme = "README.md"
@@ -75,4 +75,5 @@ dev = [
     "pytest>=9.1.1",
     "pytest-asyncio>=1.3.0",
     "ruff>=0.15.21",
+    "sphinx-autobuild>=2025.8.25",
 ]

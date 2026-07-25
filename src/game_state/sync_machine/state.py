@@ -3,12 +3,13 @@ from __future__ import annotations
 from abc import ABC
 from typing import TYPE_CHECKING, Generic, TypeVar, overload
 
-from src.game_state.utils import MISSING
+from ..utils import MISSING
 
 if TYPE_CHECKING:
-    from typing import Any, List, Literal, Optional, Type
+    from types import MappingProxyType
+    from typing import Any, List, Literal, Optional, Type, Union
 
-    from src.game_state.sync_machine.manager import StateManager
+    from .manager import StateManager
 
 
 __all__ = ("State",)
@@ -20,23 +21,43 @@ class State(ABC, Generic[S]):
     """
     The State class which works as an individual screen.
 
-    :attributes:
-        state_name: :class:`str`
-            The name of the state. Has to be unique among other states.
+    :cvar state_name:
+        The name of the state. Has to be unique among other states.
 
-            .. versionadded:: 1.1
+        .. versionadded:: 1.1
+    :vartype state_name: str
 
-        manager: :class:`StateManager`
-            The manager to which the state is binded to.
+    :cvar manager:
+        The manager to which the state is bound to.
 
-            .. versionadded:: 1.0
+        .. versionadded:: 1.0
+    :vartype manager: StateManager
+
+    :cvar state_args:
+        A frozen dict-like snapshot of the arguments passed to the state during initialization.
+
+        .. versionadded:: 2.5
+    :vartype state_args: typing.Optional[types.MappingProxyType]
+
+    :ivar state_id:
+        The ID attached to the state when it is used as an overlay state.
+        This attribute remains ``None`` if it's used as a regular state.
+
+        .. versionadded:: 2.5
+    :vartype state_id: typing.Optional[typing.Union[str, int]]
+
     """
 
     state_name: str = MISSING
+    state_id: Optional[Union[str, int]] = None
+    state_args: Optional[MappingProxyType[str, Any]] = None
     manager: StateManager[State[S]] = MISSING
 
     _eager_states: List[Type[State[S]]] = []
     _lazy_states: List[Type[State[S]]] = []
+
+    def __repr__(self) -> str:
+        return f"<{self.state_name}(state_id={self.state_id})>"
 
     @overload
     def __init_subclass__(
@@ -188,4 +209,39 @@ class State(ABC, Generic[S]):
         :param next_state:
             | The next state that is going to be applied.
         :type next_state: State
+        """
+
+    def on_overlay_open(self, temporary: bool) -> None:
+        r"""
+        When an overlay state is opened, via :meth:`StateManager.open_overlay`, the respective
+        state gets this method called.
+
+        .. versionadded:: 2.5
+
+        .. note::
+
+            This method need not be called manually.
+
+        :param temporary:
+            | A bool representing if the state is temporary or not. An overlay state
+            | is considered to be temporary when more than one instance of the same
+            | state is opened. All instances after the first are considered temporary.
+        """
+
+    def on_overlay_close(self, temporary: bool) -> None:
+        r"""
+        When an overlay state is closed, via :meth:`StateManager.close_overlay` or
+        :meth:`StateManager.close_all_overlays`, the respective state(s) gets this
+        method called.
+
+        .. versionadded:: 2.5
+
+        .. note::
+
+            This method need not be called manually.
+
+        :param temporary:
+            | A bool representing if the state is temporary or not. An overlay state
+            | is considered to be temporary when more than one instance of the same
+            | state is opened. All instances after the first are considered temporary.
         """

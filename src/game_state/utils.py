@@ -41,7 +41,6 @@ class StateArgs:
                     for key, value in zip(
                         self.__dict__.keys(),
                         self.__dict__.values(),
-                        strict=False,
                     )
                 )
             )
