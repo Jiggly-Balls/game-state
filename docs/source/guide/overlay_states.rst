@@ -292,5 +292,8 @@ state.
   :class: warning
 
   Although it's possible to use ``open_overlay`` as a full replacement for
-  ``change_state``, it's discouraged to do so if the overlays that are never
+  ``change_state``, it's discouraged to do so if the overlays are never
   cleared. This can cause memory leaks if used irresponsibly.
+
+The code is also available in it's `Github examples <https://github.com/Jiggly-Balls/game-state/blob/main/examples/overlays.py>`_
+directory.
