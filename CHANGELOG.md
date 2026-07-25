@@ -12,7 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `game_state.StateManager.open_overlay` method.
 - `game_state.StateManager.close_overlay` method.
 - `game_state.StateManager.close_all_overlays` method.
+- `game_state.AsyncStateManager.open_overlay` method.
+- `game_state.AsyncStateManager.close_overlay` method.
+- `game_state.AsyncStateManager.close_all_overlays` method.
 - `game_state.State.state_args` attribute.
+- `game_state.AsyncState.state_args` attribute.
 - `game_state.errors.Overlay` error.
 
 ### Changed
