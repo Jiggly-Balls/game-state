@@ -79,9 +79,8 @@ class _MissingSentinel:
 
 
 MISSING: Any = _MissingSentinel()
-r"""Used in areas where an attribute doesn't have a value by default but
-gets defined during runtime. Lesser type checking would be required by using
-this, opposed to using some other default value such as ``None``.
+r"""
+A sentinel value of `game-state`.
 
 .. versionadded:: 2.0.1
 """
