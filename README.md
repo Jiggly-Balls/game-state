@@ -6,13 +6,13 @@
 [![PyPI Downloads](https://img.shields.io/pepy/dt/game-state?label=Total%20Downloads&color=blueviolet&logo=pypi&logoColor=white&style=for-the-badge)](https://pepy.tech/projects/game-state)
 [![License](https://img.shields.io/pypi/l/game-state?color=blueviolet&logo=c&logoColor=white&style=for-the-badge)](https://github.com/Jiggly-Balls/game-state/blob/main/LICENSE)
 [![Docs](https://img.shields.io/readthedocs/game-state?color=blueviolet&logo=readthedocs&logoColor=white&style=for-the-badge)](https://game-state.readthedocs.io/en/latest/)
-![Versions](https://img.shields.io/badge/Python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue?color=blueviolet&logo=python&logoColor=white&style=for-the-badge)
+![Versions](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13%20%7C%203.14%20%7C%203.15-blue?color=blueviolet&logo=python&logoColor=white&style=for-the-badge)
 
 </div>
 
 # Game-State
 
-A state machine for organizing different in-game screens in python.
+A lightweight, framework-agnostic library for managing application and game states with lifecycle hooks, overlays, and async support.
 
 ## Table of Contents
 
