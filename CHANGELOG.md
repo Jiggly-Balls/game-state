@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added official support for `3.15`
 
+### Changed
+
+- Updated docstring of `game_state.MISSING`.
+
 ### Removed
 
 - Dropped support for `3.8`, `3.9` & `3.10`.
