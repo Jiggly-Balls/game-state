@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) when possible.
 
+## [Unreleased]
+
+## [2.5.1]
+
+### Added
+
+- Added official support for `3.15`
+
+### Removed
+
+- Dropped support for `3.8`, `3.9` & `3.10`.
+
 ## [2.5.0] - 2026-07-25
 
 ### Added
