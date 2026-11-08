@@ -23,7 +23,7 @@ A lightweight, framework-agnostic library for managing application and game stat
 
 ### Requirements
 
-This library supports python versions `3.8` - `3.14`.
+This library supports python versions `3.11` - `3.15`.
 
 ### Installation
 
